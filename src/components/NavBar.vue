@@ -35,12 +35,14 @@ const settingsStore = useSettingsStore()
 
 const isHovered = ref(false);
 
+const base = '/hp-blog';
+
 const navItems = [
-  { path: '/', title: 'Home', icon: Home },
-  { path: '/about', title: 'About', icon: User },
-  { path: '/posts', title: 'Posts', icon: FileText },
-  { path: '/contact', title: 'Contact', icon: Mail },
-  { path: '/settings', title: 'Settings', icon: Settings }
+  { path: base, title: 'Home', icon: Home },
+  { path: base + '/about', title: 'About', icon: User },
+  { path: base + '/posts', title: 'Posts', icon: FileText },
+  { path: base + '/contact', title: 'Contact', icon: Mail },
+  { path: base + '/settings', title: 'Settings', icon: Settings }
 ];
 </script>
 
