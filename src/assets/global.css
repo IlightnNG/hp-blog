@@ -1,0 +1,63 @@
+/* 全局变量 */
+:root {
+    --target-color: #9a8c98;
+
+    --text-primary: var(--target-color);
+    --text-secondary: #6d6875;
+
+    --glass-blur: 2px;
+    --glass-blur-hover: 10px;
+
+
+    --bg: #F1EFE9;
+    --border: 0px solid #9a8c98;
+
+    --bg-glass: rgba(255, 255, 255, 0.2);
+    --border-glass: rgba(255, 255, 255, 0.3);
+    --shadow-glass: 2px 2px 1px #dedede, -2px -2px 1px #dedede;
+    --shadow-glass-hover: 5px 5px 1px #dedede, -5px -5px 1px #dedede;
+
+    --tag-color: var(--text-secondary);
+    --tag-border: 1px solid var(--target-color);
+    --tag-background: white;
+    --tag-background-hover: var(--target-color);
+
+    --button-background: white;
+    --button-background-hover: white;
+
+    --shadow-primary: 2px 2px 5px var(--target-color);
+
+}
+
+/* 基础卡片样式 - 现在使用CSS变量 */
+.blog-card {
+    padding: 40px;
+    background-color: var(--bg-glass);
+    color: var(--text-primary);
+    border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-glass);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.blog-card:hover {
+    backdrop-filter: blur(var(--glass-blur-hover));
+    -webkit-backdrop-filter: blur(var(--glass-blur-hover));
+    box-shadow: var(--shadow-glass-hover);
+}
+
+/* 文本样式 */
+h1,
+h2,
+h3 {
+    color: var(--text-primary);
+}
+
+p {
+    color: var(--text-secondary);
+}
+
+html {
+    scroll-behavior: smooth;
+}
