@@ -6,16 +6,18 @@ import PostsView from '@/views/PostsView.vue';
 import PostsViewLight from '@/views/PostsViewLight.vue';
 import AboutView from '@/views/AboutView.vue';
 
+let base = '/hp-blog'
+
 const routes = [
-    { path: '/', name: 'Home', component: MainView },
-    { path: '/posts', name: 'Posts', component: PostsView },
+    { path: 'base', name: 'Home', component: MainView },
+    { path: '${base}/posts', name: 'Posts', component: PostsView },
     {
         path: '/posts/:id',
         name: 'PostDetail',
         component: PostDetailView
     },
-    { path: '/about', name: 'About', component: AboutView },
-    { path: '/settings', name: 'Settings', component: SettingsView },
+    { path: '${base}/about', name: 'About', component: AboutView },
+    { path: '${base}/settings', name: 'Settings', component: SettingsView },
 ];
 
 const router = createRouter({
