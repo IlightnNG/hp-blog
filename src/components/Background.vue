@@ -194,9 +194,6 @@ for (let row = 0; row < rows; row++) {
             const y = (row * TRIANGLE_SIZE) - window.innerHeight/2 - TRIANGLE_SIZE + yColOffset;
             const rotation = i % 2 === 1 ? Math.PI/3 : 0;
             
-            
-            
-
             // 设置位置和旋转
             tempPosition.set(x, y, 0);
             tempQuaternion.setFromAxisAngle(new THREE.Vector3(0, 0, 1), rotation);

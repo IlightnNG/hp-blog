@@ -16,7 +16,7 @@ if "%1" == "-m" (
 :: 执行 Git 操作
 git add .
 git commit -m "%commit_msg%"
-git push origin master
+git push origin main
 
 :: 检查 dist/ 是否存在并部署到 gh-pages
 if exist "dist\" (
