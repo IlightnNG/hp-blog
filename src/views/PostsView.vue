@@ -219,7 +219,7 @@ const selectArticle = (article) => {
 
 .header-section {
   padding: 40px 0 0 0;
-  width:96%;
+  width:100%;
   text-align: center;
   margin-bottom: 40px;
 }
@@ -228,13 +228,9 @@ const selectArticle = (article) => {
   text-align: justify;
   font-size: 3rem;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  color: var(--text-title);
 }
-.title::after {
-  content: ''; /* 添加一个空内容的伪元素 */
-  display: inline-block; /* 使其表现为内联块元素 */
-  width: 100%; /* 占据整行剩余空间 */
-}
+
 
 .header-section .introduction {
   font-size: 1.2rem;
@@ -247,18 +243,18 @@ const selectArticle = (article) => {
 .divider {
   width: 100%;
   height: 2px;
-  background: var(--target-color);
+  background: var(--text-title);
 }
 
 .main-content {
   display: flex;
   gap: 40px;
   position: relative;
+  padding: 0 0;
 }
 
 .articles-section {
   flex: 2;
-  max-width: 900px;
 }
 
 .articles-list {
@@ -324,7 +320,7 @@ const selectArticle = (article) => {
 
 .sidebar {
   flex: 1;
-  max-width: 320px;
+  max-width: 300px;
   position: sticky;
   top: 40px;
   height: min-content;

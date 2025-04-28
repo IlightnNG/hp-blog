@@ -1,7 +1,7 @@
 <template>
     <div class="canvas-container" ref="containerRef">
     </div>
-    <!-- <div>
+    <div>
         <button 
             @click.stop="settingsStore.toggleAddGroupMode "
             class="style-toggle"
@@ -9,7 +9,7 @@
         >
             {{ settingsStore.settings.isAddingGroup ? 'Edit' : 'Display' }}
         </button>
-    </div> -->
+    </div>
 </template>
   
 <script setup>
@@ -366,8 +366,8 @@ const findAdjacentTriangles = (triangleIndex) => {
     const generateNewTargetColor = () => {
         // 使用HSL颜色空间生成随机颜色
         const hue = Math.random(); // 0-1 对应 0-360度
-        const saturation = 0.3 + Math.random() * 0.2; // 0.4-0.6 饱和度
-        const lightness = 0.35 + Math.random() * 0.2; // 0.4-0.6 亮度
+        const saturation = 0.3 + Math.random() * 0.1; // 0.4-0.6 饱和度
+        const lightness = 0.3 + Math.random() * 0.1; // 0.4-0.6 亮度
         console.log("饱和度："+saturation +"亮度："+ lightness)
         
         const color = new THREE.Color();
@@ -541,30 +541,31 @@ onUnmounted(() => {
 
 
 .style-toggle {
+    z-index: 1000;
     top: 120px;
     left: 20px;
-  padding: 5px 5px;
-  background-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  border: none;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(.65,.43,.31,1.23);
-  box-shadow: 2px 2px 1px #dedede,
-             -2px -2px 1px #dedede;
-  position: fixed;
-  overflow: hidden;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  pointer-events: auto;
+    padding: 5px 5px;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.65,.43,.31,1.23);
+    box-shadow: 2px 2px 1px #dedede,
+                -2px -2px 1px #dedede;
+    position: fixed;
+    overflow: hidden;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    pointer-events: auto;
 }
 
 .style-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 5px 5px 1px #dedede,
-             -5px -5px 1px #dedede;
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 5px 5px 1px #dedede,
+                -5px -5px 1px #dedede;
 }
 
 

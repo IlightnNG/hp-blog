@@ -4,12 +4,15 @@
 
     --text-primary: var(--target-color);
     --text-secondary: #6d6875;
+    --text-title: var(--target-color);
 
     --glass-blur: 2px;
     --glass-blur-hover: 10px;
 
 
-    --bg: #F1EFE9;
+    /* --bg: #F1EFE9; */
+    /* --bg: var(--target-color); */
+    --bg: color-mix(in srgb, var(--target-color), white 70%);
     --border: 0px solid #9a8c98;
 
     --bg-glass: rgba(255, 255, 255, 0.2);
@@ -25,7 +28,7 @@
     --button-background: white;
     --button-background-hover: white;
 
-    --shadow-primary: 2px 2px 5px var(--target-color);
+    --shadow-primary: 5px 5px 7px var(--target-color);
 
 }
 
