@@ -55,7 +55,7 @@ git subtree push --prefix dist origin gh-pages
 ```
 <link rel="stylesheet" crossorigin href="/assets/index-DgiQsQqT.css">
 ```
-7. 于是我们要在打包时，把静态资源的绝对路径，修改为相对路径。继续修改 vite.config.js,添加 **base: './'** ，将根目录改为当前目录。
+7. 于是我们要在打包时，把静态资源的绝对路径，修改为相对路径。继续修改 vite.config.js,添加 **base: '/project-name/'** ，将根目录改为当前目录。
 ```
 export default defineConfig({
   plugins: [
@@ -65,7 +65,7 @@ export default defineConfig({
   build: {
     outDir: 'docs'
   },
-+ base: './'
++ base: '/project-name/'
 })
 ```
 

@@ -40,6 +40,8 @@ async function main() {
         } else {
             throw new Error('index.html not found in dist directory')
         }
+        // 添加 .nojekyll，防止github处理md文件
+        execSync('echo "">dist/.nojekyll', { stdio: 'inherit' })
 
         // 4. Git 操作
         execSync('git add .', { stdio: 'inherit' })
