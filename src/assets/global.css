@@ -1,6 +1,6 @@
 /* 全局变量 */
 :root {
-    --target-color: #9a8c98;
+    --target-color: #bde0fe;
 
     --text-primary: var(--target-color);
     --text-secondary: #6d6875;
@@ -63,4 +63,31 @@ p {
 
 html {
     scroll-behavior: smooth;
+}
+
+/* 代码块基础样式 */
+.markdown-content pre {
+    background: #f6f8fa;
+    border-radius: 6px;
+    padding: 16px;
+    overflow: auto;
+    line-height: 1.45;
+    margin: 1em 0;
+}
+
+.markdown-content code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 85%;
+}
+
+/* 行内代码 */
+.markdown-content :not(pre)>code {
+    background-color: rgba(175, 184, 193, 0.2);
+    border-radius: 4px;
+    padding: 0.2em 0.4em;
+}
+
+/* 代码高亮样式覆盖 */
+.hljs {
+    background: transparent !important;
 }

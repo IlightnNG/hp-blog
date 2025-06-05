@@ -4,13 +4,13 @@
       class="nav-logo"
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
-      :class="{ 'expanded': isHovered }"
+      :class="{ 'expanded': isHovered || settingsStore.settings.isShowingBg}"
       @click.stop
     >
       <div class="logo" @click="settingsStore.toggleShowingBg">B</div>
       
       <transition name="fade">
-        <div v-if="isHovered" class="nav-items" >
+        <div v-if="isHovered || settingsStore.settings.isShowingBg" class="nav-items" >
           <router-link 
             v-for="item in navItems" 
             :key="item.path" 

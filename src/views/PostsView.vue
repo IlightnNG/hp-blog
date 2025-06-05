@@ -1,10 +1,10 @@
+vue
 <template>
   <div class="posts-container" @click.stop :class="{'show': !settingsStore.settings.isShowingBg }">
-    <div class="posts-content" >
+    <div class="posts-content">
       <!-- 上部分：标题和介绍 -->
       <div class="header-section">
         <h1 class="title">欢迎来到，我的博客</h1>
-        <!-- <p class="introduction">在这里，我分享技术见解、生活感悟和有趣的发现。每一篇文章都是一次思考的沉淀。</p> -->
         <div class="divider"></div>
       </div>
       
@@ -12,22 +12,30 @@
       <div class="main-content">
         <!-- 左侧：文章列表 -->
         <div class="articles-section">
-          <div class="articles-list">
+          <!-- 加载状态 -->
+          <div v-if="isLoading" class="loading-container">
+            <div class="loading-spinner"></div>
+            <p>正在加载文章...</p>
+          </div>
+          
+          <!-- 无文章状态 -->
+          <div v-else-if="filteredArticles.length === 0" class="empty-state">
+            <p>没有找到符合条件的文章</p>
+          </div>
+          
+          <!-- 文章列表 -->
+          <div v-else class="articles-list">
             <div v-for="article in filteredArticles" :key="article.id" class="article-card" @click="selectArticle(article)">
               <div class="article-meta">
-                <span class="article-date">{{ article.date }}</span>
+                <span class="article-date">{{ formatDate(article.date) }}</span>
                 <div class="article-tags">
                   <span v-for="tag in article.tags" :key="tag" class="tag">{{ tag }}</span>
                 </div>
               </div>
               <h2 class="article-title">{{ article.title }}</h2>
               <p class="article-excerpt">{{ article.excerpt }}</p>
-              <!-- <div class="article-footer">
-                <span class="read-more">阅读更多</span>
-              </div> -->
             </div>
           </div>
-          
         </div>
         
         <!-- 右侧：功能区 -->
@@ -53,13 +61,14 @@
                 :class="{ 'active': selectedTags.includes(tag) }"
                 @click="toggleTag(tag)"
               >
-                {{ tag }}
+                {{ tag }} ({{ tagCounts[tag] || 0 }})
               </span>
             </div>
           </div> 
         </div>
       </div>
     </div>
+    
     <!-- 回到顶部按钮 -->
     <div 
       class="back-to-top" 
@@ -77,87 +86,63 @@
 import { useSettingsStore } from '@/stores/settings'
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
+
 const router = useRouter();
+const settingsStore = useSettingsStore();
 
-const settingsStore = useSettingsStore()
-
-// 回到顶部相关
-const showBackToTop = ref(false)
-
-const checkScroll = () => {
-  const container = document.querySelector('.posts-container')
-  if (container) {
-    showBackToTop.value = container.scrollTop > 300
-  }
-}
-
-const scrollToTop = () => {
-  const container = document.querySelector('.posts-container')
-  if (container) {
-    container.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-  }
-}
-
-onMounted(() => {
-  const container = document.querySelector('.posts-container')
-  if (container) {
-    container.addEventListener('scroll', checkScroll)
-  }
-})
-
-onUnmounted(() => {
-  const container = document.querySelector('.posts-container')
-  if (container) {
-    container.removeEventListener('scroll', checkScroll)
-  }
-})
-
-// 文章数据
-const articles = ref([
-  {
-    id: 1,
-    title: "Vue3 组合式 API 实践心得",
-    date: "2024-03-15",
-    tags: ["Vue3", "前端开发", "JavaScript"],
-    excerpt: "在使用 Vue3 的组合式 API 开发过程中，我发现了一些有趣的模式和最佳实践。本文将分享这些经验，帮助你更好地组织代码结构..."
-  },
-  {
-    id: 2,
-    title: "现代 CSS 动画技巧分享",
-    date: "2024-03-10",
-    tags: ["CSS", "动画", "前端设计"],
-    excerpt: "CSS 动画不仅能让界面更生动，还能提升用户体验。本文将介绍一些现代 CSS 动画技巧，包括关键帧动画、过渡效果等..."
-  },
-  {
-    id: 3,
-    title: "TypeScript 类型体操实战",
-    date: "2024-03-05",
-    tags: ["TypeScript", "前端开发", "编程技巧"],
-    excerpt: "TypeScript 的类型系统非常强大，但有时也会让人感到困惑。这篇文章将通过实际例子，展示如何玩转 TypeScript 类型..."
-  },
-  {
-    id: 4,
-    title: "浅谈前端性能优化",
-    date: "2024-02-28",
-    tags: ["性能优化", "前端开发", "最佳实践"],
-    excerpt: "前端性能优化是一个永恒的话题。从资源加载到渲染优化，从缓存策略到代码分割，让我们一起探讨如何提升网站性能..."
-  }
-]);
-
-// 搜索和标签过滤
+// 文章数据和状态
+const articles = ref([]);
+const isLoading = ref(true);
 const searchQuery = ref('');
 const selectedTags = ref([]);
 
-// 获取所有唯一的标签
+// 回到顶部相关
+const showBackToTop = ref(false);
+
+// 加载所有文章
+const loadArticles = async () => {
+  try {
+    isLoading.value = true;
+    articles.value = [];
+    
+    // 方法1：使用 fetch API 加载（适用于静态部署）
+    const response = await fetch('/posts/list.json');
+    if (!response.ok) throw new Error('列表加载失败');
+    const postList = await response.json();
+    
+    articles.value = postList.map(post => ({
+      id: post.id || post.path.replace(/^.*\/(.*)\.md$/, '$1'),
+      title: post.title || '无标题',
+      date: post.date || new Date().toISOString().split('T')[0],
+      tags: Array.isArray(post.tags) ? post.tags : [],
+      excerpt: post.excerpt || ''
+    })).sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+  } catch (error) {
+    console.error('加载文章列表失败:', error);
+    articles.value = [];
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// 计算标签和标签计数
 const tags = computed(() => {
   const tagSet = new Set();
   articles.value.forEach(article => {
     article.tags.forEach(tag => tagSet.add(tag));
   });
-  return Array.from(tagSet);
+  return Array.from(tagSet).sort();
+});
+
+const tagCounts = computed(() => {
+  const counts = {};
+  articles.value.forEach(article => {
+    article.tags.forEach(tag => {
+      counts[tag] = (counts[tag] || 0) + 1;
+    });
+  });
+  return counts;
 });
 
 // 根据搜索词和选中的标签过滤文章
@@ -170,6 +155,12 @@ const filteredArticles = computed(() => {
     return matchesSearch && matchesTags;
   });
 });
+
+// 格式化日期
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString('zh-CN', options);
+};
 
 // 处理标签点击
 const toggleTag = (tag) => {
@@ -189,6 +180,39 @@ const selectArticle = (article) => {
   });
 };
 
+// 滚动相关函数
+const checkScroll = () => {
+  const container = document.querySelector('.posts-container');
+  if (container) {
+    showBackToTop.value = container.scrollTop > 300;
+  }
+};
+
+const scrollToTop = () => {
+  const container = document.querySelector('.posts-container');
+  if (container) {
+    container.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+};
+
+// 生命周期钩子
+onMounted(() => {
+  loadArticles();
+  const container = document.querySelector('.posts-container');
+  if (container) {
+    container.addEventListener('scroll', checkScroll);
+  }
+});
+
+onUnmounted(() => {
+  const container = document.querySelector('.posts-container');
+  if (container) {
+    container.removeEventListener('scroll', checkScroll);
+  }
+});
 </script>
 
 <style scoped>

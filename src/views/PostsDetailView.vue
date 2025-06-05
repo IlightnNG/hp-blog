@@ -7,7 +7,20 @@
         </svg>
         <span>返回</span>
     </div>
-    <div class="post-detail-content">
+    <!-- 加载状态 -->
+    <div v-if="isLoading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>正在加载文章...</p>
+    </div>
+    
+    <!-- 文章不存在状态 -->
+    <div v-else-if="!currentPost" class="empty-state">
+      <p>文章不存在或加载失败</p>
+      <button @click="goBack" class="back-button">返回文章列表</button>
+    </div>
+
+    
+    <div v-else class="post-detail-content">
         
         <!-- 文章头部信息 -->
         <div class="header-section">
@@ -66,11 +79,32 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useSettingsStore } from '@/stores/settings';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { marked } from 'marked';
+import fm from 'front-matter';
+
+// 代码块
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css'; // 选择你喜欢的样式
+
+// 配置 marked 使用 highlight.js
+marked.setOptions({
+  highlight: function(code, lang) {
+    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+    return hljs.highlight(code, { language }).value;
+  },
+  langPrefix: 'hljs language-', // 高亮代码块的语言前缀
+  breaks: true,
+  gfm: true
+});
 
 const settingsStore = useSettingsStore();
+const route = useRoute();
 const router = useRouter();
 const currentSection = ref(0);
+const currentPost = ref(null);
+const isLoading = ref(true);
+
 
 // 回到顶部相关
 const showBackToTop = ref(false)
@@ -92,74 +126,98 @@ const scrollToTop = () => {
   }
 }
 
-// 测试文章数据
-const currentPost = ref({
-id: 1,
-title: "Vue3 组合式 API 实践心得",
-date: "2024-03-15",
-tags: ["Vue3", "前端开发", "JavaScript"],
-content: [
-  {
-  title: "引言",
-  content: `
-      <p>在 Vue3 发布后，组合式 API 成为了前端开发中的一个重要话题。这种新的编程范式不仅改变了我们组织代码的方式，
-      还为复杂组件的开发提供了更好的解决方案。本文将分享我在实际项目中使用组合式 API 的一些心得体会。</p>
-  `
-  },
-  {
-  title: "为什么选择组合式 API",
-  content: `
-      <p>传统的选项式 API 虽然直观易懂，但在处理复杂组件时往往会遇到一些问题：</p>
-      <ul>
-      <li>相关的逻辑代码被分散在不同的选项中，维护困难</li>
-      <li>代码复用需要依赖 mixins，容易产生命名冲突</li>
-      <li>TypeScript 支持有限，类型推导不够完善</li>
-      </ul>
-      <p>组合式 API 很好地解决了这些问题，让我们可以：</p>
-      <ul>
-      <li>按照逻辑关注点组织代码</li>
-      <li>更好地复用逻辑代码</li>
-      <li>获得更好的 TypeScript 支持</li>
-      </ul>
-  `
-  },
-  {
-  title: "实践经验分享",
-  content: `
-      <p>在实际项目中，我总结了以下几点实践经验：</p>
-      <h3>1. 合理拆分组合函数</h3>
-      <p>将复杂的组件逻辑拆分为多个可复用的组合函数，每个函数负责一个独立的功能模块。
-      这样不仅提高了代码的可维护性，还为后续的复用提供了可能。</p>
-      <h3>2. 状态管理的新思路</h3>
-      <p>使用 provide/inject 配合 ref 或 reactive，可以实现更灵活的状态管理方案。
-      对于中小型项目，这种方案往往比使用 Vuex 更加轻量和简洁。</p>
-      <h3>3. 生命周期钩子的使用</h3>
-      <p>组合式 API 中的生命周期钩子使用起来更加直观，可以直接在相关的逻辑代码旁使用，
-      提高了代码的可读性。</p>
-  `
-  },
-  {
-  title: "注意事项",
-  content: `
-      <p>在使用组合式 API 时，需要注意以下几点：</p>
-      <ul>
-      <li>避免过度解构 setup 上下文</li>
-      <li>合理使用 ref 和 reactive</li>
-      <li>注意响应式数据的性能开销</li>
-      </ul>
-      <p>同时，建议在项目中统一使用一种风格，不要混用组合式 API 和选项式 API，
-      这样可以保持代码风格的一致性。</p>
-  `
-  },
-  {
-  title: "总结",
-  content: `
-      <p>组合式 API 为 Vue 开发带来了新的可能性，虽然学习曲线相对较陡，但带来的好处是显而易见的。
-      希望这篇文章能够帮助你更好地理解和使用组合式 API。</p>
-  `
-  }
-]
+// 创建错误状态的文章
+const createErrorPost = () => ({
+  title: "加载失败",
+  date: new Date().toISOString().split('T')[0],
+  tags: [],
+  content: [{ title: "错误", content: "无法加载文章内容" }]
 });
+
+// 加载文章内容
+const loadPost = async () => {
+  try {
+    isLoading.value = true;
+    currentPost.value = null;
+    
+    const postId = route.params.id.replace('.md', '');
+    
+    // 方法1：使用 fetch 获取原始内容
+    const response = await fetch(`/posts/${postId}.md`);
+    if (!response.ok) throw new Error('文章未找到');
+    
+    const text = await response.text();
+    // console.log('Raw markdown content:', text); // 调试
+    
+    // 解析 front matter
+    const { attributes, body } = fm(text);
+    // console.log('Parsed attributes:', attributes); // 调试
+    
+    // 转换 Markdown 为 HTML
+    marked.setOptions({
+      breaks: true,
+      gfm: true
+    });
+    const htmlContent = marked(body);
+    
+    // 解析内容为章节
+    currentPost.value = {
+      title: attributes.title || '无标题',
+      date: attributes.date || new Date().toISOString().split('T')[0],
+      tags: Array.isArray(attributes.tags) ? attributes.tags : [],
+      content: parseContentToSections(htmlContent)
+    };
+    
+  } catch (error) {
+    console.error('加载文章失败:', error);
+    currentPost.value = createErrorPost();
+  } finally {
+    isLoading.value = false;
+    // 确保 DOM 更新后应用高亮
+    nextTick(() => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightElement(block);
+      });
+    });
+  }
+};
+
+// 解析内容为章节
+const parseContentToSections = (htmlContent) => {
+  const sections = [];
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = htmlContent;
+  
+  const h2Elements = tempDiv.querySelectorAll('h2');
+  
+  if (h2Elements.length > 0) {
+    h2Elements.forEach((h2, index) => {
+      const title = h2.textContent;
+      const nextH2 = h2Elements[index + 1];
+      
+      const sectionContent = [];
+      let currentNode = h2.nextSibling;
+      
+      while (currentNode && currentNode !== nextH2) {
+        sectionContent.push(currentNode.outerHTML || currentNode.textContent);
+        currentNode = currentNode.nextSibling;
+      }
+      
+      sections.push({
+        title,
+        content: sectionContent.join('')
+      });
+    });
+  } else {
+    sections.push({
+      title: '',
+      content: htmlContent
+    });
+  }
+  
+  return sections;
+};
+
 
 // 滚动到指定章节
 const scrollToSection = (index) => {
@@ -195,6 +253,7 @@ const goBack = () => {
 };
 
 onMounted(() => {
+  loadPost();
   const container = document.querySelector('.post-detail-container');
   if (container) {
       container.addEventListener('scroll', checkCurrentSection);

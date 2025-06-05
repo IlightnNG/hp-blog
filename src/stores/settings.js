@@ -19,8 +19,6 @@ export const useSettingsStore = defineStore('settings', () => {
         localStorage.setItem('blogSettings', JSON.stringify(settings.value))
     }
 
-
-
     // 切换添加矩形模式
     const toggleAddGroupMode = () => {
         settings.value.isAddingGroup = !settings.value.isAddingGroup
@@ -29,15 +27,12 @@ export const useSettingsStore = defineStore('settings', () => {
 
     const toggleShowingBg = () => {
         settings.value.isShowingBg = !settings.value.isShowingBg
+        console.log(settings.value.isShowingBg)
         saveSettings()
     }
 
     const resetShowingBg = (title) => {
-        if (title === 'Home') {
-            settings.value.isShowingBg = true
-        } else {
-            settings.value.isShowingBg = false
-        }
+        settings.value.isShowingBg = false
         saveSettings()
     }
 

@@ -5,13 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp dist/index.html dist/404.html",
+    "build": "vite build",
     "preview": "vite preview",
-    "publish": "publish.bat"
+    "publish": "node scripts/publish.js",
+    "post-list": "node scripts/generate-list.js"
   },
   "dependencies": {
+    "front-matter": "^4.0.2",
     "gsap": "^3.12.7",
+    "highlight.js": "^11.11.1",
     "lucide-vue-next": "^0.486.0",
+    "marked": "^15.0.12",
     "pinia": "^3.0.1",
     "pixi.js": "^8.9.1",
     "three": "^0.175.0",

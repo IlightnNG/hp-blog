@@ -2,13 +2,13 @@
     <div class="canvas-container" ref="containerRef">
     </div>
     <div>
-        <button 
+        <!-- <button 
             @click.stop="settingsStore.toggleAddGroupMode "
             class="style-toggle"
             :class="{ 'active': settingsStore.settings.isAddingGroup }"
         >
             {{ settingsStore.settings.isAddingGroup ? 'Edit' : 'Display' }}
-        </button>
+        </button> -->
     </div>
 </template>
   
@@ -241,7 +241,7 @@ for (let row = 0; row < rows; row++) {
 for (let i = 0; i < totalTriangles; i++) {
     triangleData.adjacentTriangles[i] = findAdjacentTriangles(i);
 }
-console.log(`检查三角形位置:`, triangleData.positions);
+// console.log(`检查三角形位置:`, triangleData.positions);
 
 // 添加实例属性
 const colorAttribute = new THREE.InstancedBufferAttribute(instanceColors, 3);
@@ -363,8 +363,8 @@ const findAdjacentTriangles = (triangleIndex) => {
     const generateNewTargetColor = () => {
         // 使用HSL颜色空间生成随机颜色
         const hue = Math.random(); // 0-1 对应 0-360度
-        const saturation = 0.3 + Math.random() * 0.1; // 0.4-0.6 饱和度
-        const lightness = 0.3 + Math.random() * 0.1; // 0.4-0.6 亮度
+        const saturation = 0.3 + Math.random() * 0.12; // 0.4-0.6 饱和度
+        const lightness = 0.3 + Math.random() * 0.15; // 0.4-0.6 亮度
         console.log("饱和度："+saturation +"亮度："+ lightness)
         
         const color = new THREE.Color();

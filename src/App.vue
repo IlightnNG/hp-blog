@@ -12,9 +12,7 @@
 <script setup>
 // 导入导航栏组件
 import NavBar from './components/NavBar.vue'
-import BackgroundCanvas from './components/BackgroundCanvas.vue'
 import Background from './components/Background.vue'
-import MainView from './views/MainView.vue'
 
 document.addEventListener('DOMContentLoaded', () => {
   const observer = new IntersectionObserver((entries) => {

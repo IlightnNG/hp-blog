@@ -3,7 +3,6 @@ import SettingsView from '@/views/SettingsView.vue';
 import MainView from '@/views/MainView.vue';
 import PostDetailView from '@/views/PostsDetailView.vue';
 import PostsView from '@/views/PostsView.vue';
-import PostsViewLight from '@/views/PostsViewLight.vue';
 import AboutView from '@/views/AboutView.vue';
 
 const base = '/hp-blog';

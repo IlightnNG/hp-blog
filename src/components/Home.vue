@@ -7,7 +7,7 @@
           @mousemove="handleMouseMove($event)"
           @mouseleave="handleMouseLeave"
         >
-            <h1>My blog</h1>
+            <h1>HP's Blog</h1>
             <div class="blog-content">
                 <p>Welcome</p>
             </div>

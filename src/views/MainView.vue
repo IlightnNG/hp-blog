@@ -1,7 +1,6 @@
 <template>
     <div class="main-scroll-container">
-      <Home v-if="settingsStore.settings.isShowingBg"/>
-      <Posts />
+      <Home v-if="!settingsStore.settings.isShowingBg"/>
     </div>
 </template>
 
@@ -10,7 +9,6 @@ import { ref, onMounted } from 'vue'
 import { useSettingsStore } from '@/stores/settings'
 const settingsStore = useSettingsStore()
 import Home from '@/components/Home.vue';
-import Posts from '@/components/Posts.vue';
 </script>
 
 <style scoped>
