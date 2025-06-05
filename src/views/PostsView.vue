@@ -106,7 +106,10 @@ const loadArticles = async () => {
     articles.value = [];
     
     // 方法1：使用 fetch API 加载（适用于静态部署）
-    const response = await fetch(import.meta.env.BASE_URL + 'posts/list.json');
+    const baseUrl = import.meta.env.PROD 
+    ? '/hp-blog' 
+    : '';
+    const response = await fetch(baseUrl + '/posts/list.json');
     if (!response.ok) throw new Error('列表加载失败');
     const postList = await response.json();
     

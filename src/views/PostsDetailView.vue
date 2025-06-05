@@ -142,8 +142,12 @@ const loadPost = async () => {
     
     const postId = route.params.id.replace('.md', '');
     
+    
     // 方法1：使用 fetch 获取原始内容
-    const response = await fetch(import.meta.env.BASE_URL +`posts/${postId}.md`);
+    const baseUrl = import.meta.env.PROD 
+    ? '/hp-blog' 
+    : '';
+    const response = await fetch(baseUrl+`/posts/${postId}.md`);
     if (!response.ok) throw new Error('文章未找到');
     
     const text = await response.text();
