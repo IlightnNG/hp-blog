@@ -15,9 +15,7 @@ GitHub Pages 是 GitHub 提供的静态页面托管服务，非常适合托管�
 - 自动构建部署
 
 ---
-## 简单部署方式（非 GitHub Actions）
-
-### 1. 创建并准备项目
+## 1. 创建并准备项目
 
 1. 使用 Vite 创建项目
 
@@ -35,8 +33,8 @@ npm install
 ```
 npm run build
 ```
-
-### 2. 使用 gh-pages 分支部署
+---
+## 2. 使用 gh-pages 分支部署
 
 整体思路是，先将整个网站项目上传到新的Github项目中，再将打包后生成的dist文件夹同步到新的gh-pages分支中。通过设置，Github会基于该分支部署一个个人网站。理论上一个用户只能拥有一个该类静态网站，网址是https://username.github.io/project-name/
 
@@ -73,13 +71,14 @@ export default defineConfig({
 
 此时如果你的页面本来就只有一个页面或者比较简单，这时应该就可以成功访问。但如果使用到了路由，那么你就会发现跳转路由和刷新出了各种问题，造成无法访问。下面我会说明如何处理。
 
-### 3. 调整路由路径
+---
+## 3. 调整路由路径
 
 该类路由问题是因为我使用了**history路由**。客户端路由与服务端路由是不同的。
 
 由于我们部署的网站的默认url为：https://username.github.io/project-name/ ，而一般本地调试的url为：http://localhost:XXXX/ ，我们会发现，如果要适配github网站url，不产生定向错误，需要手动加上我们的项目名。
 
-##### 1. 解决页面跳转问题，修改 index.js，添加 base 配置，并在每个路由的path前都加上base
+### 1. 解决页面跳转问题，修改 index.js，添加 base 配置，并在每个路由的path前都加上base
 ```
 const base = '/project-name';
 const routes = [
@@ -88,7 +87,7 @@ const routes = [
 ];
 ```
 
-##### 2. 解决刷新问题，当前情况刷新会导致404，有个简单的方法，我们可以把打包文件中的 index.html复制一份，重命名为 404.html 就可以了。然后再将dist文件夹上传。
+### 2. 解决刷新问题，当前情况刷新会导致404，有个简单的方法，我们可以把打包文件中的 index.html复制一份，重命名为 404.html 就可以了。然后再将dist文件夹上传。
 ```
 cp docs/index.html docs/404.html
 ```

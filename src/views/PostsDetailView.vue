@@ -143,7 +143,7 @@ const loadPost = async () => {
     const postId = route.params.id.replace('.md', '');
     
     // 方法1：使用 fetch 获取原始内容
-    const response = await fetch(`/posts/${postId}.md`);
+    const response = await fetch(import.meta.env.BASE_URL +`posts/${postId}.md`);
     if (!response.ok) throw new Error('文章未找到');
     
     const text = await response.text();
@@ -173,12 +173,7 @@ const loadPost = async () => {
     currentPost.value = createErrorPost();
   } finally {
     isLoading.value = false;
-    // 确保 DOM 更新后应用高亮
-    nextTick(() => {
-      document.querySelectorAll('pre code').forEach((block) => {
-        hljs.highlightElement(block);
-      });
-    });
+
   }
 };
 
