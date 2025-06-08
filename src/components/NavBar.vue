@@ -38,9 +38,9 @@ const isHovered = ref(false);
 const base = '/hp-blog';
 
 const navItems = [
-  { path: base, title: 'Home', icon: Home },
-  { path: base + '/about', title: 'About', icon: User },
+  { path: base + '/', title: 'Home', icon: Home },
   { path: base + '/posts', title: 'Posts', icon: FileText },
+  { path: base + '/media', title: 'Media', icon: User },
   { path: base + '/contact', title: 'Contact', icon: Mail },
   { path: base + '/settings', title: 'Settings', icon: Settings }
 ];

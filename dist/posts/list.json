@@ -1,5 +1,16 @@
 [
   {
+    "id": "20250608-Markdown",
+    "path": "/posts/20250608-Markdown.md",
+    "title": "vue项目适配显示markdown",
+    "date": "2025-06-08",
+    "tags": [
+      "Vue",
+      "Markdown"
+    ],
+    "excerpt": "在我的博客项目中使用markdown作为文章内容格式"
+  },
+  {
     "id": "20250605-GithubPage",
     "path": "/posts/20250605-GithubPage.md",
     "title": "前端项目部署到 GitHub Pages",
@@ -20,5 +31,16 @@
       "镜像源"
     ],
     "excerpt": "单次解决Gradle下载慢问题，但每次新项目初始化Gradle时都要重新修改"
+  },
+  {
+    "id": "20250605-nojekyll",
+    "path": "/posts/20250605-nojekyll.md",
+    "title": ".nojekyll 在GitHub Pages的作用",
+    "date": "2025-06-05",
+    "tags": [
+      "Github",
+      "Nojekyll"
+    ],
+    "excerpt": ".nojekyll文件‌主要作用是告诉GitHub Pages不要使用 Jekyll 来处理你的站点"
   }
 ]

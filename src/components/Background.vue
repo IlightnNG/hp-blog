@@ -25,7 +25,7 @@ const containerRef = ref(null);
 const TRIANGLE_SIZE = 60;
 const TRIANGLE_WIDE = TRIANGLE_SIZE * Math.sqrt(3) / 2;
 const COLORS = {
-base: new THREE.Color(0xbde0fe),
+base: new THREE.Color(0xa1b5d8),
 target: new THREE.Color(0xffc8dd),
 wireframe: new THREE.Color(0xffffff)
 };

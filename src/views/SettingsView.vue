@@ -7,13 +7,13 @@
           <h2>Appearance</h2>
           
           <div class="style-switcher">
-            <button 
+            <!-- <button 
               @click="settingsStore.toggleVisualMode"
               class="style-toggle"
               :class="{ 'active': settingsStore.settings.isGlassMode }"
             >
               {{ settingsStore.settings.isGlassMode ? 'Glass Morphism' : 'Light Mode' }}
-            </button>
+            </button> -->
           </div>
         </div>
       </div>

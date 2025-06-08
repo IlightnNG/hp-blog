@@ -2,16 +2,16 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fm from 'front-matter';
-
+console.log("Start to generate list.json")
 // 获取当前模块的路径
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const postsDir = path.join(__dirname, '../public/posts');
 const outputFile = path.join(postsDir, 'list.json');
-
 async function generateList() {
     try {
+
         // 读取posts目录下的所有.md文件
         const files = fs.readdirSync(postsDir).filter(f => f.endsWith('.md'));
 
@@ -38,5 +38,5 @@ async function generateList() {
         process.exit(1);
     }
 }
-
+//generateList();
 export default generateList;

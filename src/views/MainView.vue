@@ -13,11 +13,11 @@ import Home from '@/components/Home.vue';
 
 <style scoped>
 .main-scroll-container {
-position: relative;
-height: 100vh;
-overflow-y: auto;
-width: 100%;
-overflow-x: hidden;
+  position: relative;
+  height: 100vh;
+  overflow-y: auto;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 

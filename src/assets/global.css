@@ -1,6 +1,6 @@
 /* 全局变量 */
 :root {
-    --target-color: #bde0fe;
+    --target-color: #a1b5d8;
 
     --text-primary: var(--target-color);
     --text-secondary: #6d6875;

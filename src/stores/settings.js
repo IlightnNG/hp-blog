@@ -7,7 +7,7 @@ export const useSettingsStore = defineStore('settings', () => {
         const saved = localStorage.getItem('blogSettings')
         return saved ? JSON.parse(saved) : {
             isAddingGroup: false,
-            isShowingBg: true,
+            isShowingBg: false,
             targetColor: '#ffffff'
         }
     }

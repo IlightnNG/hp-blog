@@ -104,12 +104,6 @@ const loadArticles = async () => {
   try {
     isLoading.value = true;
     articles.value = [];
-    
-    // 方法1：使用 fetch API 加载（适用于静态部署）
-    // const baseUrl = import.meta.env.PROD 
-    // ? '/hp-blog' 
-    // : '';
-    //const response = await fetch(baseUrl + '/posts/list.json');
     const response = await fetch('/hp-blog/posts/list.json');
     if (!response.ok) throw new Error('列表加载失败');
     const postList = await response.json();
@@ -278,7 +272,6 @@ onUnmounted(() => {
   display: flex;
   gap: 40px;
   position: relative;
-  padding: 0 0;
 }
 
 .articles-section {
@@ -310,7 +303,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.4rem;
 }
 
 .article-date {
@@ -401,8 +394,6 @@ onUnmounted(() => {
   flex-wrap: wrap;
   gap: 0.8rem;
 }
-
-
 
 .tag {
   padding: 0.5rem 1rem;
