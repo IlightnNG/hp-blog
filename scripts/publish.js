@@ -50,7 +50,7 @@ async function main() {
 
         // 5. 部署到 gh-pages
         if (existsSync('dist')) {
-            execSync('git subtree push --prefix dist origin gh-pages', { stdio: 'inherit' })
+            execSync('git subtree push --prefix dist origin gh-pages --force', { stdio: 'inherit' })
         } else {
             throw new Error('dist directory not found')
         }

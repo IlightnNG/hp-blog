@@ -108,6 +108,10 @@
                 <span class="stat-label">书籍</span>
               </div>
               <div class="stat-item">
+                <span class="stat-value">{{ mediaStats.cartoons }}</span>
+                <span class="stat-label">漫画</span>
+              </div>
+              <div class="stat-item">
                 <span class="stat-value">{{ mediaStats.games }}</span>
                 <span class="stat-label">游戏</span>
               </div>
@@ -224,6 +228,7 @@ const mediaTypes = ref([
   { value: 'all', label: '全部' },
   { value: 'anime', label: '动漫' },
   { value: 'book', label: '书籍' },
+  { value: 'cartoon', label: '漫画' },
   { value: 'game', label: '游戏' },
   { value: 'movie', label: '电影' },
   { value: 'series', label: '电视剧' }
@@ -283,6 +288,7 @@ const mediaStats = computed(() => {
     total: mediaItems.value.length,
     anime: mediaItems.value.filter(item => item.type === 'anime').length,
     books: mediaItems.value.filter(item => item.type === 'book').length,
+    cartoons: mediaItems.value.filter(item => item.type === 'cartoon').length,
     games: mediaItems.value.filter(item => item.type === 'game').length,
     movies: mediaItems.value.filter(item => item.type === 'movie').length,
     series: mediaItems.value.filter(item => item.type === 'series').length
