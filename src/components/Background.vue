@@ -27,7 +27,7 @@
 </template>
   
 <script setup>
-import { ref,computed , onMounted, onUnmounted } from 'vue';
+import { ref,computed , onMounted, onUnmounted, watch } from 'vue';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { useSettingsStore } from '@/stores/settings'
@@ -601,6 +601,10 @@ onUnmounted(() => {
         renderer.dispose();
     }
 });
+
+watch(useRoute(), () => {
+  updateGroupOutlines()
+})
 </script>
 
 <style scoped>
