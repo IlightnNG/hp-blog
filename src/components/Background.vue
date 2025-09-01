@@ -2,13 +2,26 @@
     <div class="canvas-container" ref="containerRef">
     </div>
     <div>
-        <!-- <button 
-            @click.stop="settingsStore.toggleAddGroupMode "
+        <button 
+            @click.stop="toggleEditMode"
             class="style-toggle"
             :class="{ 'active': settingsStore.settings.isAddingGroup }"
         >
             {{ settingsStore.settings.isAddingGroup ? 'Edit' : 'Display' }}
-        </button> -->
+        </button>
+
+        <!-- 分组按钮 -->
+        <div v-if="isEditMode" class="group-buttons">
+            <button 
+                v-for="group in 4" 
+                :key="group"
+                @click.stop="setActiveGroup(group)"
+                :class="{ 'active': activeGroup === group }"
+                class="group-button"
+            >
+                Group {{ group }}
+            </button>
+        </div>
     </div>
 </template>
   
@@ -52,7 +65,7 @@ const triangleData = {
     isFlipped: new Uint8Array() // 存储每个三角形是否已翻折
 };
 
-// 修改着色器代码
+// 顶点着色器
 const vertexShader = `
 attribute vec3 instanceColor;
 attribute float instanceRotation;
@@ -63,32 +76,54 @@ varying vec3 vColor;
 varying float vState;
 varying float vFlipProgress;
 varying float vAnimationTime; // 传递时间戳到片元着色器
+varying vec3 vBarycentric; // 添加重心坐标
 
 void main() {
     vColor = instanceColor;
     vState = instanceState;
     vFlipProgress = flipProgress;
     vAnimationTime = animationTime; // 传递时间戳
+
+    // 设置重心坐标
+    vBarycentric = vec3(0.0);
+    if (gl_VertexID == 0) vBarycentric.x = 1.0;
+    else if (gl_VertexID == 1) vBarycentric.y = 1.0;
+    else if (gl_VertexID == 2) vBarycentric.z = 1.0;
     
     vec3 pos = position;
     if (flipProgress > 0.0) {
-    float angle = flipProgress * 3.14159;
-    float height = 100.0 * sin(angle);
-    pos.y += height;
+        float angle = flipProgress * 3.14159;
+        float height = 100.0 * sin(angle);
+        pos.y += height;
     }
     
     gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(pos, 1.0);
 }
 `;
-
+// 片元着色器
 const fragmentShader = `
 varying vec3 vColor;
 varying float vState;
 varying float vFlipProgress;
 varying float vAnimationTime; // 接收时间戳
+varying vec3 vBarycentric; // 添加重心坐标
 
 void main() {
     vec3 finalColor = vColor;
+
+    // 添加抗锯齿描边效果
+    if (vState > 1.5) {
+        // 计算重心坐标的最小值（距离边缘的距离）
+        float minBary = min(min(vBarycentric.x, vBarycentric.y), vBarycentric.z);
+        
+        // 计算边缘宽度（基于距离的渐变）
+        float edgeWidth = 0.06; // 边缘宽度
+        float edge = smoothstep(0.0, edgeWidth, minBary);
+        
+        // 边缘部分使用白色，内部保持原色
+        finalColor = mix(vec3(1.0), finalColor, edge);
+    }
+
     gl_FragColor = vec4(finalColor, 1.0 - vFlipProgress);
 }
 `;
@@ -155,7 +190,7 @@ const material = new THREE.ShaderMaterial({
     fragmentShader,
     side: THREE.DoubleSide,
     transparent: true,
-    uniforms: {}
+    uniforms: {}// color
 });
 
 instancedMesh = new THREE.InstancedMesh(geometry, material, totalTriangles);
@@ -173,7 +208,6 @@ triangleData.positions = new Array(totalTriangles * 3);
 triangleData.adjacentTriangles = new Array(totalTriangles);
 triangleData.groups = new Uint8Array(totalTriangles);
 triangleData.isFlipped = new Uint8Array(totalTriangles);
-
 
 const targetIlightnNG = [
     //[4,6,0],[5,5,0],[5,5,1],[6,6,0],[6,6,1],[7,6,0],[7,6,1],[8,7,1],[5,6,0],[5,6,1],[6,7,0],[6,7,1],[7,7,0],[7,7,1],[5,7,0],[6,8,1],[6,8,0],[5,8,0],[6,9,1],[6,9,0],[7,8,1]
@@ -464,27 +498,68 @@ const findAdjacentTriangles = (triangleIndex) => {
     animateTimeSequence();
 };
 
-// 修改点击处理函数
-const handleMouseClick = (event) => {
-event.preventDefault();
+// edit mode ------------------------------------
+// 添加响应式变量
+const isEditMode = ref(settingsStore.settings.isAddingGroup);
+const activeGroup = ref(1); // 当前激活的分组
 
-mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// 切换编辑模式
+const toggleEditMode = () => {
+    isEditMode.value = !isEditMode.value;
+    settingsStore.toggleAddGroupMode();
+    
+    // 更新三角形描边效果
+    updateGroupOutlines();
+};
 
-raycaster.setFromCamera(mouse, camera);
-const intersects = raycaster.intersectObject(instancedMesh);
+// 设置激活的分组
+const setActiveGroup = (group) => {
+    activeGroup.value = group;
+    updateGroupOutlines();
+};
 
-if (intersects.length > 0) {
-    const instanceId = intersects[0].instanceId;
-    console.log('点击了三角形:', instanceId);
-    console.log("Position: ["+ triangleData.positions[instanceId*3] + ","+triangleData.positions[instanceId*3+1] + ","+triangleData.positions[instanceId*3+2] + "]")
-    if(settingsStore.settings.isAddingGroup){
-        triangleData.groups[instanceId] = triangleData.groups[instanceId]===1? 0:1;
-    }else{
-        startFlipAnimation(instanceId);
+// 更新分组描边效果
+const updateGroupOutlines = () => {
+    if (!instancedMesh) return;
+    
+    const geometry = instancedMesh.geometry;
+    const instanceStates = geometry.getAttribute('instanceState');
+    
+    for (let i = 0; i < triangleData.groups.length; i++) {
+        // 在编辑模式下，为当前激活分组的三角形添加描边效果
+        if (isEditMode.value && triangleData.groups[i] === activeGroup.value) {
+            instanceStates.setX(i, 2); // 使用状态2表示描边
+        } else if (instanceStates.getX(i) === 2) {
+            // 恢复非激活分组的状态
+            instanceStates.setX(i, triangleData.isFlipped[i] ? 1 : 0);
+        }
     }
     
-}
+    instanceStates.needsUpdate = true;
+};
+
+// 修改点击处理函数
+const handleMouseClick = (event) => {
+    event.preventDefault();
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObject(instancedMesh);
+
+    if (intersects.length > 0) {
+        const instanceId = intersects[0].instanceId;
+        console.log('点击了三角形:', instanceId);
+        console.log("Position: ["+ triangleData.positions[instanceId*3] + ","+triangleData.positions[instanceId*3+1] + ","+triangleData.positions[instanceId*3+2] + "]")
+        if(settingsStore.settings.isAddingGroup){
+            triangleData.groups[instanceId] = triangleData.groups[instanceId]!=activeGroup.value?activeGroup.value:0;
+            updateGroupOutlines(); // 更新描边效果
+        }else{
+            startFlipAnimation(instanceId);
+        }
+        
+    }
 };
 
 const animate = () => {
@@ -539,8 +614,8 @@ onUnmounted(() => {
 
 .style-toggle {
     z-index: 1000;
-    top: 120px;
-    left: 20px;
+    top: 20px;
+    left: 120px;
     padding: 5px 5px;
     background-color: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
@@ -564,7 +639,36 @@ onUnmounted(() => {
     box-shadow: 5px 5px 1px #dedede,
                 -5px -5px 1px #dedede;
 }
+.group-buttons {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+}
 
+.group-button {
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.group-button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.group-button.active {
+    background-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
 
 
 </style> 

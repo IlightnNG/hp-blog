@@ -8,7 +8,8 @@ export const useSettingsStore = defineStore('settings', () => {
         return saved ? JSON.parse(saved) : {
             isAddingGroup: false,
             isShowingBg: false,
-            targetColor: '#ffffff'
+            targetColor: '#ffffff',
+            triangleGroups: {} // 添加分组数据存储
         }
     }
 
@@ -19,7 +20,7 @@ export const useSettingsStore = defineStore('settings', () => {
         localStorage.setItem('blogSettings', JSON.stringify(settings.value))
     }
 
-    // 切换添加矩形模式
+    // 切换添加模式
     const toggleAddGroupMode = () => {
         settings.value.isAddingGroup = !settings.value.isAddingGroup
         saveSettings()
@@ -38,12 +39,54 @@ export const useSettingsStore = defineStore('settings', () => {
 
     const setTargetColor = (color) => {
         settings.value.targetColor = color
-        // 设置 --text-primary 为 targetColor
         document.documentElement.style.setProperty(
             '--target-color',
             settings.value.targetColor
         )
         saveSettings()
+    }
+
+    // 新增：保存三角形分组
+    const saveTriangleGroups = (groupsData, positions) => {
+        // 将分组数据转换为可序列化的格式
+        const serializedGroups = {};
+        for (let i = 0; i < groupsData.length; i++) {
+            if (groupsData[i] !== 0) { // 只保存非0分组
+                const key = `${positions[i * 3]},${positions[i * 3 + 1]},${positions[i * 3 + 2]}`;
+                serializedGroups[key] = groupsData[i];
+            }
+        }
+        settings.value.triangleGroups = serializedGroups;
+        saveSettings();
+    }
+
+    // 新增：加载三角形分组
+    const loadTriangleGroups = (totalTriangles, positions) => {
+        const groups = new Uint8Array(totalTriangles).fill(0);
+
+        if (settings.value.triangleGroups) {
+            Object.entries(settings.value.triangleGroups).forEach(([key, groupId]) => {
+                const [col, row, dir] = key.split(',').map(Number);
+
+                // 找到对应的三角形索引
+                for (let i = 0; i < totalTriangles; i++) {
+                    if (positions[i * 3] === col &&
+                        positions[i * 3 + 1] === row &&
+                        positions[i * 3 + 2] === dir) {
+                        groups[i] = groupId;
+                        break;
+                    }
+                }
+            });
+        }
+
+        return groups;
+    }
+
+    // 新增：清除所有分组
+    const clearTriangleGroups = () => {
+        settings.value.triangleGroups = {};
+        saveSettings();
     }
 
     // 监听变化自动保存
@@ -54,6 +97,9 @@ export const useSettingsStore = defineStore('settings', () => {
         toggleAddGroupMode,
         toggleShowingBg,
         resetShowingBg,
-        setTargetColor
+        setTargetColor,
+        saveTriangleGroups,
+        loadTriangleGroups,
+        clearTriangleGroups
     }
 })

@@ -38,5 +38,6 @@ async function generateList() {
         process.exit(1);
     }
 }
+// npm run posts-list时请使用以下函数
 //generateList();
 export default generateList;

@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+// import { ref, onMounted } from 'vue'
 import { useSettingsStore } from '@/stores/settings'
 const settingsStore = useSettingsStore()
 import Home from '@/components/Home.vue';
