@@ -42,5 +42,19 @@
       "Nojekyll"
     ],
     "excerpt": ".nojekyll文件‌主要作用是告诉GitHub Pages不要使用 Jekyll 来处理你的站点"
+  },
+  {
+    "id": "20250831-LitProtocol",
+    "path": "/posts/20250831-LitProtocol.md",
+    "title": "Lit Protocol 上手指南：Web3 的链上权限控制",
+    "date": "2024/01/08",
+    "tags": [
+      "lit-protocol",
+      "加密",
+      "解密",
+      "访问控制",
+      "web3-development"
+    ],
+    "excerpt": ""
   }
 ]
