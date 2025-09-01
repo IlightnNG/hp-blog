@@ -17,7 +17,7 @@
             :to="item.path"
             class="nav-icon"
             :title="item.title"
-            @click="settingsStore.resetShowingBg(item.title)"
+            @click="settingsStore.resetShowingBgAndAddGroupMode"
           >
             <component :is="item.icon" />
           </router-link>

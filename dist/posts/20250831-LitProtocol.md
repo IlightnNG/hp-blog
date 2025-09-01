@@ -1,8 +1,8 @@
 ---
 title: Lit Protocol 上手指南：Web3 的链上权限控制
-date: 2024/01/08
-categories: [Web3, 区块链开发]
-tags: [lit-protocol, 加密, 解密, 访问控制, web3-development]
+date: 2025/08/31
+tags: [lit-protocol,访问控制,web3]
+excerpt: "Lit Protocol 是一个去中心化的密钥管理网络，为 Web3 应用提供强大的加密和访问控制功能。它允许开发者基于区块链条件（如持有特定 NFT、代币余额或钱包地址）来控制数据的访问权限。"
 ---
 
 # Lit Protocol 上手指南

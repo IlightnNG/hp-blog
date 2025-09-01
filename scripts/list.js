@@ -38,5 +38,4 @@ async function generateList() {
         process.exit(1);
     }
 }
-
-export default generateList;
+generateList();

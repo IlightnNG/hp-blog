@@ -55,9 +55,9 @@
                 </div>
                 <h2 class="media-title">{{ item.title }}</h2>
                 <p class="media-summary">{{ item.summary }}</p>
-                <div class="media-tags">
+                <!-- <div class="media-tags">
                   <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -73,22 +73,6 @@
               placeholder="搜索作品..."
               @input="handleSearch"
             >
-          </div>
-          
-          <!-- 标签云 -->
-          <div class="tags-section">
-            <h3>分类标签</h3>
-            <div class="tags-cloud">
-              <span 
-                v-for="tag in tags" 
-                :key="tag"
-                class="tag"
-                :class="{ 'active': selectedTags.includes(tag) }"
-                @click="toggleTag(tag)"
-              >
-                {{ tag }}
-              </span>
-            </div>
           </div>
           
           <!-- 统计信息 -->
@@ -126,6 +110,23 @@
               
             </div>
           </div>
+
+          <!-- 标签云 -->
+          <div class="tags-section">
+            <h3>分类标签</h3>
+            <div class="tags-cloud">
+              <span 
+                v-for="tag in tags" 
+                :key="tag"
+                class="tag"
+                :class="{ 'active': selectedTags.includes(tag) }"
+                @click="toggleTag(tag)"
+              >
+                {{ tag }}
+              </span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -482,13 +483,13 @@ const getTypeLabel = (type) => {
 .media-card {
   display: flex;
   gap: 1.5rem;
-  padding: 1.5rem;
+  padding: 1.2rem;
   border: var(--border);
   background: white;
   border-radius: 12px;
   transition: all 0.3s ease;
   cursor: pointer;
-  height: 225px;
+  height: 160px;
 }
 
 .media-card:hover {
@@ -563,14 +564,14 @@ const getTypeLabel = (type) => {
 
 .media-title {
   font-size: 1.3rem;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.5rem;
   color: var(--text-primary);
 }
 
 .media-summary {
   color: var(--text-secondary);
   line-height: 1.6;
-  margin-bottom: 1rem;
+  margin-bottom: 0rem;
   font-size: 0.95rem;
   flex: 1;
   overflow: auto;

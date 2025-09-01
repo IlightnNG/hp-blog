@@ -3,6 +3,7 @@
     </div>
     <div>
         <button 
+            v-if="isHomePage"
             @click.stop="toggleEditMode"
             class="style-toggle"
             :class="{ 'active': settingsStore.settings.isAddingGroup }"
@@ -11,7 +12,7 @@
         </button>
 
         <!-- 分组按钮 -->
-        <div v-if="isEditMode" class="group-buttons">
+        <div v-if="settingsStore.settings.isAddingGroup" class="group-buttons">
             <button 
                 v-for="group in 4" 
                 :key="group"
@@ -26,12 +27,18 @@
 </template>
   
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref,computed , onMounted, onUnmounted } from 'vue';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { useSettingsStore } from '@/stores/settings'
+import { useRoute } from 'vue-router'; // 引入路由
 const settingsStore = useSettingsStore()
+const route = useRoute();
 
+// 计算属性判断是否在当前页面
+const isHomePage = computed(() => {
+    return route.name === 'Home'
+});
 const containerRef = ref(null);
 
 // 性能优化：使用常量
@@ -500,12 +507,10 @@ const findAdjacentTriangles = (triangleIndex) => {
 
 // edit mode ------------------------------------
 // 添加响应式变量
-const isEditMode = ref(settingsStore.settings.isAddingGroup);
 const activeGroup = ref(1); // 当前激活的分组
 
 // 切换编辑模式
 const toggleEditMode = () => {
-    isEditMode.value = !isEditMode.value;
     settingsStore.toggleAddGroupMode();
     
     // 更新三角形描边效果
@@ -527,7 +532,7 @@ const updateGroupOutlines = () => {
     
     for (let i = 0; i < triangleData.groups.length; i++) {
         // 在编辑模式下，为当前激活分组的三角形添加描边效果
-        if (isEditMode.value && triangleData.groups[i] === activeGroup.value) {
+        if (settingsStore.settings.isAddingGroup && triangleData.groups[i] === activeGroup.value) {
             instanceStates.setX(i, 2); // 使用状态2表示描边
         } else if (instanceStates.getX(i) === 2) {
             // 恢复非激活分组的状态

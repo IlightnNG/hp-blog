@@ -32,8 +32,10 @@ export const useSettingsStore = defineStore('settings', () => {
         saveSettings()
     }
 
-    const resetShowingBg = (title) => {
+    const resetShowingBgAndAddGroupMode = () => {
         settings.value.isShowingBg = false
+        settings.value.isAddingGroup = false
+        console.log("reset")
         saveSettings()
     }
 
@@ -96,10 +98,7 @@ export const useSettingsStore = defineStore('settings', () => {
         settings,
         toggleAddGroupMode,
         toggleShowingBg,
-        resetShowingBg,
-        setTargetColor,
-        saveTriangleGroups,
-        loadTriangleGroups,
-        clearTriangleGroups
+        resetShowingBgAndAddGroupMode,
+        setTargetColor
     }
 })
