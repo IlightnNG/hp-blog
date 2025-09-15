@@ -50,7 +50,7 @@ async function main() {
 
         // 5. 部署到 gh-pages
         if (existsSync('dist')) {
-            execSync('npx gh-pages -d dist --git https://github.com/IlightnNG/hp-blog.git', { stdio: 'inherit' })
+            execSync('npx gh-pages -d dist -r https://github.com/IlightnNG/hp-blog.git', { stdio: 'inherit' })
         } else {
             throw new Error('dist directory not found')
         }
