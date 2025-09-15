@@ -39,28 +39,31 @@
             <!-- 左侧：文章内容 -->
             <div class="article-content">
                 <div v-for="(section, index) in currentPost.content" :key="index" :id="'section-' + index">
-                    <h2 v-if="section.title">{{ section.title }}</h2>
                     <div class="markdown-content" v-html="section.content"></div>
                 </div>
             </div>
             
             <!-- 右侧：目录 -->
-            <div class="sidebar">
-                <div class="toc-container">
-                    <h3>目录</h3>
-                    <div class="toc-list">
-                        <div 
-                            v-for="(section, index) in currentPost.content" 
-                            :key="index"
-                            class="toc-item"
-                            :class="{ 'active': currentSection === index }"
-                            @click="scrollToSection(index)"
-                        >
-                            {{ section.title }}
-                        </div>
-                    </div>
+          <div class="sidebar">
+            <div class="toc-container">
+              <h3>目录</h3>
+              <div class="toc-list">
+                <div 
+                  v-for="(item, index) in tocItems" 
+                  :key="index"
+                  class="toc-item"
+                  :class="{ 
+                    'active': currentSection === item.id,
+                    'toc-h2': item.level === 2,
+                    'toc-h3': item.level === 3
+                  }"
+                  @click="scrollToSection(item.id)"
+                >
+                  {{ item.number }} {{ item.title }}
                 </div>
+              </div>
             </div>
+          </div>
         </div>
     </div>
     <!-- 回到顶部按钮 -->
@@ -101,7 +104,7 @@ marked.setOptions({
 const settingsStore = useSettingsStore();
 const route = useRoute();
 const router = useRouter();
-const currentSection = ref(0);
+const currentSection = ref("");
 const currentPost = ref(null);
 const isLoading = ref(true);
 
@@ -178,12 +181,55 @@ const loadPost = async () => {
   }
 };
 
+// 添加tocItems响应式变量
+const tocItems = ref([]);
 // 解析内容为章节
 const parseContentToSections = (htmlContent) => {
   const sections = [];
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = htmlContent;
   
+  // 获取所有h2和h3元素
+  const headings = tempDiv.querySelectorAll('h2, h3');
+  
+  // 重置tocItems
+  tocItems.value = [];
+  
+  let h2Count = 0;
+  let h3Count = 0;
+  
+  // 首先提取所有标题信息
+  headings.forEach((heading, index) => {
+    const level = parseInt(heading.tagName.substring(1));
+    const title = heading.textContent;
+    let number = '';
+    
+    if (level === 2) {
+      h2Count++;
+      h3Count = 0;
+      number = `${h2Count}`;
+    } else if (level === 3) {
+      h3Count++;
+      number = `${h2Count}.${h3Count}`;
+    }
+    
+    // 为标题添加ID - 使用更简单的ID格式
+    const id = `heading-${index}`;
+    heading.id = id;
+    
+    // 添加到目录项
+    tocItems.value.push({
+      id,
+      title,
+      level,
+      number
+    });
+  });
+  
+  // 重新设置HTML内容（包含ID）
+  const updatedHtmlContent = tempDiv.innerHTML;
+  
+  // 分割内容为章节（基于h2）
   const h2Elements = tempDiv.querySelectorAll('h2');
   
   if (h2Elements.length > 0) {
@@ -192,8 +238,9 @@ const parseContentToSections = (htmlContent) => {
       const nextH2 = h2Elements[index + 1];
       
       const sectionContent = [];
-      let currentNode = h2.nextSibling;
+      let currentNode = h2;
       
+      // 从当前h2开始，包含h2本身
       while (currentNode && currentNode !== nextH2) {
         sectionContent.push(currentNode.outerHTML || currentNode.textContent);
         currentNode = currentNode.nextSibling;
@@ -207,7 +254,7 @@ const parseContentToSections = (htmlContent) => {
   } else {
     sections.push({
       title: '',
-      content: htmlContent
+      content: updatedHtmlContent
     });
   }
   
@@ -216,29 +263,40 @@ const parseContentToSections = (htmlContent) => {
 
 
 // 滚动到指定章节
-const scrollToSection = (index) => {
-  const element = document.getElementById(`section-${index}`);
+const scrollToSection = (id) => {
+  const element = document.getElementById(id);
   if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      currentSection.value = index;
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    currentSection.value = id;
   }
 };
 
 // 监听滚动，更新当前章节
 const checkCurrentSection = () => {
-const sections = document.querySelectorAll('[id^="section-"]');
-const container = document.querySelector('.post-detail-container');
-
-if (container) {
-  const scrollPosition = container.scrollTop;
+  const container = document.querySelector('.post-detail-container');
+  if (!container) return;
   
-  sections.forEach((section, index) => {
-  const rect = section.getBoundingClientRect();
-  if (rect.top <= 200) {
-      currentSection.value = index;
-  }
+  // 当前标题判定
+  const scrollPosition = container.scrollTop - 300;
+  
+  // 找到当前最接近视口的标题
+  let closestItem = null;
+  let minDistance = Infinity;
+  
+  tocItems.value.forEach(item => {
+    const element = document.getElementById(item.id);
+    if (element) {
+      const distance = Math.abs(element.offsetTop - scrollPosition );
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestItem = item;
+      }
+    }
   });
-}
+  
+  if (closestItem) {
+    currentSection.value = closestItem.id;
+  }
 };
 
 // 处理返回跳转
@@ -350,16 +408,16 @@ onUnmounted(() => {
   max-width: 900px;
 }
 
-.article-content h2 {
-  font-size: 1.8rem;
+.article-content :deep(h2) {
+  font-size: 2rem;
   color: var(--text-primary);
-  margin: 2rem 0 1rem;
+  margin: 2rem 0 0.5rem;
 }
 
-.article-content h3 {
+.article-content :deep(h3) {
   font-size: 1.4rem;
   color: var(--text-primary);
-  margin: 1.5rem 0 1rem;
+  margin: 0.5rem 0 0.5rem;
 }
 
 .markdown-content {
@@ -405,13 +463,13 @@ onUnmounted(() => {
 .toc-list {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.7rem;
 }
 
 .toc-item {
   color: var(--text-secondary);
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 0.3rem;
   border-radius: 6px;
   transition: all 0.3s ease;
 }
@@ -422,9 +480,23 @@ onUnmounted(() => {
 }
 
 .toc-item.active {
-  background: var(--tag-background-hover);
-  color: white;
+  background: var(--bg);
+  color: var(--text-primary);
 }
+
+.toc-h3 {
+  font-size: 1rem;
+  padding-left: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.toc-h2 {
+  font-weight: 600;
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
+
+}
+
 
 .back-button {
     position: sticky;

@@ -1,4 +1,3 @@
-vue
 <template>
   <div class="posts-container" @click.stop :class="{'show': !settingsStore.settings.isShowingBg }">
     <div class="posts-content">

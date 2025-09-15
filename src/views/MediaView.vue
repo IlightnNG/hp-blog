@@ -112,7 +112,7 @@
           </div>
 
           <!-- 标签云 -->
-          <div class="tags-section">
+          <!-- <div class="tags-section">
             <h3>分类标签</h3>
             <div class="tags-cloud">
               <span 
@@ -125,7 +125,7 @@
                 {{ tag }}
               </span>
             </div>
-          </div>
+          </div> -->
 
         </div>
       </div>
