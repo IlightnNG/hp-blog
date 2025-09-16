@@ -4,7 +4,7 @@
         <h1>Blog Settings</h1>
         
         <div class="settings-section">
-          <h2>Nothing here</h2>
+          <h2>Nothing here : )</h2>
           
           <div class="style-switcher">
             <!-- <button 

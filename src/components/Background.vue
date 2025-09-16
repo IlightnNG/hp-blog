@@ -63,8 +63,10 @@ let instancedMesh;
 let raycaster;
 let mouse;
 let isAnimating = false;
+const isChangingBg = ref(true); // 标记是否点击了背景
 
-// 性能优化：使用 TypedArray 存储三角形数据
+
+// 使用 TypedArray 存储三角形数据
 const triangleData = {
     positions: new Float32Array(),
     adjacentTriangles: [], // 存储每个三角形的邻近三角形索引
@@ -191,6 +193,7 @@ const flipProgress = new Float32Array(totalTriangles);
 const instanceGroups = new Float32Array(totalTriangles);
 const animationId = new Float32Array(totalTriangles).fill(0); // 添加id属性
 
+
 // 创建实例化网格
 const material = new THREE.ShaderMaterial({
     vertexShader,
@@ -210,17 +213,18 @@ const tempPosition = new THREE.Vector3();
 const tempQuaternion = new THREE.Quaternion();
 const tempScale = new THREE.Vector3(1, 1, 1);
 
+
 // 预计算所有三角形的邻近关系
 triangleData.positions = new Array(totalTriangles * 3);
 triangleData.adjacentTriangles = new Array(totalTriangles);
 triangleData.groups = new Uint8Array(totalTriangles);
 triangleData.isFlipped = new Uint8Array(totalTriangles);
 
-const targetIlightnNG = [
-    //[4,6,0],[5,5,0],[5,5,1],[6,6,0],[6,6,1],[7,6,0],[7,6,1],[8,7,1],[5,6,0],[5,6,1],[6,7,0],[6,7,1],[7,7,0],[7,7,1],[5,7,0],[6,8,1],[6,8,0],[5,8,0],[6,9,1],[6,9,0],[7,8,1]
+const targetIco = [
+    [11,4,0],[11,4,1],[12,4,0],[12,4,1],[13,4,0],[13,4,1],[25,4,0],[25,4,1],[9,5,0],[9,5,1],[10,5,0],[10,5,1],[11,5,0],[11,5,1],[12,5,0],[12,5,1],[13,5,0],[13,5,1],[14,5,0],[14,5,1],[15,5,0],[15,5,1],[23,5,0],[23,5,1],[24,5,0],[24,5,1],[25,5,0],[25,5,1],[26,5,0],[26,5,1],[27,5,0],[27,5,1],[7,6,0],[7,6,1],[8,6,0],[8,6,1],[9,6,0],[9,6,1],[10,6,0],[10,6,1],[14,6,0],[14,6,1],[15,6,0],[15,6,1],[16,6,0],[16,6,1],[17,6,1],[21,6,0],[21,6,1],[22,6,0],[22,6,1],[23,6,0],[23,6,1],[24,6,0],[24,6,1],[26,6,0],[26,6,1],[27,6,0],[27,6,1],[28,6,0],[28,6,1],[29,6,0],[29,6,1],[6,7,0],[7,7,0],[7,7,1],[8,7,0],[8,7,1],[16,7,0],[16,7,1],[19,7,0],[19,7,1],[20,7,0],[20,7,1],[21,7,0],[21,7,1],[22,7,0],[22,7,1],[28,7,0],[28,7,1],[29,7,0],[29,7,1],[30,7,0],[30,7,1],[31,7,1],[6,8,0],[7,8,0],[7,8,1],[8,8,1],[17,8,0],[17,8,1],[18,8,0],[18,8,1],[19,8,0],[19,8,1],[20,8,0],[20,8,1],[29,8,0],[30,8,0],[30,8,1],[31,8,1],[6,9,0],[7,9,0],[7,9,1],[8,9,0],[8,9,1],[9,9,0],[9,9,1],[15,9,0],[15,9,1],[16,9,0],[16,9,1],[17,9,0],[17,9,1],[18,9,0],[18,9,1],[21,9,0],[21,9,1],[29,9,0],[29,9,1],[30,9,0],[30,9,1],[31,9,1],[8,10,0],[8,10,1],[9,10,0],[9,10,1],[10,10,0],[10,10,1],[11,10,0],[11,10,1],[13,10,0],[13,10,1],[14,10,0],[14,10,1],[15,10,0],[15,10,1],[16,10,0],[16,10,1],[20,10,0],[21,10,0],[21,10,1],[22,10,0],[22,10,1],[23,10,0],[23,10,1],[27,10,0],[27,10,1],[28,10,0],[28,10,1],[29,10,0],[29,10,1],[30,10,0],[30,10,1],[10,11,0],[10,11,1],[11,11,0],[11,11,1],[12,11,0],[12,11,1],[13,11,0],[13,11,1],[14,11,0],[14,11,1],[22,11,0],[22,11,1],[23,11,0],[23,11,1],[24,11,0],[24,11,1],[25,11,0],[25,11,1],[26,11,0],[26,11,1],[27,11,0],[27,11,1],[28,11,0],[28,11,1],[12,12,0],[12,12,1],[24,12,0],[24,12,1],[25,12,0],[25,12,1],[26,12,0],[26,12,1]
 ];
 const checkGroup = (index) =>{
-    if (targetIlightnNG.findIndex(([targetCol, targetRow, targetDir]) => targetCol === triangleData.positions[index*3] && targetRow === triangleData.positions[index*3+1] && targetDir === triangleData.positions[index*3+2]) !== -1){
+    if (targetIco.findIndex(([targetCol, targetRow, targetDir]) => targetCol === triangleData.positions[index*3] && targetRow === triangleData.positions[index*3+1] && targetDir === triangleData.positions[index*3+2]) !== -1){
         instanceGroups[index] = 1;
     }else{
         instanceGroups[index] = 0;
@@ -345,16 +349,14 @@ const findAdjacentTriangles = (triangleIndex) => {
         }
         }
     }
-
-
     return adjacentTriangles;
-    };
+};
 
-    // 在全局只保留ID生成器
-    let idSeed = 0;
+// 在全局只保留ID生成器
+let idSeed = 0;
 
-    // 扩散开始函数
-    const startFlipAnimation = (triangleIndex) => {
+// 扩散开始函数
+const startFlipAnimation = (triangleIndex) => {
 
     // 存储每个时间段的三角形
     const timeSequence = [];
@@ -362,7 +364,6 @@ const findAdjacentTriangles = (triangleIndex) => {
     // 闭包管理id
     const animationStartId = `${++idSeed}`;
     console.log("New animationStartId: " + animationStartId)
-
 
     // 初始三角形
     timeSequence.push([triangleIndex]);
@@ -411,7 +412,9 @@ const findAdjacentTriangles = (triangleIndex) => {
         const color = new THREE.Color();
         color.setHSL(hue, saturation, lightness);
         const hexColor = `#${color.getHexString()}`;
-        settingsStore.setTargetColor(hexColor);
+        if(isChangingBg.value == true){
+            settingsStore.setTargetColor(hexColor);
+        }
         return color;
     };
 
@@ -521,6 +524,8 @@ const toggleEditMode = () => {
 const setActiveGroup = (group) => {
     activeGroup.value = group;
     updateGroupOutlines();
+    // 打印当前group的所有三角形位置信息
+    printGroupTriangles(group);
 };
 
 // 更新分组描边效果
@@ -543,6 +548,27 @@ const updateGroupOutlines = () => {
     instanceStates.needsUpdate = true;
 };
 
+// 新增函数：打印指定group的所有三角形位置
+const printGroupTriangles = (group) => {
+  const groupTriangles = [];
+  
+  for (let i = 0; i < triangleData.groups.length; i++) {
+    if (triangleData.groups[i] === group) {
+      const col = triangleData.positions[i * 3];
+      const row = triangleData.positions[i * 3 + 1];
+      const dir = triangleData.positions[i * 3 + 2];
+      groupTriangles.push([col, row, dir]);
+    }
+  }
+  
+//   console.log(`Group ${group} 的所有三角形位置:`);
+//   console.log(groupTriangles);
+  
+  // 格式化的输出
+  console.log(`Group ${group} 的三角形位置数组:`);
+  console.log(JSON.stringify(groupTriangles));
+};
+
 // 修改点击处理函数
 const handleMouseClick = (event) => {
     event.preventDefault();
@@ -557,6 +583,11 @@ const handleMouseClick = (event) => {
         const instanceId = intersects[0].instanceId;
         console.log('点击了三角形:', instanceId);
         console.log("Position: ["+ triangleData.positions[instanceId*3] + ","+triangleData.positions[instanceId*3+1] + ","+triangleData.positions[instanceId*3+2] + "]")
+        if(triangleData.groups[instanceId] == 0){
+            isChangingBg.value = true;
+        }else{
+            isChangingBg.value = false;
+        }
         if(settingsStore.settings.isAddingGroup){
             triangleData.groups[instanceId] = triangleData.groups[instanceId]!=activeGroup.value?activeGroup.value:0;
             updateGroupOutlines(); // 更新描边效果

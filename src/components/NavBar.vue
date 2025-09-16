@@ -7,7 +7,7 @@
       :class="{ 'expanded': isHovered || settingsStore.settings.isShowingBg}"
       @click.stop
     >
-      <div class="logo" @click="settingsStore.toggleShowingBg">B</div>
+      <div class="logo" @click="settingsStore.toggleShowingBg">HP</div>
       
       <transition name="fade">
         <div v-if="isHovered || settingsStore.settings.isShowingBg" class="nav-items" >

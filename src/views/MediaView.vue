@@ -143,16 +143,10 @@
     </div>
     
     <!-- 详情弹窗 -->
-    <div class="media-detail-modal" v-if="selectedItem" @click.self="closeDetail">
+    <!-- <div class="media-detail-modal" v-if="selectedItem" @click.self="closeDetail">
       <div class="modal-content">
         <button class="close-btn" @click="closeDetail">×</button>
         <div class="modal-header">
-          <!-- <div class="modal-cover">
-            <img :src="selectedItem.cover" :alt="selectedItem.title" v-if="selectedItem.cover">
-            <div class="cover-placeholder" v-else>
-              {{ selectedItem.type === 'movie' ? '🎬' : selectedItem.type === 'book' ? '📚' : '📺' }}
-            </div>
-          </div> -->
           <div class="modal-title-section">
             <h2>{{ selectedItem.title }}</h2>
             <div class="modal-meta">
@@ -170,16 +164,9 @@
           <p class="modal-review">{{ selectedItem.summary }}</p>
           <h3>我的评价</h3>
           <p class="modal-review">{{ selectedItem.review }}</p>
-          
-          <!-- <div class="modal-notes" v-if="selectedItem.notes">
-            <h3>精彩片段/台词</h3>
-            <ul>
-              <li v-for="(note, index) in selectedItem.notes" :key="index">{{ note }}</li>
-            </ul>
-          </div> -->
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
