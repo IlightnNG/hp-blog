@@ -105,7 +105,11 @@
               </div>
               <div class="stat-item">
                 <span class="stat-value">{{ mediaStats.series }}</span>
-                <span class="stat-label">电视剧</span>
+                <span class="stat-label">网剧</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">...</span>
+                <span class="stat-label">补充中</span>
               </div>
               
             </div>
@@ -219,7 +223,7 @@ const mediaTypes = ref([
   { value: 'cartoon', label: '漫画' },
   { value: 'game', label: '游戏' },
   { value: 'movie', label: '电影' },
-  { value: 'series', label: '电视剧' }
+  { value: 'series', label: '网剧' }
 ])
 
 const selectedMediaType = ref('all')
