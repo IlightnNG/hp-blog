@@ -36,14 +36,14 @@
         
         <!-- 主要内容区域 -->
         <div class="main-content">
-            <!-- 左侧：文章内容 -->
-            <div class="article-content">
-                <div v-for="(section, index) in currentPost.content" :key="index" :id="'section-' + index">
-                    <div class="markdown-content" v-html="section.content"></div>
-                </div>
-            </div>
-            
-            <!-- 右侧：目录 -->
+          <!-- 左侧：文章内容 -->
+          <div class="article-content">
+              <div v-for="(section, index) in currentPost.content" :key="index" :id="'section-' + index">
+                  <div class="markdown-content" v-html="section.content"></div>
+              </div>
+          </div>
+          
+          <!-- 右侧：目录 -->
           <div class="sidebar">
             <div class="toc-container">
               <h3>目录</h3>

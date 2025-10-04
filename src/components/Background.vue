@@ -42,7 +42,7 @@ const isHomePage = computed(() => {
 const containerRef = ref(null);
 
 // 性能优化：使用常量
-const TRIANGLE_SIZE = 60;
+const TRIANGLE_SIZE = window.innerWidth/32;
 const TRIANGLE_WIDE = TRIANGLE_SIZE * Math.sqrt(3) / 2;
 const COLORS = {
 base: new THREE.Color(0xa1b5d8),

@@ -35,7 +35,7 @@ export const useSettingsStore = defineStore('settings', () => {
     const resetShowingBgAndAddGroupMode = () => {
         settings.value.isShowingBg = false
         settings.value.isAddingGroup = false
-        console.log("reset")
+        console.log(innerWidth)
         saveSettings()
     }
 
