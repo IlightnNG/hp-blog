@@ -426,16 +426,16 @@ onUnmounted(() => {
   font-size: 1.1rem;
 }
 
-.markdown-content p {
+.markdown-content :deep(p) {
   margin: 1rem 0;
 }
 
-.markdown-content ul {
+.markdown-content :deep(ul) {
   margin: 1rem 0;
   padding-left: 2rem;
 }
 
-.markdown-content li {
+.markdown-content :deep(li) {
   margin: 0.5rem 0;
 }
 

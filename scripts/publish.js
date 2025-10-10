@@ -1,6 +1,6 @@
 import { execSync } from 'child_process'
 import { existsSync, copyFileSync } from 'fs'
-import generateList from './generate-list.js'
+import generateList from './list-for-bash.js'
 
 // 改进的参数解析逻辑
 function parseArgs() {
