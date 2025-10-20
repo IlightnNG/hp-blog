@@ -1,5 +1,25 @@
 [
   {
+    "id": "20251015-PipInstall-e",
+    "path": "/posts/20251015-PipInstall-e.md",
+    "title": "pip install -e . 与 pip install .：详解Python包安装的两种方式",
+    "date": "2025/10/15",
+    "tags": [
+      "pip"
+    ],
+    "excerpt": "-e 标志就是为了让你在“写代码”和“测试代码”之间实现无缝切换。"
+  },
+  {
+    "id": "20251010-HowToUseRyven",
+    "path": "/posts/20251010-HowToUseRyven.md",
+    "title": "Ryven上手指南",
+    "date": "2025/10/10",
+    "tags": [
+      "Ryven"
+    ],
+    "excerpt": "Ryven 是一个基于 Python 的可视化编程工具，它采用节点式编程范式，让用户能够通过连接不同的节点来创建复杂的数据处理流程。"
+  },
+  {
     "id": "20250831-LitProtocol",
     "path": "/posts/20250831-LitProtocol.md",
     "title": "Lit Protocol 上手指南：Web3 的链上权限控制",
