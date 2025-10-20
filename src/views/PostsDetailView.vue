@@ -26,8 +26,8 @@
         <div class="header-section">
             <h1>{{ currentPost.title }}</h1>
             <div class="post-meta">
-                <span class="post-date">{{ currentPost.date }}</span>
                 <div class="post-tags">
+                    <span class="tag" >{{ currentPost.date }}</span>
                     <span v-for="tag in currentPost.tags" :key="tag" class="tag">{{ tag }}</span>
                 </div>
             </div>
@@ -367,11 +367,6 @@ onUnmounted(() => {
   margin-bottom: 20px;
 }
 
-.post-date {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-}
-
 .post-tags {
   display: flex;
   gap: 10px;
@@ -382,7 +377,7 @@ onUnmounted(() => {
   background: var(--tag-background);
   color: var(--tag-color);
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .divider {
@@ -411,7 +406,7 @@ onUnmounted(() => {
 .article-content :deep(h2) {
   font-size: 2rem;
   color: var(--text-primary);
-  margin: 2rem 0 0.5rem;
+  margin: 2rem -0.8rem 0.5rem;
 }
 
 .article-content :deep(h3) {
@@ -437,6 +432,32 @@ onUnmounted(() => {
 
 .markdown-content :deep(li) {
   margin: 0.5rem 0;
+}
+
+.markdown-content :deep(ol) {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+/* Markdown表格样式 */
+.markdown-content :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  border: 1px solid var(--target-color);
+}
+
+.markdown-content :deep(th),
+.markdown-content :deep(td) {
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--target-color);
+  text-align: left;
+}
+
+.markdown-content :deep(th) {
+  background-color: white; 
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .sidebar {

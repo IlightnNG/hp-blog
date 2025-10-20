@@ -1,7 +1,7 @@
 ---
 title: Ryven上手指南
 date: 2025/10/10
-tags: [ryven]
+tags: [Ryven]
 excerpt: "Ryven 是一个基于 Python 的可视化编程工具，它采用节点式编程范式，让用户能够通过连接不同的节点来创建复杂的数据处理流程。"
 ---
 
@@ -138,10 +138,10 @@ if __name__ == "__main__":
 
 ```bash
 # 在节点文件所在目录运行
-python -m ryven --nodes-dir
+python -m ryven --nodes-dir .
 
 # 或者直接运行
-ryven --nodes-dir
+ryven --nodes-dir .
 ```
 ### 导入现有节点文件
 - 启动 Ryven GUI
