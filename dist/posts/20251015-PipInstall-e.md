@@ -1,7 +1,7 @@
 ---
 title: pip install -e . 与 pip install .：详解Python包安装的两种方式
 date: 2025/10/15
-tags: [pip]
+tags: [Pip]
 excerpt: "-e 标志就是为了让你在“写代码”和“测试代码”之间实现无缝切换。"
 ---
 

@@ -1,11 +1,22 @@
 [
   {
+    "id": "20251110-PythonFeatures",
+    "path": "/posts/20251110-PythonFeatures.md",
+    "title": "Python深度解析：从设计哲学到AI主流语言的演进之路",
+    "date": "2025/11/10",
+    "tags": [
+      "Python",
+      "Feature"
+    ],
+    "excerpt": "本文旨在为有经验的开发者提供一个全面的Python特性概览，深入探讨其设计哲学、核心特性，并分析为何它能在深度学习领域占据主导地位。"
+  },
+  {
     "id": "20251015-PipInstall-e",
     "path": "/posts/20251015-PipInstall-e.md",
     "title": "pip install -e . 与 pip install .：详解Python包安装的两种方式",
     "date": "2025/10/15",
     "tags": [
-      "pip"
+      "Pip"
     ],
     "excerpt": "-e 标志就是为了让你在“写代码”和“测试代码”之间实现无缝切换。"
   },
@@ -25,9 +36,9 @@
     "title": "Lit Protocol 上手指南：Web3 的链上权限控制",
     "date": "2025/08/31",
     "tags": [
-      "lit-protocol",
+      "Lit-protocol",
       "访问控制",
-      "web3"
+      "Web3"
     ],
     "excerpt": "Lit Protocol 是一个去中心化的密钥管理网络，为 Web3 应用提供强大的加密和访问控制功能。它允许开发者基于区块链条件（如持有特定 NFT、代币余额或钱包地址）来控制数据的访问权限。"
   },

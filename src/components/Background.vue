@@ -62,7 +62,6 @@ let scene, camera, renderer;
 let instancedMesh;
 let raycaster;
 let mouse;
-let isAnimating = false;
 const isChangingBg = ref(true); // 标记是否点击了背景
 
 

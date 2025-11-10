@@ -29,7 +29,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { Home, Mail, User, Settings, FileText } from 'lucide-vue-next';
+import { Home, Mail, User, Settings, FileText, Sparkles } from 'lucide-vue-next';
 import { useSettingsStore } from '@/stores/settings'
 const settingsStore = useSettingsStore()
 
@@ -40,7 +40,7 @@ const base = '/hp-blog';
 const navItems = [
   { path: base + '/', title: 'Home', icon: Home },
   { path: base + '/posts', title: 'Posts', icon: FileText },
-  { path: base + '/media', title: 'Media', icon: User },
+  { path: base + '/media', title: 'Media', icon: Sparkles },
   { path: base + '/contact', title: 'Contact', icon: Mail },
   { path: base + '/settings', title: 'Settings', icon: Settings }
 ];

@@ -5,16 +5,6 @@
         
         <div class="settings-section">
           <h2>Nothing here : )</h2>
-          
-          <div class="style-switcher">
-            <!-- <button 
-              @click="settingsStore.toggleVisualMode"
-              class="style-toggle"
-              :class="{ 'active': settingsStore.settings.isGlassMode }"
-            >
-              {{ settingsStore.settings.isGlassMode ? 'Glass Morphism' : 'Light Mode' }}
-            </button> -->
-          </div>
         </div>
       </div>
     </div>

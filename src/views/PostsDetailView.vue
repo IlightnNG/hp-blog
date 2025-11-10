@@ -522,7 +522,7 @@ onUnmounted(() => {
 .back-button {
     position: sticky;
     top: 40px;
-    left: 50px;
+    left: 20px;
     width: 100px;
     display: flex;
     align-items: center;
