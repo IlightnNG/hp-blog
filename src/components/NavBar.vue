@@ -5,7 +5,7 @@
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
       :class="{ 'expanded': isHovered || settingsStore.settings.isShowingBg}"
-      @click.stop
+      
     >
       <div class="logo" @click="settingsStore.toggleShowingBg">HP</div>
       

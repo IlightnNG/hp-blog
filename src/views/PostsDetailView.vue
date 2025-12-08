@@ -2,21 +2,21 @@
   <div class="post-detail-container" @click.stop :class="{'show': !settingsStore.settings.isShowingBg }">
     <!-- 返回按钮 -->
     <div class="back-button" @click="goBack">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
         </svg>
-        <span>返回</span>
+        <span>Back</span>
     </div>
     <!-- 加载状态 -->
     <div v-if="isLoading" class="loading-container">
       <div class="loading-spinner"></div>
-      <p>正在加载文章...</p>
+      <p>Loading...</p>
     </div>
     
     <!-- 文章不存在状态 -->
     <div v-else-if="!currentPost" class="empty-state">
-      <p>文章不存在或加载失败</p>
-      <button @click="goBack" class="back-button">返回文章列表</button>
+      <p>No Post or Loading Error</p>
+      <button @click="goBack" class="back-button">Back To List</button>
     </div>
 
     
@@ -46,7 +46,7 @@
           <!-- 右侧：目录 -->
           <div class="sidebar">
             <div class="toc-container">
-              <h3>目录</h3>
+              <h3>Content</h3>
               <div class="toc-list">
                 <div 
                   v-for="(item, index) in tocItems" 
@@ -67,15 +67,11 @@
         </div>
     </div>
     <!-- 回到顶部按钮 -->
-    <div 
-      class="back-to-top" 
-      :class="{ 'show': showBackToTop }"
-      @click="scrollToTop"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 15l-6-6-6 6"/>
-      </svg>
-    </div>
+    <BackToTopButton
+      :target-selector="'.post-detail-container'"
+      :threshold="300"
+      :immediate="true"
+    />
   </div>
 </template>
 
@@ -85,10 +81,10 @@ import { useSettingsStore } from '@/stores/settings';
 import { useRoute, useRouter } from 'vue-router';
 import { marked } from 'marked';
 import fm from 'front-matter';
-
 // 代码块
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css'; // 选择你喜欢的样式
+import BackToTopButton from '@/components/BackToTopButton.vue';
 
 // 配置 marked 使用 highlight.js
 marked.setOptions({
@@ -109,25 +105,6 @@ const currentPost = ref(null);
 const isLoading = ref(true);
 
 
-// 回到顶部相关
-const showBackToTop = ref(false)
-
-const checkScroll = () => {
-  const container = document.querySelector('.post-detail-container')
-  if (container) {
-    showBackToTop.value = container.scrollTop > 300
-  }
-}
-
-const scrollToTop = () => {
-  const container = document.querySelector('.post-detail-container')
-  if (container) {
-    container.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-  }
-}
 
 // 创建错误状态的文章
 const createErrorPost = () => ({
@@ -201,9 +178,16 @@ const parseContentToSections = (htmlContent) => {
   // 首先提取所有标题信息
   headings.forEach((heading, index) => {
     const level = parseInt(heading.tagName.substring(1));
-    const title = heading.textContent;
+    let title = heading.textContent;
     let number = '';
-    
+
+
+    // 去除原本序号
+    const numberPattern = /^\d+(\.\d+)*\.?\s+/;
+    if (numberPattern.test(title)) {
+      title = title.replace(numberPattern, '');
+    }
+
     if (level === 2) {
       h2Count++;
       h3Count = 0;
@@ -311,7 +295,6 @@ onMounted(() => {
   const container = document.querySelector('.post-detail-container');
   if (container) {
       container.addEventListener('scroll', checkCurrentSection);
-      container.addEventListener('scroll', checkScroll);
   }
 });
 
@@ -319,7 +302,6 @@ onUnmounted(() => {
   const container = document.querySelector('.post-detail-container');
   if (container) {
       container.removeEventListener('scroll', checkCurrentSection);
-      container.removeEventListener('scroll', checkScroll);
   }
 });
 </script>
@@ -338,11 +320,21 @@ onUnmounted(() => {
   z-index: 10;
 }
 
+.loading-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  color: var(--text-secondary);
+}
+
 .post-detail-container.show {
   transform: translateX(-100%);
 }
 
 .post-detail-content {
+  /* max-width: 70vw; */
   max-width: 1400px;
   margin: 0 auto;
   padding: 60px 40px;
@@ -375,13 +367,14 @@ onUnmounted(() => {
 .tag {
   padding: 0.5rem 1rem;
   background: var(--tag-background);
-  color: var(--tag-color);
+  color: var(--text-primary);
   border-radius: 20px;
   font-size: 1rem;
+  font-weight: 600;
 }
 
 .divider {
-  width: 95%;
+  width: 100%;
   height: 2px;
   background: var(--target-color);
   margin: 20px 0 0 0;
@@ -399,8 +392,9 @@ onUnmounted(() => {
   border-radius: 12px;
   background: white;
   min-width: 100px;
-  flex: 2;
-  max-width: 900px;
+  flex: 1;
+  /* max-width: 1000px; */
+  /* max-width: 60vw; */
 }
 
 .article-content :deep(h2) {
@@ -460,16 +454,39 @@ onUnmounted(() => {
   color: var(--text-primary);
 }
 
+.markdown-content :deep(a) {
+  color: var(--link-color, #3498db); /* 使用CSS变量，有回退值 */
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  position: relative;
+}
+
+.markdown-content :deep(a:hover) {
+  color: var(--link-hover-color, #2980b9);
+  border-bottom: 1px solid currentColor;
+}
+
+.markdown-content :deep(a:visited) {
+  color: var(--link-visited-color, #9b59b6);
+}
+
+.markdown-content :deep(a:active) {
+  color: var(--link-active-color, #e74c3c);
+}
+
 .sidebar {
-  flex: 1;
+  flex: 2;
   max-width: 300px;
+  /* max-width: 20vw; */
   position: sticky;
   top: 40px;
   height: fit-content;
 }
 
 .toc-container {
-  padding: 2rem;
+  padding: 1.8rem;
   border: var(--border);
   border-radius: 12px;
   background: white;
@@ -477,20 +494,38 @@ onUnmounted(() => {
 
 .toc-container h3 {
   color: var(--text-primary);
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
 .toc-list {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.2rem;
+  max-height: 80vh; /* 限制列表最大高度 */
+  overflow-y: auto; /* 添加滚动条 */
+}
+
+/* 可选：自定义滚动条样式 */
+.toc-list::-webkit-scrollbar {
+  width: 3px;
+}
+
+.toc-list::-webkit-scrollbar-track {
+  background: var(--bg);
+  border-radius: 3px;
+}
+
+.toc-list::-webkit-scrollbar-thumb {
+  background: var(--target-color);
+  border-radius: 3px;
 }
 
 .toc-item {
   color: var(--text-secondary);
   cursor: pointer;
-  padding: 0.3rem;
+  padding: 0.5rem;
+  margin-right: 0.3rem;
   border-radius: 6px;
   transition: all 0.3s ease;
 }
@@ -522,7 +557,7 @@ onUnmounted(() => {
 .back-button {
     position: sticky;
     top: 28px;
-    left: 50px;
+    left: 1.5rem;
     width: 100px;
     display: flex;
     align-items: center;
@@ -554,7 +589,7 @@ onUnmounted(() => {
 
 .back-button span {
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 700;
 }
 
 .back-to-top {

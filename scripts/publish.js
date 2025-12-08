@@ -31,7 +31,7 @@ async function main() {
         // 1. 生成文章列表
         await generateList()
 
-        // 2. 构建项目
+        // 2. 构建项目!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         execSync('npm run build', { stdio: 'inherit' })
 
         // 3. 复制404页面
@@ -40,8 +40,6 @@ async function main() {
         } else {
             throw new Error('index.html not found in dist directory')
         }
-        // 添加 .nojekyll，防止github处理md文件
-        execSync('echo "">dist/.nojekyll', { stdio: 'inherit' })
 
         // 4. Git 操作
         execSync('git add .', { stdio: 'inherit' })

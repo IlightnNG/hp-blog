@@ -4,6 +4,9 @@
       <!-- 上部分：标题和介绍 -->
       <div class="header-section">
         <h1 class="title">欢迎来到，我的博客</h1>
+        <p class="introduction">
+          Welcome to HP's blog! 
+        </p>
         <div class="divider"></div>
       </div>
       
@@ -14,12 +17,12 @@
           <!-- 加载状态 -->
           <div v-if="isLoading" class="loading-container">
             <div class="loading-spinner"></div>
-            <p>正在加载文章...</p>
+            <p>Loading Posts...</p>
           </div>
           
           <!-- 无文章状态 -->
           <div v-else-if="filteredArticles.length === 0" class="empty-state">
-            <p>没有找到符合条件的文章</p>
+            <p>No Post</p>
           </div>
           
           <!-- 文章列表 -->
@@ -44,14 +47,14 @@
             <input 
               type="text" 
               v-model="searchQuery" 
-              placeholder="搜索文章..."
+              placeholder="Search..."
               @input="handleSearch"
             >
           </div>
           
           <!-- 标签云 -->
           <div class="tags-section">
-            <h3>标签云</h3>
+            <h3>标签云 Tags</h3>
             <div class="tags-cloud">
               <span 
                 v-for="tag in tags" 
@@ -69,15 +72,11 @@
     </div>
     
     <!-- 回到顶部按钮 -->
-    <div 
-      class="back-to-top" 
-      :class="{ 'show': showBackToTop }"
-      @click="scrollToTop"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 15l-6-6-6 6"/>
-      </svg>
-    </div>
+    <BackToTopButton
+      :target-selector="'.posts-container'"
+      :threshold="300"
+      :immediate="true"
+    />
   </div>
 </template>
 
@@ -85,6 +84,8 @@
 import { useSettingsStore } from '@/stores/settings'
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
+// 回到顶部相关
+import BackToTopButton from '@/components/BackToTopButton.vue';
 
 const router = useRouter();
 const settingsStore = useSettingsStore();
@@ -95,8 +96,7 @@ const isLoading = ref(true);
 const searchQuery = ref('');
 const selectedTags = ref([]);
 
-// 回到顶部相关
-const showBackToTop = ref(false);
+
 
 // 加载所有文章
 const loadArticles = async () => {
@@ -156,7 +156,7 @@ const filteredArticles = computed(() => {
 // 格式化日期
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString('zh-CN', options);
+  return new Date(dateString).toLocaleDateString('en-EN', options);
 };
 
 // 处理标签点击
@@ -177,38 +177,16 @@ const selectArticle = (article) => {
   });
 };
 
-// 滚动相关函数
-const checkScroll = () => {
-  const container = document.querySelector('.posts-container');
-  if (container) {
-    showBackToTop.value = container.scrollTop > 300;
-  }
-};
 
-const scrollToTop = () => {
-  const container = document.querySelector('.posts-container');
-  if (container) {
-    container.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  }
-};
 
 // 生命周期钩子
 onMounted(() => {
   loadArticles();
-  const container = document.querySelector('.posts-container');
-  if (container) {
-    container.addEventListener('scroll', checkScroll);
-  }
+  
 });
 
 onUnmounted(() => {
-  const container = document.querySelector('.posts-container');
-  if (container) {
-    container.removeEventListener('scroll', checkScroll);
-  }
+  
 });
 </script>
 
@@ -233,6 +211,7 @@ onUnmounted(() => {
 
 .posts-content {
   max-width: 1400px;
+  /* max-width: 80vw; */
   margin: 0 auto;
   padding: 0 40px;
   position: relative;   
@@ -252,14 +231,19 @@ onUnmounted(() => {
   color: var(--text-title);
 }
 
-
 .header-section .introduction {
+  text-align: justify;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-title);
+}
+/* .header-section  {
   font-size: 1.2rem;
   color: var(--text-secondary);
   line-height: 1.6;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
-}
+} */
 
 .divider {
   width: 100%;
@@ -275,6 +259,15 @@ onUnmounted(() => {
 
 .articles-section {
   flex: 2;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  color: var(--text-secondary);
 }
 
 .articles-list {

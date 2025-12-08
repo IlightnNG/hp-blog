@@ -3,7 +3,10 @@
     <div class="media-content">
       <!-- 上部分：标题和介绍 -->
       <div class="header-section">
-      <h1 class="title">陪伴过我的</h1>
+      <h1 class="title">记忆回廊</h1>
+      <p class="introduction">
+        The Memory Corridor
+      </p>
       <div class="divider"></div>
     </div>
       
@@ -136,15 +139,11 @@
     </div>
     
     <!-- 回到顶部按钮 -->
-    <div 
-      class="back-to-top" 
-      :class="{ 'show': showBackToTop }"
-      @click="scrollToTop"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 15l-6-6-6 6"/>
-      </svg>
-    </div>
+    <BackToTopButton
+      :target-selector="'.media-container'"
+      :threshold="300"
+      :immediate="true"
+    />
     
     <!-- 详情弹窗 -->
     <!-- <div class="media-detail-modal" v-if="selectedItem" @click.self="closeDetail">
@@ -181,38 +180,15 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 const settingsStore = useSettingsStore()
 
 // 回到顶部相关
-const showBackToTop = ref(false)
-
-const checkScroll = () => {
-  const container = document.querySelector('.media-container')
-  if (container) {
-    showBackToTop.value = container.scrollTop > 300
-  }
-}
-
-const scrollToTop = () => {
-  const container = document.querySelector('.media-container')
-  if (container) {
-    container.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-  }
-}
+import BackToTopButton from '@/components/BackToTopButton.vue';
 
 onMounted(() => {
-  loadArticles();
-  const container = document.querySelector('.media-container')
-  if (container) {
-    container.addEventListener('scroll', checkScroll)
-  }
+  loadMedia();
+  
 })
 
 onUnmounted(() => {
-  const container = document.querySelector('.media-container')
-  if (container) {
-    container.removeEventListener('scroll', checkScroll)
-  }
+  
 })
 
 // 媒体类型选项
@@ -232,8 +208,8 @@ const selectedItem = ref(null)
 const isLoading = ref(true);
 
 const mediaItems = ref([]);
-// 加载所有文章
-const loadArticles = async () => {
+// 加载所有媒体
+const loadMedia = async () => {
   try {
     isLoading.value = true;
     mediaItems.value = [];
@@ -393,11 +369,10 @@ const getTypeLabel = (type) => {
 
 
 .header-section .introduction {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  max-width: 800px;
-  margin: 0 auto;
+  text-align: justify;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-title);
 }
 
 .divider {

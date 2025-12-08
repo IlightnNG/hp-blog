@@ -688,7 +688,7 @@ watch(useRoute(), () => {
     transform: translateX(-50%);
     display: flex;
     gap: 10px;
-    z-index: 1000;
+    z-index: 1;
 }
 
 .group-button {
