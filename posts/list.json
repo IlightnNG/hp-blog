@@ -1,5 +1,27 @@
 [
   {
+    "id": "20251208-UnityUIUX",
+    "path": "/posts/20251208-UnityUIUX.md",
+    "title": "Comprehensive Guide to Unity UI Interaction Development: Core Tips & Best Practices",
+    "date": "2025/12/08",
+    "tags": [
+      "Unity",
+      "UI"
+    ],
+    "excerpt": "This article summarizes essential techniques, solutions, and best practices for Unity UI interaction development. It covers critical scenarios including UI event handling, animation control, layout management, and state synchronization."
+  },
+  {
+    "id": "20251207-UnityGameStart",
+    "path": "/posts/20251207-UnityGameStart.md",
+    "title": "Unity 2D Game Development Tutorial for Beginners",
+    "date": "2025/12/07",
+    "tags": [
+      "Unity",
+      "Game"
+    ],
+    "excerpt": "For 2D game development, Unity provides specialized tools and workflows that make it accessible for beginners while remaining powerful enough for professional developers."
+  },
+  {
     "id": "20251110-PythonFeatures",
     "path": "/posts/20251110-PythonFeatures.md",
     "title": "Python深度解析：从设计哲学到AI主流语言的演进之路",
@@ -37,7 +59,6 @@
     "date": "2025/08/31",
     "tags": [
       "Lit-protocol",
-      "访问控制",
       "Web3"
     ],
     "excerpt": "Lit Protocol 是一个去中心化的密钥管理网络，为 Web3 应用提供强大的加密和访问控制功能。它允许开发者基于区块链条件（如持有特定 NFT、代币余额或钱包地址）来控制数据的访问权限。"
@@ -65,25 +86,24 @@
     "excerpt": "在前端开发过程中，项目部署是一个重要环节。本文将详细介绍如何将基于 Vite 创建的前端项目部署到 GitHub Pages 上，帮助你轻松实现项目的线上展示。"
   },
   {
-    "id": "20250605-GradleSetting",
-    "path": "/posts/20250605-GradleSetting.md",
-    "title": "Gradle下载慢问题简易解决方法",
-    "date": "2025-06-05",
-    "tags": [
-      "Gradle",
-      "镜像源"
-    ],
-    "excerpt": "单次解决Gradle下载慢问题，但每次新项目初始化Gradle时都要重新修改"
-  },
-  {
     "id": "20250605-nojekyll",
     "path": "/posts/20250605-nojekyll.md",
     "title": ".nojekyll 在GitHub Pages的作用",
     "date": "2025-06-05",
     "tags": [
-      "Github",
-      "Nojekyll"
+      "Github"
     ],
     "excerpt": ".nojekyll文件‌主要作用是告诉GitHub Pages不要使用 Jekyll 来处理你的站点"
+  },
+  {
+    "id": "20250604-GradleSetting",
+    "path": "/posts/20250604-GradleSetting.md",
+    "title": "Gradle下载慢问题简易解决方法",
+    "date": "2025-06-04",
+    "tags": [
+      "Gradle",
+      "镜像源"
+    ],
+    "excerpt": "单次解决Gradle下载慢问题，但每次新项目初始化Gradle时都要重新修改"
   }
 ]
