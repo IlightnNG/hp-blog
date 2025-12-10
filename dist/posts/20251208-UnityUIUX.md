@@ -14,8 +14,8 @@ The Unity EventSystem provides specialized interfaces for different interaction 
 
 | Interface Set| Trigger Timing| Ideal Use Cases|
 |--------------|---------------|----------------|
-| `IPointerDownHandler`/`IPointerUpHandler` | Triggered immediately on mouse down/up (regardless of movement)                 | Pure click interactions, short-press actions, toggle buttons                    |
-| `IBeginDragHandler`/`IDragHandler`/`IEndDragHandler` | Triggered when the user presses + moves (drag start/drag ongoing/drag end)      | Drag-and-drop interactions (automatically distinguishes "click" from "drag")    |
+| `IPointerDownHandler` /`IPointerUpHandler` | Triggered immediately on mouse down/up (regardless of movement)                 | Pure click interactions, short-press actions, toggle buttons                    |
+| `IBeginDragHandler` /`IDragHandler` /`IEndDragHandler` | Triggered when the user presses + moves (drag start/drag ongoing/drag end)      | Drag-and-drop interactions (automatically distinguishes "click" from "drag")    |
 
 ### 1.2 Best Practices for Drag Implementation
 - **Separate Click and Drag**: Pair `IBeginDragHandler` with `IPointerClickHandler` to handle pure clicks (no drag) and drag actions independently.

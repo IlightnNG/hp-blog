@@ -94,7 +94,8 @@ marked.setOptions({
   },
   langPrefix: 'hljs language-', // 高亮代码块的语言前缀
   breaks: true,
-  gfm: true
+  gfm: true,
+  smartypants: false
 });
 
 const settingsStore = useSettingsStore();
@@ -335,7 +336,7 @@ onUnmounted(() => {
 
 .post-detail-content {
   /* max-width: 70vw; */
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 60px 40px;
 }
@@ -394,7 +395,6 @@ onUnmounted(() => {
   min-width: 100px;
   flex: 1;
   /* max-width: 1000px; */
-  /* max-width: 60vw; */
 }
 
 .article-content :deep(h2) {
@@ -438,20 +438,40 @@ onUnmounted(() => {
   width: 100%;
   border-collapse: collapse;
   margin: 1.5rem 0;
-  border: 1px solid var(--target-color);
+  display: block;
+  overflow-x: auto;
+  /* word-break: break-word; */
 }
+
 
 .markdown-content :deep(th),
 .markdown-content :deep(td) {
   padding: 0.8rem 1rem;
-  border: 1px solid var(--target-color);
+  /* border: 1px solid var(--target-color); */
+  border-bottom: 1px solid var(--target-color);
   text-align: left;
+  min-width: 200px;
 }
 
 .markdown-content :deep(th) {
-  background-color: white; 
+  border-top: 2px solid var(--target-color);
   font-weight: 600;
   color: var(--text-primary);
+}
+
+/* 表格滚动条样式 */
+.markdown-content :deep(table)::-webkit-scrollbar {
+  height: 8px;
+}
+
+.markdown-content :deep(table)::-webkit-scrollbar-track {
+  background: white;
+  border-radius: 4px;
+}
+
+.markdown-content :deep(table)::-webkit-scrollbar-thumb {
+  background: var(--target-color);
+  border-radius: 4px;
 }
 
 .markdown-content :deep(a) {
@@ -474,6 +494,47 @@ onUnmounted(() => {
 
 .markdown-content :deep(a:active) {
   color: var(--link-active-color, #e74c3c);
+}
+
+/* 代码块基础样式 */
+.markdown-content :deep(pre) {
+    background: #f6f8fa;
+    border-radius: 6px;
+    padding: 16px;
+    overflow: auto;
+    line-height: 1.45;
+    margin: 1em 0;
+}
+
+.markdown-content :deep(code) {
+    font-size: 85%;
+}
+
+/* 行内代码 */
+.markdown-content :not(pre)>:deep(code) {
+    background-color: rgba(175, 184, 193, 0.2);
+    border-radius: 4px;
+    padding: 0.2em 0.4em;
+}
+
+/* 代码高亮样式覆盖 */
+.hljs {
+    background: transparent !important;
+}
+
+/* 代码滚动条样式 */
+.markdown-content :deep(pre::-webkit-scrollbar) {
+  height: 8px;
+}
+
+.markdown-content :deep(pre::-webkit-scrollbar-track) {
+  background: white;
+  border-radius: 4px;
+}
+
+.markdown-content :deep(pre::-webkit-scrollbar-thumb) {
+  background: var(--target-color);
+  border-radius: 4px;
 }
 
 .sidebar {
