@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-container">
+  <div class="nav-container" @click.stop>
     <div 
       class="nav-logo"
       @mouseenter="isHovered = true"

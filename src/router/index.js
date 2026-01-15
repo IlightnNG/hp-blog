@@ -4,6 +4,7 @@ import MainView from '@/views/MainView.vue';
 import PostDetailView from '@/views/PostsDetailView.vue';
 import PostsView from '@/views/PostsView.vue';
 import MediaView from '@/views/MediaView.vue';
+import ContactView from '@/views/ContactView.vue';
 
 const base = '/hp-blog';
 
@@ -16,6 +17,7 @@ const routes = [
         component: PostDetailView
     },
     { path: base + '/media', name: 'Media', component: MediaView },
+    { path: base + '/contact', name: 'Contact', component: ContactView },
     { path: base + '/settings', name: 'Settings', component: SettingsView },
 ];
 
