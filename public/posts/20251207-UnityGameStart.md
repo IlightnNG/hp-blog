@@ -1,7 +1,7 @@
 ---
 title: Unity 2D Game Development Tutorial for Beginners
 date: 2025/12/07
-tags: [Unity,Game]
+tags: [Unity]
 excerpt: "For 2D game development, Unity provides specialized tools and workflows that make it accessible for beginners while remaining powerful enough for professional developers."
 ---
 

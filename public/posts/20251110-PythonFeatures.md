@@ -1,7 +1,7 @@
 ---
 title: Python深度解析：从设计哲学到AI主流语言的演进之路
 date: 2025/11/10
-tags: [Python,Feature]
+tags: [Python]
 excerpt: "本文旨在为有经验的开发者提供一个全面的Python特性概览，深入探讨其设计哲学、核心特性，并分析为何它能在深度学习领域占据主导地位。"
 ---
 

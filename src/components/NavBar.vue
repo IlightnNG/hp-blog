@@ -50,7 +50,7 @@ const navItems = [
 .nav-container {
   position: fixed;
   top: 20px;
-  left: 20px;
+  left: 1%;
   z-index: 100;
 }
 
@@ -63,18 +63,16 @@ const navItems = [
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all 0.3s cubic-bezier(.65,.43,.31,1.23);
+  transition: height var(--duration-slow) var(--ease-spring), box-shadow var(--duration-slow) var(--ease-out), backdrop-filter var(--duration-slow) var(--ease-out);
   overflow: hidden;
-  box-shadow:  2px 2px 1px #dedede,
-             -2px -2px 1px #dedede;
+  box-shadow: var(--shadow-glass);
 }
 
 .nav-logo.expanded {
   backdrop-filter: blur(10px);
   height: 300px;
   border-radius: 0px;
-  box-shadow:  5px 5px 1px #dedede,
-             -5px -5px 1px #dedede;
+  box-shadow: var(--shadow-glass-hover);
 }
 
 .logo {
@@ -89,6 +87,15 @@ const navItems = [
   flex-shrink: 0;
   cursor: pointer;
   user-select: none;
+  transition: transform var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.logo:active {
+  transform: scale(var(--active-scale));
 }
 
 .nav-items {
@@ -105,24 +112,28 @@ const navItems = [
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all 0.2s ease;
+  transition: transform var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out);
 }
 
 .nav-icon:hover {
-  transform: scale(1.2);
-  color: #ffbe0b;
+  transform: scale(var(--hover-scale-sm));
+  color: var(--target-color);
+}
+
+.nav-icon:active {
+  transform: scale(var(--active-scale));
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity var(--duration-fast) var(--ease-out);
 }
 
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
 
-/* 路由激活样式 */
+/* 路由激活样式：与悬停一致，使用主题色 */
 .router-link-active {
-  color: #ffbe0b !important;
+  color: var(--target-color) !important;
 }
 </style>

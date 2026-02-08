@@ -1,7 +1,7 @@
 ---
 title: "Comprehensive Guide to Unity UI Interaction Development: Core Tips & Best Practices"
 date: 2025/12/08
-tags: [Unity,UI]
+tags: [Unity]
 excerpt: "This article summarizes essential techniques, solutions, and best practices for Unity UI interaction development. It covers critical scenarios including UI event handling, animation control, layout management, and state synchronization."
 ---
 

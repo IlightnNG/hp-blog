@@ -26,7 +26,7 @@
               </button>
             </div>
             <div class="sort-controls">
-              <select v-model="sortBy" @change="sortItems">
+              <select v-model="sortBy">
                 <option value="dateDesc">按时间倒序</option>
                 <option value="dateAsc">按时间正序</option>
                 <option value="ratingDesc">按评分高→低</option>
@@ -35,9 +35,13 @@
             </div>
           </div>
           
-          <div class="items-list">
+          <div v-if="isLoading" class="blog-loading">
+            <div class="blog-loading__spinner"></div>
+            <p class="blog-loading__text">Loading...</p>
+          </div>
+          <div v-else class="items-list">
             <div 
-              v-for="item in filteredItems" 
+              v-for="item in paginatedItems" 
               :key="item.id" 
               class="media-card"
               :class="item.type"
@@ -62,6 +66,41 @@
                   <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
                 </div> -->
               </div>
+            </div>
+          </div>
+
+          <!-- 分页 -->
+          <div class="pagination-wrap" v-if="totalPages > 1">
+            <div class="pagination-info">
+              共 {{ filteredItems.length }} 条，第 {{ currentPage }} / {{ totalPages }} 页
+            </div>
+            <div class="pagination">
+              <button
+                class="page-btn"
+                :disabled="currentPage <= 1"
+                @click="currentPage = Math.max(1, currentPage - 1)"
+              >
+                上一页
+              </button>
+              <div class="page-numbers">
+                <button
+                  v-for="p in visiblePageNumbers"
+                  :key="p"
+                  class="page-num"
+                  :class="{ active: p === currentPage, ellipsis: p === -1 }"
+                  :disabled="p === -1"
+                  @click="p !== -1 && (currentPage = p)"
+                >
+                  {{ p === -1 ? '...' : p }}
+                </button>
+              </div>
+              <button
+                class="page-btn"
+                :disabled="currentPage >= totalPages"
+                @click="currentPage = Math.min(totalPages, currentPage + 1)"
+              >
+                下一页
+              </button>
             </div>
           </div>
         </div>
@@ -175,7 +214,7 @@
 
 <script setup>
 import { useSettingsStore } from '@/stores/settings'
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 
 const settingsStore = useSettingsStore()
 
@@ -295,6 +334,54 @@ const filteredItems = computed(() => {
   return items
 })
 
+// 分页
+const pageSize = 18
+const currentPage = ref(1)
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredItems.value.length / pageSize))
+)
+
+const paginatedItems = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return filteredItems.value.slice(start, start + pageSize)
+})
+
+// 可见的页码（中间省略号）
+const visiblePageNumbers = computed(() => {
+  const total = totalPages.value
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const cur = currentPage.value
+  const pages = []
+  if (cur <= 4) {
+    for (let i = 1; i <= 5; i++) pages.push(i)
+    pages.push(-1)
+    pages.push(total)
+  } else if (cur >= total - 3) {
+    pages.push(1)
+    pages.push(-1)
+    for (let i = total - 4; i <= total; i++) pages.push(i)
+  } else {
+    pages.push(1)
+    pages.push(-1)
+    for (let i = cur - 1; i <= cur + 1; i++) pages.push(i)
+    pages.push(-1)
+    pages.push(total)
+  }
+  return pages
+})
+
+// 筛选、搜索或排序变化时回到第一页
+watch([selectedMediaType, searchQuery, sortBy], () => {
+  currentPage.value = 1
+})
+watch(selectedTags, () => {
+  currentPage.value = 1
+}, { deep: true })
+watch(totalPages, (n) => {
+  if (currentPage.value > n) currentPage.value = n
+})
+
 // 处理标签点击
 const toggleTag = (tag) => {
   const index = selectedTags.value.indexOf(tag)
@@ -332,13 +419,13 @@ const getTypeLabel = (type) => {
 .media-container {
   position: fixed;
   top: 0;
-  left: calc(100% - 100px);
-  width: calc(100% - 100px);
+  left: calc(100% - 5.4%);
+  width: calc(100% - 5.4%);
   height: 100vh;
   background: var(--bg);
   overflow-y: auto;
-  transition: transform 0.5s cubic-bezier(.05,.47,.64,.99);
-  margin-left: 100px;
+  transition: transform 0.5s var(--ease-out-expo);
+  margin-left: 5.4%;
   z-index: 100;
 }
 
@@ -347,7 +434,7 @@ const getTypeLabel = (type) => {
 }
 
 .media-content {
-  max-width: 1400px;
+  max-width: 1250px;
   margin: 0 auto;
   padding: 0 40px;
   position: relative;   
@@ -410,13 +497,18 @@ const getTypeLabel = (type) => {
   background: white;
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out), background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out);
   font-size: 0.9rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .filter-buttons button:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--hover-lift-sm));
   box-shadow: var(--shadow-primary);
+}
+
+.filter-buttons button:active {
+  transform: translateY(var(--hover-lift-sm)) scale(var(--active-scale));
 }
 
 .filter-buttons button.active {
@@ -432,11 +524,12 @@ const getTypeLabel = (type) => {
   border-radius: 20px;
   background: white;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
+  box-shadow: var(--shadow-sm);
 }
 
 .sort-controls select:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--hover-lift-sm));
   box-shadow: var(--shadow-primary);
 }
 
@@ -446,6 +539,101 @@ const getTypeLabel = (type) => {
   gap: 2rem;
 }
 
+.pagination-wrap {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.page-btn {
+  padding: 0.5rem 1rem;
+  border: var(--border);
+  border-radius: 8px;
+  background: white;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  box-shadow: var(--shadow-sm);
+}
+
+.page-btn:hover:not(:disabled) {
+  background: var(--target-color);
+  color: white;
+  border-color: var(--target-color);
+  transform: scale(var(--hover-scale-sm));
+}
+
+.page-btn:active:not(:disabled) {
+  transform: scale(var(--active-scale));
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.page-num {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 0.4rem;
+  border: var(--border);
+  border-radius: 8px;
+  background: white;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  box-shadow: var(--shadow-sm);
+}
+
+.page-num:hover:not(:disabled):not(.ellipsis) {
+  background: var(--target-color);
+  color: white;
+  border-color: var(--target-color);
+  transform: scale(var(--hover-scale-sm));
+}
+
+.page-num:active:not(:disabled):not(.ellipsis) {
+  transform: scale(var(--active-scale));
+}
+
+.page-num.active {
+  background: var(--target-color);
+  color: white;
+  border-color: var(--target-color);
+}
+
+.page-num.ellipsis,
+.page-num:disabled {
+  cursor: default;
+  border-color: transparent;
+  background: transparent;
+}
+
 .media-card {
   display: flex;
   gap: 1.5rem;
@@ -453,14 +641,19 @@ const getTypeLabel = (type) => {
   border: var(--border);
   background: white;
   border-radius: 12px;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
   cursor: pointer;
-  height: 160px;
+  height: 170px;
+  box-shadow: var(--shadow-sm);
 }
 
 .media-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--hover-lift));
   box-shadow: var(--shadow-primary);
+}
+
+.media-card:active {
+  transform: translateY(var(--hover-lift)) scale(var(--active-scale));
 }
 
 .media-cover {
@@ -537,10 +730,24 @@ const getTypeLabel = (type) => {
 .media-summary {
   color: var(--text-secondary);
   line-height: 1.6;
-  margin-bottom: 0rem;
+  margin-right: 0.5rem;
   font-size: 0.95rem;
   flex: 1;
   overflow: auto;
+}
+
+.media-summary::-webkit-scrollbar {
+  width: 4px;
+}
+
+.media-summary::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--target-color) 8%, white);
+  border-radius: 4px;
+}
+
+.media-summary::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  border-radius: 4px;
 }
 
 .media-tags {
@@ -563,20 +770,26 @@ const getTypeLabel = (type) => {
   border: var(--border);
   border-radius: 12px;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
   background: white;
   color: var(--text-secondary);
+  box-shadow: var(--shadow-sm);
 }
 
 .search-box input:hover {
   outline: none;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-primary);
+  transform: translateY(var(--hover-lift-sm));
+  box-shadow: var(--shadow-md);
 }
 
 .search-box input:focus {
   outline: none;
   box-shadow: var(--shadow-primary);
+}
+
+.search-box input:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .tags-section {
@@ -585,11 +798,12 @@ const getTypeLabel = (type) => {
   padding: 1.5rem;
   border-radius: 12px;
   border: var(--border);
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
+  box-shadow: var(--shadow-sm);
 }
 
 .tags-section:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--hover-lift-sm));
   box-shadow: var(--shadow-primary);
 }
 
@@ -612,12 +826,17 @@ const getTypeLabel = (type) => {
   border-radius: 20px;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 
 .tag:hover {
   background: var(--tag-background-hover);
   color: white;
+  transform: scale(var(--hover-scale-sm));
+}
+
+.tag:active {
+  transform: scale(var(--active-scale));
 }
 
 .tag.active {
@@ -631,11 +850,12 @@ const getTypeLabel = (type) => {
   padding: 1.5rem;
   border-radius: 12px;
   border: var(--border);
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
+  box-shadow: var(--shadow-sm);
 }
 
 .stats-section:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--hover-lift-sm));
   box-shadow: var(--shadow-primary);
 }
 
@@ -686,8 +906,9 @@ const getTypeLabel = (type) => {
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
   border: var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .back-to-top.show {
@@ -696,14 +917,18 @@ const getTypeLabel = (type) => {
 }
 
 .back-to-top:hover {
-  transform: translateY(-3px);
+  transform: translateY(var(--hover-lift));
   box-shadow: var(--shadow-primary);
+}
+
+.back-to-top:active {
+  transform: translateY(var(--hover-lift)) scale(var(--active-scale));
 }
 
 .back-to-top svg {
   width: 24px;
   height: 24px;
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out);
 }
 
 .back-to-top:hover svg {
@@ -748,13 +973,18 @@ const getTypeLabel = (type) => {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
   padding: 0px 0px 2px 0px;
 }
 
 .close-btn:hover {
   background: var(--target-color);
   color: white;
+  transform: scale(var(--hover-scale-sm));
+}
+
+.close-btn:active {
+  transform: scale(var(--active-scale));
 }
 
 .modal-header {

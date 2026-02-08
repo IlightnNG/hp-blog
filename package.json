@@ -16,6 +16,7 @@
     "highlight.js": "^11.11.1",
     "lucide-vue-next": "^0.486.0",
     "marked": "^15.0.12",
+    "marked-highlight": "^2.2.3",
     "pinia": "^3.0.1",
     "pixi.js": "^8.9.1",
     "three": "^0.175.0",

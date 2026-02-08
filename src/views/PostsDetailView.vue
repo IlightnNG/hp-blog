@@ -8,9 +8,11 @@
         <span>Back</span>
     </div>
     <!-- 加载状态 -->
-    <div v-if="isLoading" class="loading-container">
-      <div class="loading-spinner"></div>
-      <p>Loading...</p>
+    <div v-if="isLoading" class="post-detail-loading-wrap">
+      <div class="blog-loading">
+        <div class="blog-loading__spinner"></div>
+        <p class="blog-loading__text">Loading...</p>
+      </div>
     </div>
     
     <!-- 文章不存在状态 -->
@@ -59,7 +61,7 @@
                   }"
                   @click="scrollToSection(item.id)"
                 >
-                  {{ item.number }} {{ item.title }}
+                  {{ item.title }}
                 </div>
               </div>
             </div>
@@ -79,24 +81,29 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useSettingsStore } from '@/stores/settings';
 import { useRoute, useRouter } from 'vue-router';
-import { marked } from 'marked';
+import { Marked } from 'marked';
+import { markedHighlight } from 'marked-highlight';
 import fm from 'front-matter';
-// 代码块
 import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css'; // 选择你喜欢的样式
+import 'highlight.js/styles/github.css';
+import { solidity } from '@/utils/hljs-solidity';
 import BackToTopButton from '@/components/BackToTopButton.vue';
 
-// 配置 marked 使用 highlight.js
-marked.setOptions({
-  highlight: function(code, lang) {
-    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-    return hljs.highlight(code, { language }).value;
-  },
-  langPrefix: 'hljs language-', // 高亮代码块的语言前缀
-  breaks: true,
-  gfm: true,
-  smartypants: false
-});
+// 注册 Solidity 语法高亮（highlight.js 官方未内置，aliases 含 'sol'）
+hljs.registerLanguage('solidity', solidity);
+
+// marked 15 需通过 marked-highlight 扩展才能对代码块做语法高亮，setOptions({ highlight }) 已不再生效
+const marked = new Marked(
+  markedHighlight({
+    langPrefix: 'hljs language-',
+    emptyLangClass: 'hljs',
+    highlight(code, lang) {
+      const language = lang && hljs.getLanguage(lang) ? lang : 'plaintext';
+      return hljs.highlight(code, { language, ignoreIllegals: true }).value;
+    }
+  })
+);
+marked.setOptions({ breaks: true, gfm: true });
 
 const settingsStore = useSettingsStore();
 const route = useRoute();
@@ -135,12 +142,8 @@ const loadPost = async () => {
     const { attributes, body } = fm(text);
     // console.log('Parsed attributes:', attributes); // 调试
     
-    // 转换 Markdown 为 HTML
-    marked.setOptions({
-      breaks: true,
-      gfm: true
-    });
-    const htmlContent = marked(body);
+    // 转换 Markdown 为 HTML（使用 marked-highlight 扩展做代码高亮）
+    const htmlContent = marked.parse(body);
     
     // 解析内容为章节
     currentPost.value = {
@@ -211,9 +214,34 @@ const parseContentToSections = (htmlContent) => {
     });
   });
   
-  // 重新设置HTML内容（包含ID）
-  const updatedHtmlContent = tempDiv.innerHTML;
-  
+  // 为每个代码块添加语言标签与复制按钮（左上角语言、右上角复制）
+  const copyBtnHtml = `<span class="code-block-copy-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></span><span class="code-block-copy-text">复制</span>`;
+  Array.from(tempDiv.querySelectorAll('pre')).forEach((pre) => {
+    const codeEl = pre.querySelector('code');
+    let lang = 'plaintext';
+    if (codeEl && codeEl.className) {
+      const m = codeEl.className.match(/(?:^|\s)(?:hljs\s+)?language-([\w+-]+)/);
+      if (m) lang = m[1];
+    }
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block-wrapper';
+    const header = document.createElement('div');
+    header.className = 'code-block-header';
+    const langSpan = document.createElement('span');
+    langSpan.className = 'code-block-lang';
+    langSpan.textContent = lang;
+    const copyBtn = document.createElement('button');
+    copyBtn.type = 'button';
+    copyBtn.className = 'code-block-copy';
+    copyBtn.setAttribute('aria-label', '复制代码');
+    copyBtn.innerHTML = copyBtnHtml;
+    header.appendChild(langSpan);
+    header.appendChild(copyBtn);
+    wrapper.appendChild(header);
+    pre.parentNode.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+  });
+
   // 分割内容为章节（基于h2）
   const h2Elements = tempDiv.querySelectorAll('h2');
   
@@ -239,7 +267,7 @@ const parseContentToSections = (htmlContent) => {
   } else {
     sections.push({
       title: '',
-      content: updatedHtmlContent
+      content: tempDiv.innerHTML
     });
   }
   
@@ -291,18 +319,40 @@ const goBack = () => {
   }); 
 };
 
+// 代码块一键复制（事件委托，兼容异步渲染的内容）
+const onContainerClick = (e) => {
+  const btn = e.target.closest('.code-block-copy');
+  if (!btn) return;
+  const wrapper = btn.closest('.code-block-wrapper');
+  if (!wrapper) return;
+  const pre = wrapper.querySelector('pre');
+  if (!pre) return;
+  const text = pre.textContent || '';
+  navigator.clipboard.writeText(text).then(() => {
+    const textEl = btn.querySelector('.code-block-copy-text');
+    if (textEl) textEl.textContent = '已复制';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      if (textEl) textEl.textContent = '复制';
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+};
+
 onMounted(() => {
   loadPost();
   const container = document.querySelector('.post-detail-container');
   if (container) {
-      container.addEventListener('scroll', checkCurrentSection);
+    container.addEventListener('scroll', checkCurrentSection);
+    container.addEventListener('click', onContainerClick);
   }
 });
 
 onUnmounted(() => {
   const container = document.querySelector('.post-detail-container');
   if (container) {
-      container.removeEventListener('scroll', checkCurrentSection);
+    container.removeEventListener('scroll', checkCurrentSection);
+    container.removeEventListener('click', onContainerClick);
   }
 });
 </script>
@@ -311,34 +361,33 @@ onUnmounted(() => {
 .post-detail-container {
   position: fixed;
   top: 0;
-  left: calc(100% - 100px);
-  width: calc(100% - 100px);
+  left: calc(100% - 5.4%);
+  width: calc(100% - 5.4%);
   height: 100vh;
   background: var(--bg);
   overflow-y: auto;
-  transition: transform 0.5s cubic-bezier(.05,.47,.64,.99);
-  margin-left: 100px;
+  transition: transform 0.5s var(--ease-out-expo);
+  margin-left: 5.4%;
   z-index: 10;
 }
 
-.loading-container{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 0;
-  color: var(--text-secondary);
-}
 
 .post-detail-container.show {
   transform: translateX(-100%);
 }
 
+.post-detail-loading-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
 .post-detail-content {
-  /* max-width: 70vw; */
   max-width: 1200px;
   margin: 0 auto;
   padding: 60px 40px;
+  font-family: var(--font-family-base);
 }
 
 .header-section {
@@ -347,9 +396,12 @@ onUnmounted(() => {
 }
 
 .header-section h1 {
-  font-size: 2.8rem;
+  font-family: var(--font-family-base);
+  font-size: 2.25rem;
+  font-weight: 700;
   margin-bottom: 1.5rem;
   color: var(--text-primary);
+  letter-spacing: 0.02em;
 }
 
 .post-meta {
@@ -394,25 +446,36 @@ onUnmounted(() => {
   background: white;
   min-width: 100px;
   flex: 1;
-  /* max-width: 1000px; */
+  font-family: var(--font-family-base);
 }
 
+/* 二级、三级标题与正文同字族，避免浏览器用默认标题字体 */
 .article-content :deep(h2) {
-  font-size: 2rem;
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--text-primary);
   margin: 2rem -0.8rem 0.5rem;
+  letter-spacing: 0.02em;
 }
 
+/* 三级标题强制与正文同一字体族，覆盖浏览器默认 */
+.article-content .markdown-content :deep(h3),
 .article-content :deep(h3) {
-  font-size: 1.4rem;
+  font-family: var(--font-family-base);
+  font-size: 1.25rem;
+  font-weight: 600;
   color: var(--text-primary);
   margin: 0.5rem 0 0.5rem;
+  letter-spacing: 0.01em;
 }
 
 .markdown-content {
   color: var(--text-secondary);
-  line-height: 1.8;
-  font-size: 1.1rem;
+  font-family: var(--font-family-base);
+  font-size: 1.0625rem; /* 17px 更利阅读 */
+  line-height: 1.75;
+  letter-spacing: 0.02em;
 }
 
 .markdown-content :deep(p) {
@@ -478,7 +541,7 @@ onUnmounted(() => {
   color: var(--link-color, #3498db); /* 使用CSS变量，有回退值 */
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: all 0.3s ease;
+  transition: color var(--duration-normal) var(--ease-out), border-color var(--duration-normal) var(--ease-out);
   font-weight: 500;
   position: relative;
 }
@@ -496,30 +559,106 @@ onUnmounted(() => {
   color: var(--link-active-color, #e74c3c);
 }
 
-/* 代码块基础样式 */
-.markdown-content :deep(pre) {
-    background: #f6f8fa;
-    border-radius: 6px;
-    padding: 16px;
-    overflow: auto;
-    line-height: 1.45;
-    margin: 1em 0;
+/* 代码块：背景与边框贴合博客主色 --target-color */
+.markdown-content :deep(.code-block-wrapper) {
+  margin: 1em 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--target-color) 10%, white);
+  border: 1px solid color-mix(in srgb, var(--target-color) 28%, transparent);
 }
 
-.markdown-content :deep(code) {
+.markdown-content :deep(.code-block-header) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--target-color) 16%, white);
+  border-bottom: 1px solid color-mix(in srgb, var(--target-color) 22%, transparent);
+  font-family: var(--font-family-code);
+  font-size: 0.8rem;
+}
+
+.markdown-content :deep(.code-block-lang) {
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.markdown-content :deep(.code-block-copy) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-family-base);
+  font-size: 0.8rem;
+  transition: background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.markdown-content :deep(.code-block-copy:hover) {
+  background: color-mix(in srgb, var(--target-color) 25%, transparent);
+  color: var(--target-color);
+}
+
+.markdown-content :deep(.code-block-copy:active) {
+  transform: scale(var(--active-scale));
+}
+
+.markdown-content :deep(.code-block-copy.copied) {
+  color: #2e7d32;
+}
+
+.markdown-content :deep(.code-block-copy-icon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 代码块内容区背景与博客主色一致 */
+.markdown-content :deep(.code-block-wrapper pre) {
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  background: color-mix(in srgb, var(--target-color) 10%, white);
+  padding: 16px;
+  overflow: auto;
+  line-height: 1.45;
+}
+
+.markdown-content :deep(pre:not(.code-block-wrapper pre)) {
+  background: color-mix(in srgb, var(--target-color) 10%, white);
+  border-radius: 6px;
+  padding: 16px;
+  overflow: auto;
+  line-height: 1.45;
+  margin: 1em 0;
+  border: 1px solid color-mix(in srgb, var(--target-color) 28%, transparent);
+}
+
+/* 代码块内的代码 - 保留高亮.js的样式 */
+.markdown-content :deep(pre code) {
     font-size: 85%;
+    background: none;
+    color: inherit;
 }
 
-/* 行内代码 */
+.markdown-content :deep(pre code .hljs) {
+    background: none;
+}
+
+/* 行内代码：与博客主色一致的浅底 */
 .markdown-content :not(pre)>:deep(code) {
-    background-color: rgba(175, 184, 193, 0.2);
-    border-radius: 4px;
-    padding: 0.2em 0.4em;
-}
-
-/* 代码高亮样式覆盖 */
-.hljs {
-    background: transparent !important;
+  background-color: color-mix(in srgb, var(--target-color) 18%, white);
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+  color: var(--text-secondary);
+  font-size: 85%;
+  border: 1px solid color-mix(in srgb, var(--target-color) 22%, transparent);
 }
 
 /* 代码滚动条样式 */
@@ -563,7 +702,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
-  max-height: 80vh; /* 限制列表最大高度 */
+  max-height: 70vh; /* 限制列表最大高度 */
   overflow-y: auto; /* 添加滚动条 */
 }
 
@@ -588,12 +727,17 @@ onUnmounted(() => {
   padding: 0.5rem;
   margin-right: 0.3rem;
   border-radius: 6px;
-  transition: all 0.3s ease;
+  transition: background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 
 .toc-item:hover {
   background: var(--tag-background);
   color: var(--text-primary);
+  transform: translateX(2px);
+}
+
+.toc-item:active {
+  transform: translateX(2px) scale(var(--active-scale));
 }
 
 .toc-item.active {
@@ -629,19 +773,24 @@ onUnmounted(() => {
     border-radius: 25px;
     color: var(--text-primary);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out), background var(--duration-normal) var(--ease-out);
+    box-shadow: var(--shadow-sm);
 }
 
 .back-button:hover {
-    transform: translateX(-3px);
+    transform: translateX(-4px);
     background: var(--button-background-hover);
     box-shadow: var(--shadow-primary);
+}
+
+.back-button:active {
+    transform: translateX(-4px) scale(var(--active-scale));
 }
 
 .back-button svg {
     width: 20px;
     height: 20px;
-    transition: transform 0.3s ease;
+    transition: transform var(--duration-normal) var(--ease-out);
 }
 
 .back-button:hover svg {
@@ -668,8 +817,9 @@ onUnmounted(() => {
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
   border: var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .back-to-top.show {
@@ -678,14 +828,18 @@ onUnmounted(() => {
 }
 
 .back-to-top:hover {
-  transform: translateY(-3px);
+  transform: translateY(var(--hover-lift));
   box-shadow: var(--shadow-primary);
+}
+
+.back-to-top:active {
+  transform: translateY(var(--hover-lift)) scale(var(--active-scale));
 }
 
 .back-to-top svg {
   width: 24px;
   height: 24px;
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out);
 }
 
 .back-to-top:hover svg {

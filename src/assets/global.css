@@ -1,79 +1,157 @@
 /* 全局变量 */
 :root {
-    --target-color: #a1b5d8;
+	--target-color: #a1b5d8;
+	--secondary-color: color-mix(in srgb, var(--target-color), white 70%);
 
-    --text-primary: var(--target-color);
-    --text-secondary: #534e5b;
-    --text-title: var(--target-color);
+	--text-primary: var(--target-color);
+	--text-secondary: #534e5b;
+	--text-title: var(--target-color);
 
-    --glass-blur: 2px;
-    --glass-blur-hover: 10px;
+	--glass-blur: 2px;
+	--glass-blur-hover: 10px;
 
 
-    /* --bg: #F1EFE9; */
-    /* --bg: var(--target-color); */
-    --bg: color-mix(in srgb, var(--target-color), white 70%);
-    --border: 0px solid #9a8c98;
+	/* --bg: #F1EFE9; */
+	/* --bg: var(--target-color); */
+	--bg: color-mix(in srgb, var(--target-color), white 70%);
+	--border: 0px solid #9a8c98;
 
-    --bg-glass: rgba(255, 255, 255, 0.2);
-    --border-glass: rgba(255, 255, 255, 0.3);
-    --shadow-glass: 2px 2px 1px #dedede, -2px -2px 1px #dedede;
-    --shadow-glass-hover: 5px 5px 1px #dedede, -5px -5px 1px #dedede;
+	--bg-glass: rgba(255, 255, 255, 0.2);
+	--border-glass: rgba(255, 255, 255, 0.3);
+	--shadow-glass: 2px 2px 1px #dedede, -2px -2px 1px #dedede;
+	--shadow-glass-hover: 5px 5px 1px #dedede, -5px -5px 1px #dedede;
 
-    --tag-color: var(--text-secondary);
-    --tag-border: 1px solid var(--target-color);
-    --tag-background: white;
-    --tag-background-hover: var(--target-color);
+	--tag-color: var(--text-secondary);
+	--tag-border: 1px solid var(--target-color);
+	--tag-background: white;
+	--tag-background-hover: var(--target-color);
 
-    --button-background: white;
-    --button-background-hover: white;
+	--button-background: white;
+	--button-background-hover: white;
 
-    --shadow-primary: 5px 5px 7px var(--target-color);
+	/* 全站统一：阴影层级（均基于主题色，风格一致） */
+	--shadow-sm: 0 2px 6px color-mix(in srgb, var(--target-color) 18%, transparent);
+	--shadow-md: 0 4px 12px color-mix(in srgb, var(--target-color) 22%, transparent);
+	--shadow-lg: 5px 5px 14px color-mix(in srgb, var(--target-color) 28%, transparent);
+	--shadow-primary: var(--shadow-lg);
 
-    --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-        'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-    --font-family-code: Consolas, monospace, 'SFMono-Regular', 'Liberation Mono', Menlo,
-        Courier;
+	/* 全站统一：过渡时间与缓动 */
+	--ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
+	--ease-out-expo: cubic-bezier(0.05, 0.47, 0.64, 0.99);
+	--ease-spring: cubic-bezier(0.65, 0.43, 0.31, 1.23);
+	--duration-fast: 0.2s;
+	--duration-normal: 0.25s;
+	--duration-slow: 0.3s;
+
+	/* 全站统一：悬停 / 点击反馈 */
+	--hover-lift: -4px;
+	--hover-lift-sm: -2px;
+	--hover-scale: 1.05;
+	--hover-scale-sm: 1.02;
+	--active-scale: 0.98;
+	--focus-ring: 2px solid var(--target-color);
+	--focus-ring-offset: 2px;
+
+	/* 全站统一字体：正文适合长文阅读，代码等宽 */
+	--font-family-base: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+		Roboto, 'Helvetica Neue', Arial, 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+	--font-family-code: Consolas, ui-monospace, 'Cascadia Code', 'SF Mono', 'Liberation Mono', Menlo, monospace;
 
 }
 
-/* 基础卡片样式 - 现在使用CSS变量 */
+/* 基础卡片样式 - 使用全局过渡与阴影变量 */
 .blog-card {
-    padding: 40px;
-    background-color: var(--bg-glass);
-    color: var(--text-primary);
-    border: 1px solid var(--border-glass);
-    box-shadow: var(--shadow-glass);
-    transition: all 0.3s ease;
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+	padding: 40px;
+	background-color: var(--bg-glass);
+	color: var(--text-primary);
+	border: 1px solid var(--border-glass);
+	box-shadow: var(--shadow-glass);
+	transition: box-shadow var(--duration-slow) var(--ease-out), backdrop-filter var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
+	backdrop-filter: blur(var(--glass-blur));
+	-webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .blog-card:hover {
-    backdrop-filter: blur(var(--glass-blur-hover));
-    -webkit-backdrop-filter: blur(var(--glass-blur-hover));
-    box-shadow: var(--shadow-glass-hover);
+	backdrop-filter: blur(var(--glass-blur-hover));
+	-webkit-backdrop-filter: blur(var(--glass-blur-hover));
+	box-shadow: var(--shadow-glass-hover);
 }
 
-/* 文本样式 */
+/* 文本样式：标题与正文同字族，避免浏览器默认标题字体 */
 h1,
 h2,
 h3 {
-    color: var(--text-primary);
+	color: var(--text-primary);
+	font-family: inherit;
 }
 
 p {
-    color: var(--text-secondary);
+	color: var(--text-secondary);
 }
 
 html {
-    scroll-behavior: smooth;
+	scroll-behavior: smooth;
+}
+
+/* 全站可聚焦元素：统一焦点环（键盘可访问性） */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible {
+	outline: var(--focus-ring);
+	outline-offset: var(--focus-ring-offset);
+}
+
+/* ========== 全站统一加载动画（与主题色、玻璃风格一致） ========== */
+@keyframes blog-loading-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes blog-loading-pulse {
+
+	0%,
+	100% {
+		opacity: 0.5;
+	}
+
+	50% {
+		opacity: 1;
+	}
+}
+
+.blog-loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 4rem 2rem;
+	min-height: 160px;
+	color: var(--text-secondary);
+}
+
+.blog-loading__spinner {
+	width: 44px;
+	height: 44px;
+	border: 3px solid color-mix(in srgb, var(--target-color) 22%, transparent);
+	border-top-color: var(--target-color);
+	border-radius: 50%;
+	animation: blog-loading-spin 0.9s var(--ease-out) infinite;
+}
+
+.blog-loading__text {
+	margin-top: 1.25rem;
+	font-size: 0.95rem;
+	color: var(--text-secondary);
+	animation: blog-loading-pulse 1.4s ease-in-out infinite;
 }
 
 
 /* 应用到所有元素 */
 * {
-    font-family: var(--font-family-base);
+	font-family: var(--font-family-base);
 }
 
 /* 代码区域使用等宽字体 */
@@ -81,5 +159,5 @@ code,
 pre,
 kbd,
 samp {
-    font-family: var(--font-family-code);
+	font-family: var(--font-family-code);
 }

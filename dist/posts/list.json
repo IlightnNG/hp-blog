@@ -1,11 +1,65 @@
 [
   {
+    "id": "20260208-FromVueToReact",
+    "path": "/posts/20260208-FromVueToReact.md",
+    "title": "From Vue to React: A Practical Introduction",
+    "date": "2026/02/08",
+    "tags": [
+      "React",
+      "Vue"
+    ],
+    "excerpt": "Both Vue and React are popular UI libraries with similar goals but different philosophies. This post highlights the main differences, then walks through React’s core ideas so you can get productive quickly."
+  },
+  {
+    "id": "20260206-BlockchainEcosystem",
+    "path": "/posts/20260206-BlockchainEcosystem.md",
+    "title": "The Blockchain Ecosystem: A Comprehensive Technical Overview",
+    "date": "2026/02/06",
+    "tags": [
+      "Blockchain",
+      "Ethereum"
+    ],
+    "excerpt": "Blockchain technology has evolved from a single cryptocurrency platform to a multi-layered ecosystem of specialized networks, each solving different aspects of the scalability trilemma: decentralization, security, and scalability. "
+  },
+  {
+    "id": "20260126-SolidityAbi",
+    "path": "/posts/20260126-SolidityAbi.md",
+    "title": "Understanding Solidity's ABI Encoding: A Practical Guide",
+    "date": "2026/01/26",
+    "tags": [
+      "Solidity"
+    ],
+    "excerpt": "Solidity provides several functions for ABI (Application Binary Interface) encoding and decoding, each serving specific purposes. Let's explore these essential tools."
+  },
+  {
+    "id": "20260124-FoundryTest",
+    "path": "/posts/20260124-FoundryTest.md",
+    "title": "Mastering Foundry: A Comprehensive Guide to Smart Contract Testing",
+    "date": "2026/01/24",
+    "tags": [
+      "Foundry",
+      "Solidity"
+    ],
+    "excerpt": "Foundry has emerged as the go-to framework for Ethereum smart contract development and testing. With its blazing-fast performance and developer-friendly approach, it's revolutionizing how we write and test Solidity code. "
+  },
+  {
+    "id": "20260120-ERC",
+    "path": "/posts/20260120-ERC.md",
+    "title": "Understanding Ethereum Token Standards: ERC-20, ERC-721, and Beyond",
+    "date": "2026/01/20",
+    "tags": [
+      "Ethereum",
+      "Solidity"
+    ],
+    "excerpt": "The Ethereum blockchain revolutionized digital ownership through smart contracts, with token standards serving as the backbone of this ecosystem. These standards define how digital assets are created, transferred, and managed on-chain. "
+  },
+  {
     "id": "20251210-SVMRandomForest",
     "path": "/posts/20251210-SVMRandomForest.md",
     "title": "Image Classification on Tiny ImageNet: A PCA + SVM vs. Random Forest Comparison",
     "date": "2025/12/10",
     "tags": [
-      "MachineLeaning"
+      "ML"
     ],
     "excerpt": "A small-scale image classification project using the Tiny ImageNet-200 dataset to compare two classic machine learning models—Support Vector Machine (SVM) and Random Forest, using PCA for dimensionality reduction and minimal image preprocessing."
   },
@@ -15,8 +69,7 @@
     "title": "Comprehensive Guide to Unity UI Interaction Development: Core Tips & Best Practices",
     "date": "2025/12/08",
     "tags": [
-      "Unity",
-      "UI"
+      "Unity"
     ],
     "excerpt": "This article summarizes essential techniques, solutions, and best practices for Unity UI interaction development. It covers critical scenarios including UI event handling, animation control, layout management, and state synchronization."
   },
@@ -26,8 +79,7 @@
     "title": "Unity 2D Game Development Tutorial for Beginners",
     "date": "2025/12/07",
     "tags": [
-      "Unity",
-      "Game"
+      "Unity"
     ],
     "excerpt": "For 2D game development, Unity provides specialized tools and workflows that make it accessible for beginners while remaining powerful enough for professional developers."
   },
@@ -37,8 +89,7 @@
     "title": "Python深度解析：从设计哲学到AI主流语言的演进之路",
     "date": "2025/11/10",
     "tags": [
-      "Python",
-      "Feature"
+      "Python"
     ],
     "excerpt": "本文旨在为有经验的开发者提供一个全面的Python特性概览，深入探讨其设计哲学、核心特性，并分析为何它能在深度学习领域占据主导地位。"
   },
@@ -68,7 +119,6 @@
     "title": "Lit Protocol 上手指南：Web3 的链上权限控制",
     "date": "2025/08/31",
     "tags": [
-      "Lit-protocol",
       "Web3"
     ],
     "excerpt": "Lit Protocol 是一个去中心化的密钥管理网络，为 Web3 应用提供强大的加密和访问控制功能。它允许开发者基于区块链条件（如持有特定 NFT、代币余额或钱包地址）来控制数据的访问权限。"
@@ -79,8 +129,7 @@
     "title": "vue项目适配显示markdown",
     "date": "2025-06-08",
     "tags": [
-      "Vue",
-      "Markdown"
+      "Vue"
     ],
     "excerpt": "在我的博客项目中使用markdown作为文章内容格式"
   },
@@ -111,8 +160,7 @@
     "title": "Gradle下载慢问题简易解决方法",
     "date": "2025-06-04",
     "tags": [
-      "Gradle",
-      "镜像源"
+      "Gradle"
     ],
     "excerpt": "单次解决Gradle下载慢问题，但每次新项目初始化Gradle时都要重新修改"
   }

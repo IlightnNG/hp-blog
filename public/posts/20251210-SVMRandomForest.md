@@ -1,7 +1,7 @@
 ---
 title: "Image Classification on Tiny ImageNet: A PCA + SVM vs. Random Forest Comparison"
 date: 2025/12/10
-tags: [MachineLeaning]
+tags: [ML]
 excerpt: "A small-scale image classification project using the Tiny ImageNet-200 dataset to compare two classic machine learning models—Support Vector Machine (SVM) and Random Forest, using PCA for dimensionality reduction and minimal image preprocessing."
 ---
 

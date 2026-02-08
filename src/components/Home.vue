@@ -21,11 +21,11 @@ import { useSettingsStore } from '@/stores/settings'
 const settingsStore = useSettingsStore()
 const blogCard = ref(null);
 
-// 鼠标进入磁吸贴
+// 鼠标进入磁吸贴：使用与全站一致的“上浮+阴影”
 const handleMouseEnter = () => {
   if (!blogCard.value) return;
-  blogCard.value.style.transform = 'translateZ(20px) translateY(-2px) ';
-  blogCard.value.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+  blogCard.value.style.transform = 'translateZ(20px) translateY(-4px)';
+  blogCard.value.style.boxShadow = 'var(--shadow-md)';
 };
 
 // 鼠标在磁吸贴上移动
@@ -76,7 +76,7 @@ const handleMouseLeave = () => {
   height: 200px; /* 根据你的设计调整 */
   cursor: pointer;
   transform-style: preserve-3d; /* 关键：启用3D变换 */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow) var(--ease-out);
   will-change: transform; /* 优化性能 */
   
   /* 初始状态 */

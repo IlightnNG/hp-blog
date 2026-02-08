@@ -15,9 +15,9 @@
         <!-- 左侧：文章列表 -->
         <div class="articles-section">
           <!-- 加载状态 -->
-          <div v-if="isLoading" class="loading-container">
-            <div class="loading-spinner"></div>
-            <p>Loading Posts...</p>
+          <div v-if="isLoading" class="blog-loading">
+            <div class="blog-loading__spinner"></div>
+            <p class="blog-loading__text">Loading Posts...</p>
           </div>
           
           <!-- 无文章状态 -->
@@ -27,7 +27,7 @@
           
           <!-- 文章列表 -->
           <div v-else class="articles-list">
-            <div v-for="article in filteredArticles" :key="article.id" class="article-card" @click="selectArticle(article)">
+            <div v-for="article in paginatedArticles" :key="article.id" class="article-card" @click="selectArticle(article)">
               <div class="article-meta">
                 <span class="article-date">{{ formatDate(article.date) }}</span>
                 <div class="article-tags">
@@ -36,6 +36,41 @@
               </div>
               <h2 class="article-title">{{ article.title }}</h2>
               <p class="article-excerpt">{{ article.excerpt }}</p>
+            </div>
+
+            <!-- 分页 -->
+            <div class="pagination-wrap" v-if="totalPages > 1">
+              <div class="pagination-info">
+                共 {{ filteredArticles.length }} 篇，第 {{ currentPage }} / {{ totalPages }} 页
+              </div>
+              <div class="pagination">
+                <button
+                  class="page-btn"
+                  :disabled="currentPage <= 1"
+                  @click="currentPage = Math.max(1, currentPage - 1)"
+                >
+                  上一页
+                </button>
+                <div class="page-numbers">
+                  <button
+                    v-for="p in visiblePageNumbers"
+                    :key="p"
+                    class="page-num"
+                    :class="{ active: p === currentPage, ellipsis: p === -1 }"
+                    :disabled="p === -1"
+                    @click="p !== -1 && (currentPage = p)"
+                  >
+                    {{ p === -1 ? '...' : p }}
+                  </button>
+                </div>
+                <button
+                  class="page-btn"
+                  :disabled="currentPage >= totalPages"
+                  @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                >
+                  下一页
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -82,7 +117,7 @@
 
 <script setup>
 import { useSettingsStore } from '@/stores/settings'
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 // 回到顶部相关
 import BackToTopButton from '@/components/BackToTopButton.vue';
@@ -153,6 +188,49 @@ const filteredArticles = computed(() => {
   });
 });
 
+// 分页（与 Media 页一致）
+const pageSize = 10;
+const currentPage = ref(1);
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredArticles.value.length / pageSize))
+);
+
+const paginatedArticles = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  return filteredArticles.value.slice(start, start + pageSize);
+});
+
+const visiblePageNumbers = computed(() => {
+  const total = totalPages.value;
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const cur = currentPage.value;
+  const pages = [];
+  if (cur <= 4) {
+    for (let i = 1; i <= 5; i++) pages.push(i);
+    pages.push(-1);
+    pages.push(total);
+  } else if (cur >= total - 3) {
+    pages.push(1);
+    pages.push(-1);
+    for (let i = total - 4; i <= total; i++) pages.push(i);
+  } else {
+    pages.push(1);
+    pages.push(-1);
+    for (let i = cur - 1; i <= cur + 1; i++) pages.push(i);
+    pages.push(-1);
+    pages.push(total);
+  }
+  return pages;
+});
+
+watch([searchQuery, selectedTags], () => {
+  currentPage.value = 1;
+}, { deep: true });
+watch(totalPages, (n) => {
+  if (currentPage.value > n) currentPage.value = n;
+});
+
 // 格式化日期
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -194,13 +272,13 @@ onUnmounted(() => {
 .posts-container {
   position: fixed;
   top: 0;
-  left: calc(100% - 100px);
-  width: calc(100% - 100px);
+  left: calc(100% - 5.4%);
+  width: calc(100% - 5.4%);
   height: 100vh;
   background: var(--bg);
   overflow-y: auto;
-  transition: transform 0.5s cubic-bezier(.05,.47,.64,.99);
-  margin-left: 100px;
+  transition: transform 0.5s var(--ease-out-expo);
+  margin-left: 5.4%;
   z-index: 100;
 }
 
@@ -210,8 +288,8 @@ onUnmounted(() => {
 }
 
 .posts-content {
-  max-width: 1400px;
-  /* max-width: 80vw; */
+  max-width: 1250px;
+  /* max-width: 70vw; */
   margin: 0 auto;
   padding: 0 40px;
   position: relative;   
@@ -261,19 +339,105 @@ onUnmounted(() => {
   flex: 2;
 }
 
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 0;
-  color: var(--text-secondary);
-}
-
 .articles-list {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+
+.pagination-wrap {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--text-title) 25%, transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.page-btn {
+  padding: 0.5rem 1rem;
+  border: var(--border);
+  border-radius: 8px;
+  background: white;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  box-shadow: var(--shadow-sm);
+}
+
+.page-btn:hover:not(:disabled) {
+  background: var(--target-color);
+  color: white;
+  border-color: var(--target-color);
+  transform: scale(var(--hover-scale-sm));
+}
+
+.page-btn:active:not(:disabled) {
+  transform: scale(var(--active-scale));
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.page-num {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 0.4rem;
+  border: var(--border);
+  border-radius: 8px;
+  background: white;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  box-shadow: var(--shadow-sm);
+}
+
+.page-num:hover:not(:disabled):not(.ellipsis) {
+  background: var(--target-color);
+  color: white;
+  border-color: var(--target-color);
+  transform: scale(var(--hover-scale-sm));
+}
+
+.page-num:active:not(:disabled):not(.ellipsis) {
+  transform: scale(var(--active-scale));
+}
+
+.page-num.active {
+  background: var(--target-color);
+  color: white;
+  border-color: var(--target-color);
+}
+
+.page-num.ellipsis,
+.page-num:disabled {
+  cursor: default;
+  border-color: transparent;
+  background: transparent;
 }
 
 .article-card {
@@ -281,14 +445,19 @@ onUnmounted(() => {
   border: var(--border);
   background: white;
   border-radius: 12px;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
   cursor: pointer;
   min-width: 100px;
+  box-shadow: var(--shadow-sm);
 }
 
 .article-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--hover-lift));
   box-shadow: var(--shadow-primary);
+}
+
+.article-card:active {
+  transform: translateY(var(--hover-lift)) scale(var(--active-scale));
 }
 
 .article-meta {
@@ -345,20 +514,26 @@ onUnmounted(() => {
   border: var(--border);
   border-radius: 12px;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
   background: white;
   color: var(--text-secondary);
+  box-shadow: var(--shadow-sm);
 }
 
 .search-box input:hover {
   outline: none;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-primary);
+  transform: translateY(var(--hover-lift-sm));
+  box-shadow: var(--shadow-md);
 }
 
 .search-box input:focus {
   outline: none;
   box-shadow: var(--shadow-primary);
+}
+
+.search-box input:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .tags-section {
@@ -367,11 +542,12 @@ onUnmounted(() => {
   padding: 1.5rem;
   border-radius: 12px;
   border: var(--border);
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
+  box-shadow: var(--shadow-sm);
 }
 
-.tags-section:hover{
-  transform: translateY(-2px);
+.tags-section:hover {
+  transform: translateY(var(--hover-lift-sm));
   box-shadow: var(--shadow-primary);
 }
 
@@ -394,12 +570,17 @@ onUnmounted(() => {
   border-radius: 20px;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 
 .tag:hover {
   background: var(--tag-background-hover);
   color: white;
+  transform: scale(var(--hover-scale-sm));
+}
+
+.tag:active {
+  transform: scale(var(--active-scale));
 }
 
 .tag.active {
@@ -407,6 +588,7 @@ onUnmounted(() => {
   color: white;
 }
 
+/* 回到顶部由 BackToTopButton 组件提供，此处仅保留占位/兼容 */
 .back-to-top {
   position: sticky;
   left: calc(100% - 100px);
@@ -422,8 +604,9 @@ onUnmounted(() => {
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
   border: var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .back-to-top.show {
@@ -432,14 +615,18 @@ onUnmounted(() => {
 }
 
 .back-to-top:hover {
-  transform: translateY(-3px);
+  transform: translateY(var(--hover-lift));
   box-shadow: var(--shadow-primary);
+}
+
+.back-to-top:active {
+  transform: translateY(var(--hover-lift)) scale(var(--active-scale));
 }
 
 .back-to-top svg {
   width: 24px;
   height: 24px;
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out);
 }
 
 .back-to-top:hover svg {

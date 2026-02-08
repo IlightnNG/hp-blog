@@ -154,8 +154,8 @@ defineExpose({
   cursor: pointer;
   border: var(--border);
   z-index: 100;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out), opacity var(--duration-normal) var(--ease-out);
   opacity: 0;
   visibility: hidden;
 }
@@ -166,19 +166,23 @@ defineExpose({
 }
 
 .back-to-top:hover {
-  transform: translateY(-3px);
+  transform: translateY(var(--hover-lift));
   box-shadow: var(--shadow-primary);
 }
 
+.back-to-top:active {
+  transform: translateY(var(--hover-lift)) scale(var(--active-scale));
+}
+
 .back-to-top:focus {
-  outline: 2px solid var(--target-color);
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .back-to-top svg {
   width: 24px;
   height: 24px;
-  transition: transform 0.3s ease;
+  transition: transform var(--duration-normal) var(--ease-out);
 }
 
 .back-to-top:hover svg {
