@@ -1,7 +1,7 @@
 ---
 title: "Gradle下载慢问题简易解决方法"
 date: "2025-06-04"
-tags: ["Gradle", "镜像源"]
+tags: ["Gradle"]
 excerpt: "单次解决Gradle下载慢问题，但每次新项目初始化Gradle时都要重新修改"
 ---
 
