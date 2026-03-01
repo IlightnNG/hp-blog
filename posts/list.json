@@ -1,5 +1,31 @@
 [
   {
+    "id": "20260219-CAPandBASE",
+    "path": "/posts/20260219-CAPandBASE.md",
+    "title": "A Brief Introduction to CAP & BASE Theorems",
+    "date": "2026/02/20",
+    "tags": [],
+    "excerpt": "CAP Theorem focuses on the trade-offs during a partition, while BASE provides a practical implementation model for highly available distributed systems."
+  },
+  {
+    "id": "20260220-Redis",
+    "path": "/posts/20260220-Redis.md",
+    "title": "Deep Dive into Redis: Architecture, Advantages, and Ecosystem Comparison",
+    "date": "2026/02/20",
+    "tags": [
+      "Redis"
+    ],
+    "excerpt": "Redis is an open-source, in-memory data structure store. It is often referred to as a data structure server because its core functionality goes far beyond simple key-value storage."
+  },
+  {
+    "id": "20260220-Seata",
+    "path": "/posts/20260220-Seata.md",
+    "title": "A Brief Introduction to Seata and Its Four Transaction Modes",
+    "date": "2026/02/20",
+    "tags": [],
+    "excerpt": "Seata is an open-source distributed transaction solution. It is designed to provide high-performance and easy-to-use distributed transaction services in microservice architectures."
+  },
+  {
     "id": "20260208-FromVueToReact",
     "path": "/posts/20260208-FromVueToReact.md",
     "title": "From Vue to React: A Practical Introduction",
