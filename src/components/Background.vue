@@ -46,7 +46,6 @@ const TRIANGLE_SIZE = window.innerWidth/32;
 const TRIANGLE_WIDE = TRIANGLE_SIZE * Math.sqrt(3) / 2;
 const COLORS = {
 base: new THREE.Color(0xa1b5d8),
-target: new THREE.Color(0xffc8dd),
 wireframe: new THREE.Color(0xffffff)
 };
 
@@ -407,8 +406,8 @@ const startFlipAnimation = (triangleIndex) => {
     const generateNewTargetColor = () => {
         // 使用HSL颜色空间生成随机颜色
         const hue = Math.random(); // 0-1 对应 0-360度
-        const saturation = 0.3 + Math.random() * 0.12; // 0.4-0.6 饱和度
-        const lightness = 0.3 + Math.random() * 0.15; // 0.4-0.6 亮度
+        const saturation = 0.2 + Math.random() * 0.15; // 0.2-0.35 饱和度
+        const lightness = 0.3 + Math.random() * 0.15; // 0.3-0.45 亮度
         console.log("饱和度："+saturation +"亮度："+ lightness)
         
         const color = new THREE.Color();
