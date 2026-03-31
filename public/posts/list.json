@@ -1,5 +1,15 @@
 [
   {
+    "id": "20260301-SQLReview",
+    "path": "/posts/20260301-SQLReview.md",
+    "title": "SQL 语法与知识点复习",
+    "date": "2026/03/01",
+    "tags": [
+      "SQL"
+    ],
+    "excerpt": "本文旨在快速回顾 SQL 的核心语法、重要概念以及面试中常见的高频考点。内容按模块组织，力求简明扼要，适合已有一定基础的复习使用。"
+  },
+  {
     "id": "20260219-CAPandBASE",
     "path": "/posts/20260219-CAPandBASE.md",
     "title": "A Brief Introduction to CAP & BASE Theorems",

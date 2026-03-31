@@ -35,6 +35,7 @@ async function main() {
         execSync('npm run build', { stdio: 'inherit' })
 
         // 3. 复制404页面
+        // cp dist/index.html dist/404.html
         if (existsSync('dist/index.html')) {
             copyFileSync('dist/index.html', 'dist/404.html')
         } else {
@@ -47,11 +48,11 @@ async function main() {
         execSync('git push origin main', { stdio: 'inherit' })
 
         // 5. 部署到 gh-pages
-        if (existsSync('dist')) {
-            execSync('npx gh-pages -d dist -r https://github.com/IlightnNG/hp-blog.git', { stdio: 'inherit' })
-        } else {
-            throw new Error('dist directory not found')
-        }
+        // if (existsSync('dist')) {
+        //     execSync('npx gh-pages -d dist -r https://github.com/IlightnNG/hp-blog.git', { stdio: 'inherit' })
+        // } else {
+        //     throw new Error('dist directory not found')
+        // }
 
         console.log('✅ 发布成功!')
     } catch (error) {
