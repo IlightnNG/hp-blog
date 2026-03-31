@@ -1,5 +1,15 @@
 [
   {
+    "id": "20260331-Raft",
+    "path": "/posts/20260331-Raft.md",
+    "title": "Understanding Distributed Consensus: Raft, Paxos, and ZooKeeper (ZAB)",
+    "date": "2026/03/31",
+    "tags": [
+      "Distributed"
+    ],
+    "excerpt": "Paxos, Raft and ZAB"
+  },
+  {
     "id": "20260301-SQLReview",
     "path": "/posts/20260301-SQLReview.md",
     "title": "SQL 语法与知识点复习",
