@@ -1,0 +1,345 @@
+# ============ 2025 年 ============
+# 字段说明: title(必填) / type(必填: anime|book|movie|game|cartoon|series) / date(必填 YYYY-MM-DD)
+#           / rating(0-10 可选) / tags(可选) / summary(可选) / review(可选)
+# 只看过未评价的条目只需三行（title/type/date）
+
+- title: 魔女与使魔
+  type: anime
+  date: '2025-01-01'
+
+- title: 葬送的芙莉莲
+  type: anime
+  date: '2025-01-01'
+
+- title: 这公司有我喜欢的人
+  type: anime
+  date: '2025-01-01'
+
+- title: 学生会的一己之见
+  type: anime
+  date: '2025-01-01'
+
+- title: 不时用俄语小声说真心话的邻桌艾莉同学
+  type: anime
+  date: '2025-01-01'
+
+- title: 关于前辈很烦人的事
+  type: anime
+  date: '2025-01-01'
+
+- title: 吹响吧！上低音号3
+  type: anime
+  date: '2025-01-01'
+
+- title: 无名记忆
+  type: anime
+  date: '2025-01-01'
+
+- title: 夜晚的水母不会游泳
+  type: anime
+  date: '2025-01-01'
+
+- title: 迷宫饭
+  type: anime
+  date: '2025-01-01'
+
+- title: 我独自升级
+  type: anime
+  date: '2025-01-01'
+
+- title: Ave Mujica
+  type: anime
+  date: '2025-01-01'
+
+- title: 群花绽放彷如修罗
+  type: anime
+  date: '2025-01-01'
+
+- title: 药屋少女的呢喃2
+  type: anime
+  date: '2025-01-01'
+
+- title: 人月神话
+  type: book
+  date: '2025-01-01'
+
+- title: 少年的深渊
+  type: cartoon
+  date: '2025-01-12'
+  rating: 7.5
+  tags: [悬疑]
+  summary: 疯了，全疯了
+
+- title: 擅长逃跑的殿下
+  type: anime
+  date: '2025-02-20'
+  rating: 9.1
+  tags: [历史, 战斗]
+  summary: 少主可爱捏
+
+- title: 名侦探的献祭
+  type: book
+  date: '2025-03-11'
+  rating: 9.7
+  tags: [推理]
+  summary: 侦探也可以是杀人犯，白井nb
+
+- title: 虫笼的卡伽斯特尔
+  type: anime
+  date: '2025-03-13'
+
+- title: 双月城的惨案
+  type: book
+  date: '2025-03-14'
+  rating: 9.3
+  tags: [推理]
+  summary: 一次意外，两次自杀，两次谋杀
+
+- title: 献给名侦探的甜美死亡
+  type: book
+  date: '2025-03-18'
+  rating: 9.4
+  tags: [推理]
+  summary: 傀儡屋和玩偶屋的手法真的精巧
+
+- title: 失忆投捕
+  type: anime
+  date: '2025-03-18'
+  rating: 9.6
+  tags: [校园, 运动, 热血]
+  summary: 真是宝藏番
+
+- title: 英雄联盟：双城之战
+  type: anime
+  date: '2025-03-20'
+  rating: 9.3
+  tags: [科幻, 冒险]
+  summary: 整体还是可以的群像剧，各方势力的利益冲突
+
+- title: 蓝箱
+  type: anime
+  date: '2025-03-25'
+  rating: 9.7
+  tags: [校园, 运动, 恋爱]
+  summary: 真是青春啊，每次看都能收到鼓舞，胃疼除外
+
+- title: 金牌得主
+  type: anime
+  date: '2025-03-30'
+  rating: 9.6
+  tags: [热血, 运动]
+  summary: 运动的魅力
+
+- title: 我独自升级2
+  type: anime
+  date: '2025-04-01'
+  rating: 9.4
+  tags: [奇幻, 战斗]
+  summary: 流畅又独特的分镜，平淡又深远的立意，每个人都有适合自己的人生啊
+
+- title: 红战士转职冒险者
+  type: anime
+  date: '2025-04-01'
+  rating: 9.2
+  tags: [奇幻, 战斗, 特摄]
+  summary: 非常精良的搞笑番
+
+- title: 高达GQuX
+  type: anime
+  date: '2025-04-01'
+
+- title: 男女之间存在纯友情吗
+  type: anime
+  date: '2025-04-01'
+
+- title: 赛马娘芦毛灰姑娘
+  type: anime
+  date: '2025-04-01'
+
+- title: 直到某魔女死去
+  type: anime
+  date: '2025-04-01'
+
+- title: 紫云寺家的兄弟姐妹
+  type: anime
+  date: '2025-04-01'
+
+- title: 冰海战记2
+  type: anime
+  date: '2025-04-02'
+  rating: 9.4
+  tags: [热血, 战斗]
+  summary: 真正的战士是不需要剑的
+
+- title: 奇想，天动
+  type: book
+  date: '2025-04-03'
+
+- title: 无人逝去
+  type: book
+  date: '2025-04-08'
+  rating: 9.4
+  tags: [推理]
+  summary: 居然是复活，与无人生还相对
+
+- title: 昨日之歌
+  type: anime
+  date: '2025-04-12'
+  rating: 8.8
+  tags: [恋爱, 日常]
+  summary: 熟悉的三角恋，复杂的人物关系
+
+- title: 魔法少女与邪恶曾经敌对
+  type: anime
+  date: '2025-04-20'
+  rating: 9.3
+  tags: [恋爱, 萌系]
+  summary: 可爱就对了
+
+- title: 战队大失格
+  type: anime
+  date: '2025-05-01'
+  rating: 8.5
+  tags: [奇幻, 战斗, 特摄]
+  summary: 世界观挺有意思的
+
+- title: 莫失莫忘
+  type: book
+  date: '2025-05-06'
+
+- title: 斜屋犯罪
+  type: book
+  date: '2025-05-09'
+  rating: 9.3
+  tags: [推理]
+  summary: 滑，就嗯滑
+
+- title: 圣诞之吻SS2
+  type: anime
+  date: '2025-06-01'
+  rating: 9.2
+  tags: [日常, 恋爱, 校园]
+  summary: 非常适合圣诞节看的番
+
+- title: 机动战士高达：闪光的哈萨维
+  type: anime
+  date: '2025-06-01'
+  rating: 9.5
+  tags: [高达, 战斗, 科幻]
+  summary: 视听盛宴，理想主义与现实的碰撞
+
+- title: 拔作岛
+  type: anime
+  date: '2025-07-01'
+
+- title: 沉默的魔女
+  type: anime
+  date: '2025-07-01'
+
+- title: 胆大党2
+  type: anime
+  date: '2025-07-01'
+
+- title: 更衣人偶2
+  type: anime
+  date: '2025-07-01'
+
+- title: 琉璃的宝石
+  type: anime
+  date: '2025-07-01'
+
+- title: 青春猪头少年不会梦到圣诞服女郎
+  type: anime
+  date: '2025-07-01'
+
+- title: 我们不可能成为恋人，绝对不行！
+  type: anime
+  date: '2025-07-01'
+
+- title: 新吊带袜天使
+  type: anime
+  date: '2025-07-01'
+
+- title: 凸变英雄X
+  type: anime
+  date: '2025-07-01'
+
+- title: 章鱼噼的原罪
+  type: anime
+  date: '2025-07-01'
+
+- title: 突变英雄X
+  type: anime
+  date: '2025-08-01'
+
+- title: 赛马娘 芦毛灰姑娘
+  type: anime
+  date: '2025-08-01'
+
+- title: 末日后酒店
+  type: anime
+  date: '2025-08-01'
+  rating: 9.8
+
+- title: 薰香花朵凛然绽放
+  type: anime
+  date: '2025-09-01'
+
+- title: 夏日口袋
+  type: anime
+  date: '2025-09-01'
+
+- title: The Gorge
+  type: movie
+  date: '2025-10-17'
+  tags: [科幻, 恋爱]
+  summary: 独属于ISTP的热恋与冒险
+
+- title: 公主大人，接下来是拷问时间
+  type: anime
+  date: '2025-10-26'
+  tags: [搞笑]
+  summary: 温馨的魔界
+
+- title: 克雷瓦提斯
+  type: anime
+  date: '2025-10-30'
+  tags: [奇幻, 冒险]
+  summary: 世界观还是挺有意思的
+
+- title: 恋爱限定
+  type: anime
+  date: '2025-11-09'
+  rating: 9.5
+  tags: [恋爱, 群像]
+  summary: 无比青涩的恋爱，无比胃疼的暗恋
+
+- title: 男孩遇见女孩
+  type: anime
+  date: '2025-11-15'
+  tags: [恋爱]
+  summary: 天马行空，短小精悍
+
+- title: 百合熊岚
+  type: anime
+  date: '2025-11-25'
+  tags: [百合, 奇幻]
+  summary: 百合承认！！！
+
+- title: 超人幻想
+  type: anime
+  date: '2025-11-29'
+  tags: [奇幻, 热血]
+  summary: 每个人都在守护自诩的正义
+
+- title: 对某飞行员的恋歌
+  type: anime
+  date: '2025-12-02'
+  tags: [科幻, 恋爱]
+  summary: 结局有些草率
+
+- title: 对某飞行员的追忆
+  type: anime
+  date: '2025-12-06'
+  tags: [科幻, 恋爱]
+  summary: 天降青梅是对的

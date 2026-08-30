@@ -1,0 +1,142 @@
+# ============ 2022 年 ============
+# 字段说明: title(必填) / type(必填: anime|book|movie|game|cartoon|series) / date(必填 YYYY-MM-DD)
+#           / rating(0-10 可选) / tags(可选) / summary(可选) / review(可选)
+# 只看过未评价的条目只需三行（title/type/date）
+
+- title: 咒术回战
+  type: anime
+  date: '2022-01-01'
+
+- title: 国王排名
+  type: anime
+  date: '2022-01-01'
+
+- title: 致不灭的你
+  type: anime
+  date: '2022-01-01'
+
+- title: 虚构推理
+  type: anime
+  date: '2022-01-01'
+
+- title: 宝石之国
+  type: anime
+  date: '2022-01-01'
+
+- title: 异世界舅舅
+  type: anime
+  date: '2022-01-01'
+
+- title: 少女手工
+  type: anime
+  date: '2022-01-01'
+
+- title: 青春纪行
+  type: anime
+  date: '2022-01-01'
+
+- title: JOJO的奇妙冒险 石之海
+  type: anime
+  date: '2022-01-01'
+
+- title: 相合之物
+  type: anime
+  date: '2022-01-01'
+
+- title: 凉宫春日的消失
+  type: anime
+  date: '2022-01-01'
+
+- title: 式守同学不只可爱而已
+  type: anime
+  date: '2022-01-01'
+
+- title: 恋爱要在世界征服后
+  type: anime
+  date: '2022-01-01'
+
+- title: 与变成了异世界美少女的好友一起冒险
+  type: anime
+  date: '2022-01-01'
+
+- title: 作为意志和表象的世界
+  type: book
+  date: '2022-01-01'
+
+- title: 咒术回战 0
+  type: anime
+  date: '2022-01-10'
+  rating: 9.4
+  tags: [奇幻, 战斗]
+  summary: 曾经的咒术回战
+
+- title: 非自然死亡
+  type: series
+  date: '2022-05-01'
+
+- title: 伪物语
+  type: anime
+  date: '2022-06-19'
+
+- title: Engage Kiss
+  type: anime
+  date: '2022-07-01'
+
+- title: RWBY
+  type: anime
+  date: '2022-07-01'
+
+- title: 彻夜之歌
+  type: anime
+  date: '2022-07-01'
+
+- title: 来自深渊2
+  type: anime
+  date: '2022-07-01'
+
+- title: 维度战记
+  type: anime
+  date: '2022-07-13'
+
+- title: 想成为影之实力者
+  type: anime
+  date: '2022-10-01'
+
+- title: 电锯人
+  type: anime
+  date: '2022-10-01'
+
+- title: 孤独摇滚
+  type: anime
+  date: '2022-10-08'
+  rating: 9.7
+  tags: [日常, 音乐]
+  summary: 黑马中的黑马，少女乐队潮流的开端
+
+- title: 噬魂者
+  type: anime
+  date: '2022-11-05'
+
+- title: 砂糖的幸福生活
+  type: anime
+  date: '2022-11-18'
+
+- title: 心理测量者
+  type: anime
+  date: '2022-11-21'
+
+- title: 死亡笔记
+  type: anime
+  date: '2022-11-27'
+
+- title: Legal High
+  type: series
+  date: '2022-12-07'
+
+- title: 莉兹与青鸟
+  type: anime
+  date: '2022-12-07'
+
+- title: 魔法使的新娘
+  type: anime
+  date: '2022-12-15'

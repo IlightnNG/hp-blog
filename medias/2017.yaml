@@ -1,0 +1,12 @@
+# ============ 2017 年 ============
+# 字段说明: title(必填) / type(必填: anime|book|movie|game|cartoon|series) / date(必填 YYYY-MM-DD)
+#           / rating(0-10 可选) / tags(可选) / summary(可选) / review(可选)
+# 只看过未评价的条目只需三行（title/type/date）
+
+- title: 约会大作战
+  type: anime
+  date: '2017-01-01'
+
+- title: 刀剑神域
+  type: anime
+  date: '2017-01-01'

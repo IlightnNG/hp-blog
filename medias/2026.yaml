@@ -1,0 +1,43 @@
+# ============ 2026 年 ============
+# 字段说明: title(必填) / type(必填: anime|book|movie|game|cartoon|series) / date(必填 YYYY-MM-DD)
+#           / rating(0-10 可选) / tags(可选) / summary(可选) / review(可选)
+# 只看过未评价的条目只需三行（title/type/date），date 大概即可
+
+# ---- 2026 冬（1月）----
+- title: 咒术回战 死灭回游 前篇
+  type: anime
+  date: 2026-01-01
+
+- title: 葬送的芙莉莲 第2期
+  type: anime
+  date: 2026-01-01
+
+- title: 正相反的你和我
+  type: anime
+  date: 2026-01-01
+
+- title: Fate/strange Fake
+  type: anime
+  date: 2026-01-01
+
+- title: JOJO的奇妙冒险 飙马野郎
+  type: anime
+  date: 2026-01-01
+
+# ---- 2026 春（4月）----
+- title: Re：从零开始的异世界生活4
+  type: anime
+  date: 2026-04-01
+
+- title: 黄泉使者
+  type: anime
+  date: 2026-04-01
+
+# ---- 2026 夏（7月）----
+- title: 无职转生3
+  type: anime
+  date: 2026-07-01
+
+- title: 正相反的你和我 第2期
+  type: anime
+  date: 2026-07-01
