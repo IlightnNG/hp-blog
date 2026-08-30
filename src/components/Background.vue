@@ -45,8 +45,16 @@ const containerRef = ref(null);
 const TRIANGLE_SIZE = window.innerWidth/32;
 const TRIANGLE_WIDE = TRIANGLE_SIZE * Math.sqrt(3) / 2;
 const COLORS = {
-base: new THREE.Color(0xa1b5d8),
 wireframe: new THREE.Color(0xffffff)
+};
+
+// 读取当前主题色作为三角形基底色：
+// 页面主题色可能被 settings.js 从 localStorage 恢复（刷新后继承），
+// 从 CSS 变量取实际生效值，保证背景与页面配色一致；取不到时回退默认蓝
+const getBaseColor = () => {
+    const css = getComputedStyle(document.documentElement).getPropertyValue('--target-color').trim();
+    if (css) return new THREE.Color(css);
+    return new THREE.Color(0xa1b5d8);
 };
 
 // 添加新的常量
@@ -248,8 +256,8 @@ for (let row = 0; row < rows; row++) {
             matrix.compose(tempPosition, tempQuaternion, tempScale);
             instancedMesh.setMatrixAt(index, matrix);
             
-            // 设置颜色
-            const color = COLORS.base.clone();
+            // 设置颜色（基于当前主题色做微小随机变化，保持渐变质感）
+            const color = getBaseColor();
             color.offsetHSL(
             (Math.random() - 0.5) * 0.02,
             (Math.random() - 0.5) * 0.03,
