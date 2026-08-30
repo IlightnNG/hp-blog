@@ -1,0 +1,157 @@
+# ============ 2019 年 ============
+# 字段说明: title(必填) / type(必填: anime|book|movie|game|cartoon|series) / date(必填 YYYY-MM-DD)
+#           / rating(0-10 可选) / tags(可选) / summary(可选) / review(可选)
+# 只看过未评价的条目只需三行（title/type/date）
+
+- title: Charlotte
+  type: anime
+  date: '2019-01-01'
+  rating: 9
+  tags: [日常, 奇幻, 校园]
+  summary: 贝尔哲布布大小姐可爱捏
+
+- title: 只要贝尔哲布布大小姐喜欢就好
+  type: anime
+  date: '2019-01-01'
+  rating: 9
+  tags: [日常, 萌系, 奇幻]
+  summary: 贝尔哲布布大小姐可爱捏
+
+- title: 龙王的工作！
+  type: anime
+  date: '2019-01-01'
+  rating: 8.4
+  tags: [恋爱, 炼铜]
+  summary: 炼铜，但是银定了
+
+- title: 凉宫春日的忧郁
+  type: anime
+  date: '2019-01-01'
+
+- title: 绝园的暴风雨
+  type: anime
+  date: '2019-01-01'
+
+- title: 强风吹拂
+  type: anime
+  date: '2019-01-01'
+
+- title: Fate/Zero
+  type: anime
+  date: '2019-01-01'
+
+- title: 在下坂本，有何贵干？
+  type: anime
+  date: '2019-01-01'
+
+- title: 我们无法一起学习
+  type: anime
+  date: '2019-01-01'
+
+- title: 这个勇者明明超强却过分慎重
+  type: anime
+  date: '2019-01-01'
+
+- title: 青春猪头少年不会梦到怀梦美少女
+  type: anime
+  date: '2019-01-01'
+
+- title: 我们仍未知道那天所看见的花的名字
+  type: anime
+  date: '2019-01-01'
+
+- title: 游戏人生
+  type: anime
+  date: '2019-01-01'
+
+- title: 散华礼弥
+  type: anime
+  date: '2019-01-01'
+
+- title: 魔法禁书目录
+  type: anime
+  date: '2019-01-01'
+
+- title: 灰色的迷宫
+  type: anime
+  date: '2019-01-01'
+
+- title: Angels of Death
+  type: anime
+  date: '2019-01-01'
+
+- title: 变态王子与不笑猫
+  type: anime
+  date: '2019-01-01'
+
+- title: 月色真美
+  type: anime
+  date: '2019-01-01'
+
+- title: 冰菓
+  type: anime
+  date: '2019-01-01'
+
+- title: 罪恶王冠
+  type: anime
+  date: '2019-01-01'
+
+- title: Angel Beats
+  type: anime
+  date: '2019-01-01'
+
+- title: 川柳少女
+  type: anime
+  date: '2019-01-01'
+
+- title: 贤者之孙
+  type: anime
+  date: '2019-01-01'
+
+- title: 如果能写小说就好了
+  type: anime
+  date: '2019-01-01'
+
+- title: 欢迎来到实力至上主义的教室
+  type: anime
+  date: '2019-01-01'
+
+- title: 徒然喜欢你
+  type: anime
+  date: '2019-01-01'
+
+- title: 埃罗芒阿老师
+  type: anime
+  date: '2019-01-01'
+
+- title: 学战都市
+  type: anime
+  date: '2019-01-01'
+
+- title: 落第骑士英雄谭
+  type: anime
+  date: '2019-01-01'
+
+- title: 我女友与青梅竹马的惨烈修罗场
+  type: anime
+  date: '2019-01-01'
+
+- title: 我的妹妹不可能那么可爱
+  type: anime
+  date: '2019-01-01'
+
+- title: 笨拙之极的上野
+  type: anime
+  date: '2019-01-01'
+
+- title: 约定的梦幻岛
+  type: anime
+  date: '2019-01-01'
+
+- title: 你的名字
+  type: anime
+  date: '2019-01-01'
+
+- title: 天气之子
+  type: anime
+  date: '2019-11-01'

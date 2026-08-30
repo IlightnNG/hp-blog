@@ -314,6 +314,9 @@ async function main() {
       results.push(['生成文章列表', false])
     }
 
+    console.log('\n── [步骤] 生成媒体列表 ──')
+    results.push(['生成媒体列表', run('node scripts/medias.js')])
+
     console.log('\n── [步骤] 构建项目 ──')
     results.push(['构建项目', run('npm run build')])
 

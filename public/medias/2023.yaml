@@ -1,0 +1,263 @@
+# ============ 2023 年 ============
+# 字段说明: title(必填) / type(必填: anime|book|movie|game|cartoon|series) / date(必填 YYYY-MM-DD)
+#           / rating(0-10 可选) / tags(可选) / summary(可选) / review(可选)
+# 只看过未评价的条目只需三行（title/type/date）
+
+- title: 间谍过家家
+  type: anime
+  date: '2023-01-01'
+
+- title: 机器人笔记
+  type: anime
+  date: '2023-01-01'
+
+- title: 假面骑士创骑
+  type: anime
+  date: '2023-01-01'
+
+- title: 恶魔之谜
+  type: anime
+  date: '2023-01-01'
+
+- title: 入间同学入魔了
+  type: anime
+  date: '2023-01-01'
+
+- title: 放学后失眠的你
+  type: anime
+  date: '2023-01-01'
+
+- title: 久保同学不放过我
+  type: anime
+  date: '2023-01-01'
+
+- title: 跃动青春
+  type: anime
+  date: '2023-01-01'
+
+- title: 少女☆歌剧
+  type: anime
+  date: '2023-01-01'
+
+- title: 这个美术社大有问题
+  type: anime
+  date: '2023-01-01'
+
+- title: 名侦探柯南：零的日常
+  type: anime
+  date: '2023-01-01'
+
+- title: 四叠半时光机布鲁斯
+  type: anime
+  date: '2023-01-01'
+
+- title: 机动战士高达：水星的魔女
+  type: anime
+  date: '2023-01-01'
+
+- title: 别当欧尼酱了
+  type: anime
+  date: '2023-01-01'
+
+- title: 尼尔：机械纪元
+  type: anime
+  date: '2023-01-01'
+
+- title: 枪神
+  type: anime
+  date: '2023-01-01'
+
+- title: 关于我在无意间被隔壁的天使变成废柴这件事
+  type: anime
+  date: '2023-01-01'
+
+- title: 转生王女与天才千金的魔法革命
+  type: anime
+  date: '2023-01-01'
+
+- title: 流浪地球
+  type: movie
+  date: '2023-01-01'
+
+- title: 浪潮之巅
+  type: book
+  date: '2023-01-01'
+
+- title: 斯泰尔斯庄园奇案
+  type: book
+  date: '2023-01-01'
+
+- title: 达芬奇密码
+  type: book
+  date: '2023-01-01'
+
+- title: Crybaby
+  type: anime
+  date: '2023-01-04'
+
+- title: 安达与岛村
+  type: anime
+  date: '2023-02-21'
+
+- title: 流浪地球2
+  type: movie
+  date: '2023-03-01'
+
+- title: 地狱乐
+  type: anime
+  date: '2023-04-01'
+
+- title: 公爵的契约未婚妻
+  type: anime
+  date: '2023-04-01'
+
+- title: 鬼灭之刃 锻刀村篇
+  type: anime
+  date: '2023-04-01'
+
+- title: 和山田进行LV.999的恋爱
+  type: anime
+  date: '2023-04-01'
+
+- title: 偶像大师 灰姑娘女孩
+  type: anime
+  date: '2023-04-01'
+
+- title: 赛马娘 Road to the Top
+  type: anime
+  date: '2023-04-01'
+
+- title: 天国大魔境
+  type: anime
+  date: '2023-04-01'
+
+- title: 我推的孩子
+  type: anime
+  date: '2023-04-01'
+
+- title: 我心里危险的东西
+  type: anime
+  date: '2023-04-01'
+
+- title: 言语如苏打般涌现
+  type: movie
+  date: '2023-05-01'
+
+- title: 挪威的森林
+  type: book
+  date: '2023-05-19'
+
+- title: 在路上
+  type: book
+  date: '2023-05-25'
+
+- title: 通往夏天的隧道，再见的出口
+  type: anime
+  date: '2023-05-26'
+
+- title: 追风筝的人
+  type: book
+  date: '2023-06-05'
+
+- title: 了不起的盖茨比
+  type: book
+  date: '2023-06-05'
+
+- title: 瓦尔登湖
+  type: book
+  date: '2023-06-05'
+
+- title: 麦田里的守望者
+  type: book
+  date: '2023-06-05'
+
+- title: BanG Dream Mygo
+  type: anime
+  date: '2023-07-01'
+
+- title: Fate strange Fake
+  type: anime
+  date: '2023-07-01'
+
+- title: 僵尸百分百
+  type: anime
+  date: '2023-07-01'
+
+- title: " 堀与宫村2"
+  type: anime
+  date: '2023-07-01'
+
+- title: 机动搜查队404
+  type: series
+  date: '2023-07-01'
+
+- title: 人生删除事务所
+  type: series
+  date: '2023-07-04'
+
+- title: 顺其自然的日子
+  type: anime
+  date: '2023-08-01'
+
+- title: 半泽直树
+  type: series
+  date: '2023-08-01'
+
+- title: 夏日重现
+  type: anime
+  date: '2023-09-01'
+  rating: 9.4
+  tags: [奇幻, 战斗, 推理]
+  summary: 网代慎平还是太帅了
+
+- title: 逃避虽可耻但有用
+  type: series
+  date: '2023-09-01'
+
+- title: 亲密关系
+  type: book
+  date: '2023-09-21'
+
+- title: 不死不幸
+  type: anime
+  date: '2023-10-01'
+
+- title: 超喜欢你的100个女朋友
+  type: anime
+  date: '2023-10-01'
+
+- title: 香格里拉边境
+  type: anime
+  date: '2023-10-01'
+
+- title: 药屋少女的呢喃
+  type: anime
+  date: '2023-10-01'
+
+- title: 这个杀手不太冷
+  type: movie
+  date: '2023-10-04'
+
+- title: 古力特宇宙
+  type: anime
+  date: '2023-10-27'
+
+- title: 不能承受的生命之轻
+  type: book
+  date: '2023-11-01'
+
+- title: 进击的巨人
+  type: anime
+  date: '2023-11-12'
+  rating: 9
+  tags: [动漫, 热血]
+  summary: 曾经的神，高中时的神
+  review: 那一天，人类回想起了被他们支配的恐怖
+
+- title: 红与黑
+  type: book
+  date: '2023-11-23'
+
+- title: 罪与罚
+  type: book
+  date: '2023-12-05'

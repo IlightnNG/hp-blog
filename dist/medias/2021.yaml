@@ -1,0 +1,308 @@
+# ============ 2021 年 ============
+# 字段说明: title(必填) / type(必填: anime|book|movie|game|cartoon|series) / date(必填 YYYY-MM-DD)
+#           / rating(0-10 可选) / tags(可选) / summary(可选) / review(可选)
+# 只看过未评价的条目只需三行（title/type/date）
+
+- title: 辉夜大小姐想让我告白
+  type: anime
+  date: '2021-01-01'
+
+- title: 蓝色时期
+  type: anime
+  date: '2021-01-01'
+
+- title: 灵能百分百
+  type: anime
+  date: '2021-01-01'
+
+- title: 玉子市场
+  type: anime
+  date: '2021-01-01'
+
+- title: 无头骑士异闻录
+  type: anime
+  date: '2021-01-01'
+
+- title: 永生之酒
+  type: anime
+  date: '2021-01-01'
+
+- title: 有顶天家族
+  type: anime
+  date: '2021-01-01'
+
+- title: 岸边露伴 一动也不动
+  type: anime
+  date: '2021-01-01'
+
+- title: 漂流少年
+  type: anime
+  date: '2021-01-01'
+
+- title: 魔笛MAGI
+  type: anime
+  date: '2021-01-01'
+
+- title: 瓦尼塔斯的手记
+  type: anime
+  date: '2021-01-01'
+
+- title: 圣诞之吻SS
+  type: anime
+  date: '2021-01-01'
+
+- title: 奇蛋物语
+  type: anime
+  date: '2021-01-01'
+
+- title: 不存在的战区
+  type: anime
+  date: '2021-01-01'
+
+- title: 薇薇 -萤石眼之歌-
+  type: anime
+  date: '2021-01-01'
+
+- title: 转生成蜘蛛又怎样
+  type: anime
+  date: '2021-01-01'
+
+- title: 精灵幻想记
+  type: anime
+  date: '2021-01-01'
+
+- title: 我被逐出队伍后过上慢生活
+  type: anime
+  date: '2021-01-01'
+
+- title: 鬼灭之刃 无限列车篇
+  type: anime
+  date: '2021-01-01'
+
+- title: 时光代理人
+  type: anime
+  date: '2021-01-01'
+
+- title: 天才王子的赤字国家振兴术
+  type: anime
+  date: '2021-01-01'
+
+- title: 夏日幻魂
+  type: anime
+  date: '2021-01-01'
+
+- title: 佐贺偶像是传奇 卷土重来
+  type: anime
+  date: '2021-01-01'
+
+- title: 公主连结
+  type: anime
+  date: '2021-01-01'
+
+- title: 宿命回响：命运节拍
+  type: anime
+  date: '2021-01-01'
+
+- title: 奇巧出租车
+  type: anime
+  date: '2021-01-01'
+
+- title: 极主夫道
+  type: anime
+  date: '2021-01-01'
+
+- title: 我们的重制人生
+  type: anime
+  date: '2021-01-01'
+
+- title: 侦探已死
+  type: anime
+  date: '2021-01-01'
+
+- title: 异世界迷宫黑心企业
+  type: anime
+  date: '2021-01-01'
+
+- title: 死神少爷与黑女仆
+  type: anime
+  date: '2021-01-01'
+
+- title: 堀与宫村
+  type: anime
+  date: '2021-01-01'
+
+- title: 龙与虎
+  type: anime
+  date: '2021-01-01'
+
+- title: MEGALOBOX2
+  type: anime
+  date: '2021-01-01'
+
+- title: 青梅竹马绝对不会输的恋爱喜剧
+  type: anime
+  date: '2021-01-01'
+
+- title: 日常
+  type: anime
+  date: '2021-01-01'
+
+- title: BACK ARROW
+  type: anime
+  date: '2021-01-01'
+
+- title: 弱势角色友崎君
+  type: anime
+  date: '2021-01-01'
+
+- title: 忧国的莫里亚蒂
+  type: anime
+  date: '2021-01-01'
+
+- title: SSSS.电光机王
+  type: anime
+  date: '2021-01-01'
+
+- title: 五等分的新娘
+  type: anime
+  date: '2021-01-01'
+
+- title: 凸变英雄 BABA
+  type: anime
+  date: '2021-01-01'
+
+- title: BEASTARS
+  type: anime
+  date: '2021-01-01'
+
+- title: Re：从零开始的异世界生活2
+  type: anime
+  date: '2021-01-01'
+
+- title: 政宗君的复仇
+  type: anime
+  date: '2021-01-01'
+
+- title: 恋爱随意链接
+  type: anime
+  date: '2021-01-01'
+
+- title: 亚人
+  type: anime
+  date: '2021-01-01'
+
+- title: Jose与虎与鱼们
+  type: anime
+  date: '2021-01-01'
+
+- title: 嫌疑人X的献身
+  type: book
+  date: '2021-01-01'
+
+- title: 白夜行
+  type: book
+  date: '2021-01-01'
+
+- title: 恶意
+  type: book
+  date: '2021-01-01'
+
+- title: 解忧杂货铺
+  type: book
+  date: '2021-01-01'
+
+- title: 东方快车谋杀案
+  type: book
+  date: '2021-01-01'
+
+- title: 无人生还
+  type: book
+  date: '2021-01-01'
+
+- title: ABC杀人案
+  type: book
+  date: '2021-01-01'
+
+- title: 月亮与六便士
+  type: book
+  date: '2021-01-01'
+
+- title: 告白
+  type: book
+  date: '2021-01-01'
+
+- title: 乌合之众
+  type: book
+  date: '2021-01-01'
+
+- title: 墨菲定律
+  type: book
+  date: '2021-01-01'
+
+- title: 经济学原理
+  type: book
+  date: '2021-01-01'
+
+- title: 罗生门
+  type: book
+  date: '2021-01-01'
+
+- title: 人间失格
+  type: book
+  date: '2021-01-01'
+
+- title: 心
+  type: book
+  date: '2021-01-01'
+
+- title: 可乐牛奶经济学
+  type: book
+  date: '2021-01-01'
+
+- title: 内向者优势
+  type: book
+  date: '2021-01-01'
+
+- title: 人性的弱点
+  type: book
+  date: '2021-01-01'
+
+- title: 自卑与超越
+  type: book
+  date: '2021-01-01'
+
+- title: 幸福的勇气
+  type: book
+  date: '2021-01-01'
+
+- title: 西西弗神话
+  type: book
+  date: '2021-01-01'
+
+- title: 局外人
+  type: book
+  date: '2021-01-01'
+
+- title: 日本沉没
+  type: book
+  date: '2021-01-01'
+
+- title: 命运石之门
+  type: anime
+  date: '2021-01-21'
+
+- title: 命运石之门0
+  type: anime
+  date: '2021-01-21'
+
+- title: 寄生兽
+  type: anime
+  date: '2021-06-24'
+
+- title: 反叛的鲁鲁修
+  type: anime
+  date: '2021-08-17'
+
+- title: 东京喰种
+  type: anime
+  date: '2021-11-27'

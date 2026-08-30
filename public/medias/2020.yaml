@@ -1,0 +1,361 @@
+# ============ 2020 年 ============
+# 字段说明: title(必填) / type(必填: anime|book|movie|game|cartoon|series) / date(必填 YYYY-MM-DD)
+#           / rating(0-10 可选) / tags(可选) / summary(可选) / review(可选)
+# 只看过未评价的条目只需三行（title/type/date）
+
+- title: Fate/stay night UBW
+  type: anime
+  date: '2020-01-01'
+  rating: 9.3
+  tags: [热血, 奇幻]
+  summary: Fate/stay night 的巅峰，接触Fate的契机
+
+- title: 盾之勇者成名录
+  type: anime
+  date: '2020-01-01'
+
+- title: 碧蓝之海
+  type: anime
+  date: '2020-01-01'
+
+- title: CLANNAD
+  type: anime
+  date: '2020-01-01'
+
+- title: 樱花庄的宠物女孩
+  type: anime
+  date: '2020-01-01'
+
+- title: 境界的彼方
+  type: anime
+  date: '2020-01-01'
+
+- title: 龙与魔女
+  type: anime
+  date: '2020-01-01'
+
+- title: 擅长捉弄的高木同学
+  type: anime
+  date: '2020-01-01'
+
+- title: 打工吧！魔王大人
+  type: anime
+  date: '2020-01-01'
+
+- title: 总之就是非常可爱
+  type: anime
+  date: '2020-01-01'
+
+- title: 雾山五行
+  type: anime
+  date: '2020-01-01'
+
+- title: 吹响吧！上低音号
+  type: anime
+  date: '2020-01-01'
+
+- title: 少女终末旅行
+  type: anime
+  date: '2020-01-01'
+
+- title: 紫罗兰永恒花园
+  type: anime
+  date: '2020-01-01'
+
+- title: 黑色四叶草
+  type: anime
+  date: '2020-01-01'
+
+- title: 城下町的蒲公英
+  type: anime
+  date: '2020-01-01'
+
+- title: EVA 新世纪福音战士
+  type: anime
+  date: '2020-01-01'
+
+- title: 转生成为了只有乙女游戏破灭Flag的邪恶大小姐
+  type: anime
+  date: '2020-01-01'
+
+- title: 佐贺偶像是传奇
+  type: anime
+  date: '2020-01-01'
+
+- title: 成神之日
+  type: anime
+  date: '2020-01-01'
+
+- title: 来自深渊 深沉灵魂的黎明
+  type: anime
+  date: '2020-01-01'
+
+- title: 关于我转生变成史莱姆这档事
+  type: anime
+  date: '2020-01-01'
+
+- title: MEGALOBOX
+  type: anime
+  date: '2020-01-01'
+
+- title: 天元突破红莲螺岩
+  type: anime
+  date: '2020-01-01'
+
+- title: 斩服少女
+  type: anime
+  date: '2020-01-01'
+
+- title: 目隐都市的演绎者
+  type: anime
+  date: '2020-01-01'
+
+- title: 来自新世界
+  type: anime
+  date: '2020-01-01'
+
+- title: 魔法少女小圆
+  type: anime
+  date: '2020-01-01'
+
+- title: 人类衰退之后
+  type: anime
+  date: '2020-01-01'
+
+- title: Just Because!
+  type: anime
+  date: '2020-01-01'
+
+- title: 冰海战记
+  type: anime
+  date: '2020-01-01'
+
+- title: 不吉波普不笑
+  type: anime
+  date: '2020-01-01'
+
+- title: 重启咲良田
+  type: anime
+  date: '2020-01-01'
+
+- title: 魔王勇者
+  type: anime
+  date: '2020-01-01'
+
+- title: 不正经的魔术讲师与禁忌教典
+  type: anime
+  date: '2020-01-01'
+
+- title: 只有我不存在的城市
+  type: anime
+  date: '2020-01-01'
+
+- title: 终末的伊泽塔
+  type: anime
+  date: '2020-01-01'
+
+- title: 牵牛花与加濑同学
+  type: anime
+  date: '2020-01-01'
+
+- title: 在魔王城说晚安
+  type: anime
+  date: '2020-01-01'
+
+- title: 突击莉莉
+  type: anime
+  date: '2020-01-01'
+
+- title: 玛纳利亚的密友
+  type: anime
+  date: '2020-01-01'
+
+- title: 魔女之旅
+  type: anime
+  date: '2020-01-01'
+
+- title: 终将成为你
+  type: anime
+  date: '2020-01-01'
+
+- title: 野良神
+  type: anime
+  date: '2020-01-01'
+
+- title: 在地下城寻求邂逅是否搞错了什么3
+  type: anime
+  date: '2020-01-01'
+
+- title: 没落要塞
+  type: anime
+  date: '2020-01-01'
+
+- title: 路人女主的养成方法2
+  type: anime
+  date: '2020-01-01'
+
+- title: 我的青春恋爱物语果然有问题。完
+  type: anime
+  date: '2020-01-01'
+
+- title: 黑之契约者
+  type: anime
+  date: '2020-01-01'
+
+- title: 幻界战线
+  type: anime
+  date: '2020-01-01'
+
+- title: 幻界战线 & BEYOND
+  type: anime
+  date: '2020-01-01'
+
+- title: 武装少女
+  type: anime
+  date: '2020-01-01'
+
+- title: ReLIFE
+  type: anime
+  date: '2020-01-01'
+
+- title: 中二病也要谈恋爱
+  type: anime
+  date: '2020-01-01'
+
+- title: 男子高中生的日常
+  type: anime
+  date: '2020-01-01'
+
+- title: 笨女孩
+  type: anime
+  date: '2020-01-01'
+
+- title: 君主·埃尔梅罗二世事件簿
+  type: anime
+  date: '2020-01-01'
+
+- title: 玉子爱情故事
+  type: anime
+  date: '2020-01-01'
+
+- title: 月刊少女野崎君
+  type: anime
+  date: '2020-01-01'
+
+- title: 甘城光辉游乐园
+  type: anime
+  date: '2020-01-01'
+
+- title: JOJO的奇妙冒险 黄金之风
+  type: anime
+  date: '2020-01-01'
+
+- title: 公主连结Re:Dive
+  type: anime
+  date: '2020-01-01'
+
+- title: 神之塔
+  type: anime
+  date: '2020-01-01'
+
+- title: 动物新世代BNA
+  type: anime
+  date: '2020-01-01'
+
+- title: JOJO的奇妙冒险 不灭钻石
+  type: anime
+  date: '2020-01-01'
+
+- title: 轻音少女
+  type: anime
+  date: '2020-01-01'
+
+- title: 路人女主的养成方法
+  type: anime
+  date: '2020-01-01'
+
+- title: 怪盗基德
+  type: anime
+  date: '2020-01-01'
+
+- title: JOJO的奇妙冒险
+  type: anime
+  date: '2020-01-01'
+
+- title: 异度侵入
+  type: anime
+  date: '2020-01-01'
+
+- title: 我的青春恋爱物语果然有问题。续
+  type: anime
+  date: '2020-01-01'
+
+- title: 我的青春恋爱物语果然有问题
+  type: anime
+  date: '2020-01-01'
+
+- title: JOJO的奇妙冒险 星尘远征军
+  type: anime
+  date: '2020-01-01'
+
+- title: 齐木楠雄的灾难
+  type: anime
+  date: '2020-01-01'
+
+- title: 来自风平浪静的明天
+  type: anime
+  date: '2020-01-01'
+
+- title: Fate/Apocrypha
+  type: anime
+  date: '2020-01-01'
+
+- title: 假面骑士OOO
+  type: series
+  date: '2020-01-01'
+
+- title: 虫子的世界
+  type: book
+  date: '2020-01-01'
+
+- title: 被讨厌的勇气
+  type: book
+  date: '2020-01-01'
+
+- title: 魔法高校的劣等生1-2
+  type: anime
+  date: '2020-04-01'
+
+- title: 为美好的世界献上祝福1-2
+  type: anime
+  date: '2020-04-01'
+
+- title: 乒乓
+  type: anime
+  date: '2020-05-01'
+  rating: 9.9
+  tags: [校园, 运动, 热血]
+  summary: 流畅又独特的分镜，平淡又深远的立意，每个人都有适合自己的人生啊
+
+- title: 声之形
+  type: anime
+  date: '2020-05-01'
+
+- title: citrus 柑橘味香气
+  type: anime
+  date: '2020-05-01'
+
+- title: 灰色系列
+  type: anime
+  date: '2020-06-20'
+
+- title: 刀剑神域 Alicization
+  type: anime
+  date: '2020-10-01'
+  rating: 8
+  tags: [战斗, 后宫, 奇幻]
+  summary: 连续3part，整体很不错，可惜最后因为疫情崩了
+
+- title: Re:从零开始的异世界生活1-2
+  type: anime
+  date: '2020-10-01'

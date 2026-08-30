@@ -1,31 +1,29 @@
-# HP's Blog
+# HP's Blog · 个人博客
 
-https://ilightnng.github.io/hp-blog/
+> 记录技术学习、开发实践与生活收藏的个人站点
 
-## 本地开发
+**在线访问**：https://ilightnng.github.io/hp-blog/
 
-```bash
-npm install      # 安装依赖
-npm run dev      # 本地开发
-npm run list     # 扫描 public/posts 生成 list.json
-npm run build    # 构建到 dist/（自动生成 404.html）
-```
+---
 
-## 发布上线
+## 关于博客
 
-```bash
-npm run publish              # 全流程：生成列表 → 构建 → 推送 main → 部署 gh-pages
-npm run publish -m "消息"     # 指定提交信息
-npm run publish -- --deploy-only   # 仅部署 gh-pages（用现有 dist/）
-npm run publish -- --no-deploy     # 只构建并推送 main
-npm run deploy                # 仅部署 gh-pages（等价 --deploy-only）
-```
+这是基于 Vue 3 构建的个人技术博客，记录我在**分布式系统、区块链、机器学习、游戏开发与前端工程**等领域的学习笔记与实践总结，同时设有收藏**动漫、书籍、游戏、电影**的「记忆回廊」栏目。
 
-说明：
-- gh-pages 部署使用 **git worktree 临时目录**，不会切换或清空本地工作区
-- 无变更时自动跳过 commit/push，不会因 "nothing to commit" 中断
-- 免密码部署：设置环境变量 `GITHUB_TOKEN`（CI / 自动上线推荐）
-  - 复制 `.env.example` 为 `.env` 填入 token 即可（`.env` 已被 git 忽略，不会泄露）
-  - 或 `git config --global credential.helper manager` 登录一次永久免密
-- 任一步失败都会汇总报告并以非 0 退出码结束
-- 回归测试：`node scripts/_test-deploy.mjs`（在临时仓库中模拟部署，不碰真实仓库）
+**站点特色**：整站以三角形粒子动画为背景，点击任意三角形即可触发主题色的涟漪扩散效果，全站配色会随点击动态变化——每个访客都能"点亮"属于自己的配色。
+
+
+
+## 功能特性
+
+- 三角形粒子交互背景，点击触发主题色涟漪动画
+- 文章：标签云、全文搜索、目录导航、代码高亮与一键复制
+- 响应式布局，适配桌面与移动端
+- 主题色随交互动态变化，全站统一风格
+
+
+## 联系
+
+- GitHub: [@IlightnNG](https://github.com/IlightnNG)
+
+欢迎交流技术问题，也欢迎提出任何建议～

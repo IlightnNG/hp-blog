@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "publish": "node scripts/publish.js",
     "deploy": "node scripts/publish.js --deploy-only",
-    "list": "node scripts/list.js"
+    "list": "node scripts/list.js",
+    "medias": "node scripts/medias.js"
   },
   "dependencies": {
     "front-matter": "^4.0.2",
@@ -22,7 +23,8 @@
     "pixi.js": "^8.9.1",
     "three": "^0.175.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@rollup/rollup-win32-x64-msvc": "^4.60.1",
