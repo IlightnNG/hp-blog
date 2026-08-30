@@ -15,6 +15,12 @@ export const useSettingsStore = defineStore('settings', () => {
 
     const settings = ref(loadSettings())
 
+    // 恢复已保存的主题色：仅在用户曾实际设置过（非默认值）时应用，
+    // 避免把默认色 #ffffff 覆盖到 CSS 默认的 #a1b5d8，保证刷新后视觉效果不跳变
+    if (settings.value.targetColor && settings.value.targetColor !== '#ffffff') {
+        document.documentElement.style.setProperty('--target-color', settings.value.targetColor)
+    }
+
     // 保存设置到 localStorage
     const saveSettings = () => {
         localStorage.setItem('blogSettings', JSON.stringify(settings.value))
@@ -28,14 +34,12 @@ export const useSettingsStore = defineStore('settings', () => {
 
     const toggleShowingBg = () => {
         settings.value.isShowingBg = !settings.value.isShowingBg
-        console.log(settings.value.isShowingBg)
         saveSettings()
     }
 
     const resetShowingBgAndAddGroupMode = () => {
         settings.value.isShowingBg = false
         settings.value.isAddingGroup = false
-        console.log(innerWidth)
         saveSettings()
     }
 

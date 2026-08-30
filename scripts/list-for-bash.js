@@ -15,18 +15,24 @@ async function generateList() {
         // 读取posts目录下的所有.md文件
         const files = fs.readdirSync(postsDir).filter(f => f.endsWith('.md'));
 
-        const list = files.map(file => {
+        const list = [];
+        for (const file of files) {
             const content = fs.readFileSync(path.join(postsDir, file), 'utf8');
             const { attributes } = fm(content);
-            return {
+            // 跳过缺少 front matter 的草稿文件（如未整理的笔记），避免生成"无标题"条目上线
+            if (!attributes || (!attributes.title && !attributes.date)) {
+                console.warn(`⚠️  跳过 ${file}：缺少 front matter（title/date），整理完成后运行 npm run list 即可收录`);
+                continue;
+            }
+            list.push({
                 id: file.replace('.md', ''),
                 path: `/posts/${file}`,
                 title: attributes.title || '无标题',
                 date: attributes.date || new Date().toISOString().split('T')[0],
                 tags: Array.isArray(attributes.tags) ? attributes.tags : [],
                 excerpt: attributes.excerpt || ''
-            };
-        });
+            });
+        }
 
         // 按日期降序排序
         list.sort((a, b) => new Date(b.date) - new Date(a.date));

@@ -83,7 +83,6 @@
               type="text" 
               v-model="searchQuery" 
               placeholder="Search..."
-              @input="handleSearch"
             >
           </div>
           
@@ -231,10 +230,10 @@ watch(totalPages, (n) => {
   if (currentPage.value > n) currentPage.value = n;
 });
 
-// 格式化日期
+// 格式化日期（使用有效的 en-US locale，避免浏览器回退导致格式不稳定）
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString('en-EN', options);
+  return new Date(dateString).toLocaleDateString('en-US', options);
 };
 
 // 处理标签点击

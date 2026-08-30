@@ -57,7 +57,7 @@
               </div> -->
               <div class="media-info" >
                 <div class="media-meta">
-                  <span class="media-date">{{ getTypeLabel(item.date) }}</span>
+                  <span class="media-date">{{ formatDate(item.date) }}</span>
                   <span class="media-type">{{ getTypeLabel(item.type) }}</span>
                 </div>
                 <h2 class="media-title">{{ item.title }}</h2>
@@ -113,7 +113,6 @@
               type="text" 
               v-model="searchQuery" 
               placeholder="搜索作品..."
-              @input="handleSearch"
             >
           </div>
           
@@ -411,6 +410,13 @@ const closeDetail = () => {
 const getTypeLabel = (type) => {
   const found = mediaTypes.value.find(t => t.value === type)
   return found ? found.label : type
+}
+
+// 格式化日期（与 Posts 页保持一致，统一使用 en-US 长格式）
+const formatDate = (dateString) => {
+  if (!dateString) return ''
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(dateString).toLocaleDateString('en-US', options)
 }
 
 </script>

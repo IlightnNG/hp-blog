@@ -1,6 +1,6 @@
 ---
 title: "前端项目部署到 GitHub Pages"
-date: "2025-06-05"
+date: 2025/06/05
 tags: ["Github", "Vue"]
 excerpt: "在前端开发过程中，项目部署是一个重要环节。本文将详细介绍如何将基于 Vite 创建的前端项目部署到 GitHub Pages 上，帮助你轻松实现项目的线上展示。"
 ---

@@ -30,3 +30,8 @@ coverage
 
 *.tsbuildinfo
 
+# 本地环境变量（含 GITHUB_TOKEN 等敏感信息，严禁提交）
+.env
+.env.local
+.env.*.local
+

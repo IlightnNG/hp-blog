@@ -13,20 +13,6 @@
 // 导入导航栏组件
 import NavBar from './components/NavBar.vue'
 import Background from './components/Background.vue'
-
-document.addEventListener('DOMContentLoaded', () => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible')
-      }
-    })
-  }, { threshold: 0.1 })
-  
-  const postsSection = document.querySelector('.articles-container')
-  if (postsSection) observer.observe(postsSection)
-})
-
 </script>
 
 <style>

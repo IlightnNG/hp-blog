@@ -29,7 +29,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { Home, Mail, User, Settings, FileText, Sparkles } from 'lucide-vue-next';
+import { Home, Mail, Settings, FileText, Sparkles } from 'lucide-vue-next';
 import { useSettingsStore } from '@/stores/settings'
 const settingsStore = useSettingsStore()
 
