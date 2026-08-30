@@ -263,18 +263,18 @@ export function parseArgs() {
     console.error('❌ --deploy-only 与 --no-deploy 不能同时使用')
     process.exit(1)
   }
-  return { ...flags, commitMsg: commitMsg || `auto-commit: ${new Date().toISOString()}` }
+  return { ...flags, commitMsg: commitMsg || '' }
 }
 
 const HELP = `博客发布工作流
 
 用法：
-  npm run publish [提交信息]         全流程：生成列表 → 构建 → 提交推送 main → 部署 gh-pages
-  npm run publish -m "提交信息"      同上（显式 -m）
-  npm run publish -- --deploy-only   仅部署 gh-pages（使用现有 dist/，不触碰 main）
-  npm run publish -- --no-deploy     只构建并提交推送 main，跳过 gh-pages
-  npm run deploy                     仅部署 gh-pages（等价 --deploy-only）
-  npm run publish -- --help          显示帮助
+  npm run publish -- "提交信息"     全流程：生成列表 → 构建 → 提交推送 main → 部署 gh-pages
+  npm run publish -- -m "提交信息"  同上（显式 -m；npm run 必须用 -- 分隔，否则 -m 会被 npm 拦截）
+  npm run publish -- --deploy-only  仅部署 gh-pages（使用现有 dist/，不触碰 main）
+  npm run publish -- --no-deploy    只构建并提交推送 main，跳过 gh-pages
+  npm run deploy                    仅部署 gh-pages（等价 --deploy-only）
+  npm run publish -- --help         显示帮助
 
 环境变量：
   GITHUB_TOKEN  推送时自动注入 token（免密码，推荐 CI / AI 自动上线使用）
@@ -284,7 +284,9 @@ const HELP = `博客发布工作流
 说明：
   - gh-pages 部署使用 git worktree 临时目录，不会切换或清空本地工作区
   - 任何一步失败都会在最后汇总报告并以非 0 退出码结束
-  - 无变更时自动跳过 commit/push，不会因 "nothing to commit" 中断`
+  - 无变更时自动跳过 commit/push，不会因 "nothing to commit" 中断
+  - main 分支提交必须提供简短的英文摘要（-m），约定见 AGENTS.md；
+    未提供时回退为 "chore: update blog content"（不允许 auto-commit）`
 
 async function main() {
   const args = parseArgs()
@@ -294,6 +296,12 @@ async function main() {
   try {
     console.log(`当前分支: ${execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8', env: GIT_ENV() }).trim()}`)
   } catch {}
+
+  // 提交摘要：必须提供简短的英文摘要（约定见 AGENTS.md），不允许 auto-commit
+  if (!args.commitMsg) {
+    log.warn('未提供提交摘要（-m），使用默认消息 "chore: update blog content"')
+    args.commitMsg = 'chore: update blog content'
+  }
 
   if (!checkGitIdentity()) process.exit(1)
 
