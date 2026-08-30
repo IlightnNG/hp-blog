@@ -1,5 +1,27 @@
 [
   {
+    "id": "20260818-PPO",
+    "path": "/posts/20260818-PPO.md",
+    "title": "Proximal Policy Optimization (PPO) 算法理解：从策略梯度开始",
+    "date": "2026/08/18",
+    "tags": [
+      "RL",
+      "PPO"
+    ],
+    "excerpt": "从策略梯度出发，理解 PPO 算法的原理、自然策略梯度改进与实现要点。"
+  },
+  {
+    "id": "20260818-RLTraining",
+    "path": "/posts/20260818-RLTraining.md",
+    "title": "看完能和外婆解释的 PPO、DPO、GRPO 强化学习",
+    "date": "2026/08/18",
+    "tags": [
+      "RL",
+      "LLM"
+    ],
+    "excerpt": "用通俗的比喻讲清楚 PPO、DPO、GRPO 三种强化学习算法在 LLM 训练中的角色与区别。"
+  },
+  {
     "id": "20260331-Raft",
     "path": "/posts/20260331-Raft.md",
     "title": "Understanding Distributed Consensus: Raft, Paxos, and ZooKeeper (ZAB)",
@@ -173,7 +195,7 @@
     "id": "20250608-Markdown",
     "path": "/posts/20250608-Markdown.md",
     "title": "vue项目适配显示markdown",
-    "date": "2025-06-08",
+    "date": "2025/06/08",
     "tags": [
       "Vue"
     ],
@@ -183,7 +205,7 @@
     "id": "20250605-GithubPage",
     "path": "/posts/20250605-GithubPage.md",
     "title": "前端项目部署到 GitHub Pages",
-    "date": "2025-06-05",
+    "date": "2025/06/05",
     "tags": [
       "Github",
       "Vue"
@@ -194,7 +216,7 @@
     "id": "20250605-nojekyll",
     "path": "/posts/20250605-nojekyll.md",
     "title": ".nojekyll 在GitHub Pages的作用",
-    "date": "2025-06-05",
+    "date": "2025/06/05",
     "tags": [
       "Github"
     ],
@@ -204,7 +226,7 @@
     "id": "20250604-GradleSetting",
     "path": "/posts/20250604-GradleSetting.md",
     "title": "Gradle下载慢问题简易解决方法",
-    "date": "2025-06-04",
+    "date": "2025/06/04",
     "tags": [
       "Gradle"
     ],
