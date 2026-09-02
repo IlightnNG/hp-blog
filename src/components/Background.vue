@@ -27,558 +27,327 @@
 </template>
   
 <script setup>
-import { ref,computed , onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
-import { useSettingsStore } from '@/stores/settings'
-import { useRoute } from 'vue-router'; // 引入路由
-const settingsStore = useSettingsStore()
+import { useSettingsStore } from '@/stores/settings';
+import { useRoute } from 'vue-router';
+
+const settingsStore = useSettingsStore();
 const route = useRoute();
-
-// 计算属性判断是否在当前页面
-const isHomePage = computed(() => {
-    return route.name === 'Home'
-});
+const isHomePage = computed(() => route.name === 'Home');
 const containerRef = ref(null);
+const isChangingBg = ref(true); // 点中的三角形是否属于 group 0（联动页面主题色）
 
-// 性能优化：使用常量
-const TRIANGLE_SIZE = window.innerWidth/32;
-const TRIANGLE_WIDE = TRIANGLE_SIZE * Math.sqrt(3) / 2;
-const COLORS = {
-wireframe: new THREE.Color(0xffffff)
-};
+// ---------- 网格参数 ----------
+const TRIANGLE_SIZE = window.innerWidth / 32;
+const TRIANGLE_WIDE = (TRIANGLE_SIZE * Math.sqrt(3)) / 2;
+const Z_AXIS = new THREE.Vector3(0, 0, 1);
 
-// 读取当前主题色作为三角形基底色：
-// 页面主题色可能被 settings.js 从 localStorage 恢复（刷新后继承），
-// 从 CSS 变量取实际生效值，保证背景与页面配色一致；取不到时回退默认蓝
+let scene, camera, renderer, instancedMesh, raycaster, mouse;
+let cols = 0, rows = 0, totalTriangles = 0;
+let groups = new Uint8Array(0); // 每个三角形的分组（0 默认组，1-4 编辑分组）
+
+// 编辑分组图案（硬编码；可在编辑模式下用 printGroupTriangles 导出新图案）
+const TARGET_ICON = [
+    [19,2,0],[11,3,1],[17,3,0],[17,3,1],[18,3,1],[19,3,0],[20,3,0],[20,3,1],[21,3,1],[26,3,0],[27,3,0],[27,3,1],[9,4,0],[10,4,0],[10,4,1],[16,4,0],[17,4,0],[17,4,1],[18,4,1],[19,4,0],[20,4,0],[20,4,1],[21,4,1],[27,4,0],[28,4,1],[9,5,0],[10,5,1],[13,5,0],[13,5,1],[14,5,1],[16,5,0],[17,5,0],[17,5,1],[18,5,1],[19,5,0],[20,5,0],[20,5,1],[21,5,1],[22,5,0],[23,5,0],[23,5,1],[28,5,1],[12,6,0],[13,6,0],[13,6,1],[14,6,1],[16,6,0],[17,6,0],[17,6,1],[18,6,1],[19,6,0],[20,6,0],[20,6,1],[21,6,1],[22,6,0],[23,6,0],[23,6,1],[24,6,0],[24,6,1],[25,6,1],[12,7,0],[13,7,0],[13,7,1],[14,7,1],[15,7,0],[15,7,1],[16,7,0],[16,7,1],[17,7,0],[17,7,1],[18,7,1],[19,7,0],[20,7,0],[20,7,1],[21,7,1],[23,7,0],[24,7,0],[24,7,1],[25,7,1],[12,8,0],[13,8,0],[13,8,1],[14,8,0],[14,8,1],[15,8,0],[15,8,1],[16,8,0],[16,8,1],[17,8,0],[17,8,1],[18,8,1],[19,8,0],[20,8,0],[20,8,1],[21,8,1],[23,8,0],[24,8,0],[24,8,1],[25,8,1],[12,9,0],[13,9,0],[13,9,1],[14,9,0],[14,9,1],[16,9,0],[17,9,0],[17,9,1],[18,9,1],[19,9,0],[20,9,0],[20,9,1],[21,9,1],[23,9,0],[23,9,1],[24,9,0],[24,9,1],[25,9,1],[9,10,0],[12,10,0],[13,10,0],[13,10,1],[14,10,1],[16,10,0],[17,10,0],[17,10,1],[18,10,1],[19,10,0],[20,10,0],[20,10,1],[21,10,0],[21,10,1],[22,10,0],[22,10,1],[23,10,0],[23,10,1],[24,10,0],[24,10,1],[27,10,0],[28,10,1],[9,11,0],[10,11,1],[14,11,1],[16,11,0],[17,11,0],[17,11,1],[18,11,1],[19,11,0],[20,11,0],[20,11,1],[21,11,0],[21,11,1],[22,11,0],[22,11,1],[27,11,0],[27,11,1],[28,11,1],[10,12,0],[10,12,1],[11,12,1],[16,12,0],[17,12,0],[17,12,1],[18,12,1],[19,12,0],[20,12,0],[20,12,1],[26,12,0],[18,13,1]
+];
+const isTarget = (col, row, dir) =>
+    TARGET_ICON.some(([c, r, d]) => c === col && r === row && d === dir);
+
+// ---------- 颜色 ----------
+// 页面主题色可能被 settings 从 localStorage 恢复，从 CSS 变量取实际生效值；取不到时回退默认蓝
 const getBaseColor = () => {
     const css = getComputedStyle(document.documentElement).getPropertyValue('--target-color').trim();
-    if (css) return new THREE.Color(css);
-    return new THREE.Color(0xa1b5d8);
+    return css ? new THREE.Color(css) : new THREE.Color(0xa1b5d8);
 };
 
-// 添加新的常量
-const ANIMATION_CONFIG = {
-duration: 0.6,
-ease: "power2.inOut",
-flipHeight: 100, // 翻折高度
-colorTransition: 0.3 // 颜色过渡时间
-};
-
-let scene, camera, renderer;
-let instancedMesh;
-let raycaster;
-let mouse;
-const isChangingBg = ref(true); // 标记是否点击了背景
-
-
-// 使用 TypedArray 存储三角形数据
-const triangleData = {
-    positions: new Float32Array(),
-    adjacentTriangles: [], // 存储每个三角形的邻近三角形索引
-    groups: new Uint8Array(), // 存储每个三角形的组
-    isFlipped: new Uint8Array() // 存储每个三角形是否已翻折
-};
-
-// 顶点着色器
+// ---------- 网格着色器 ----------
 const vertexShader = `
 attribute vec3 instanceColor;
-attribute float instanceRotation;
 attribute float instanceState;
-attribute float flipProgress;
-attribute float animationTime; // 添加时间戳属性
 varying vec3 vColor;
 varying float vState;
-varying float vFlipProgress;
-varying float vAnimationTime; // 传递时间戳到片元着色器
-varying vec3 vBarycentric; // 添加重心坐标
+varying vec3 vBarycentric;
 
 void main() {
     vColor = instanceColor;
     vState = instanceState;
-    vFlipProgress = flipProgress;
-    vAnimationTime = animationTime; // 传递时间戳
 
-    // 设置重心坐标
+    // 重心坐标：用于片元着色器的描边（编辑模式）
     vBarycentric = vec3(0.0);
     if (gl_VertexID == 0) vBarycentric.x = 1.0;
     else if (gl_VertexID == 1) vBarycentric.y = 1.0;
     else if (gl_VertexID == 2) vBarycentric.z = 1.0;
-    
-    vec3 pos = position;
-    if (flipProgress > 0.0) {
-        float angle = flipProgress * 3.14159;
-        float height = 100.0 * sin(angle);
-        pos.y += height;
-    }
-    
-    gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(pos, 1.0);
+
+    gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
 }
 `;
-// 片元着色器
 const fragmentShader = `
 varying vec3 vColor;
 varying float vState;
-varying float vFlipProgress;
-varying float vAnimationTime; // 接收时间戳
-varying vec3 vBarycentric; // 添加重心坐标
+varying vec3 vBarycentric;
 
 void main() {
     vec3 finalColor = vColor;
 
-    // 添加抗锯齿描边效果
+    // 编辑模式：激活分组描白边（vState > 1.5）
     if (vState > 1.5) {
-        // 计算重心坐标的最小值（距离边缘的距离）
         float minBary = min(min(vBarycentric.x, vBarycentric.y), vBarycentric.z);
-        
-        // 计算边缘宽度（基于距离的渐变）
-        float edgeWidth = 0.06; // 边缘宽度
-        float edge = smoothstep(0.0, edgeWidth, minBary);
-        
-        // 边缘部分使用白色，内部保持原色
+        float edge = smoothstep(0.0, 0.06, minBary);
         finalColor = mix(vec3(1.0), finalColor, edge);
     }
 
-    gl_FragColor = vec4(finalColor, 1.0 - vFlipProgress);
+    gl_FragColor = vec4(finalColor, 1.0);
 }
 `;
 
+// ---------- 初始化 ----------
 const initThreeJS = () => {
-const container = containerRef.value;
+    scene = new THREE.Scene();
+    camera = new THREE.OrthographicCamera(
+        window.innerWidth / -2,
+        window.innerWidth / 2,
+        window.innerHeight / 2,
+        window.innerHeight / -2,
+        1,
+        1000
+    );
+    camera.position.z = 100;
 
-scene = new THREE.Scene();
-camera = new THREE.OrthographicCamera(
-    window.innerWidth / -2,
-    window.innerWidth / 2,
-    window.innerHeight / 2,
-    window.innerHeight / -2,
-    1,
-    1000
-);
-camera.position.z = 100;
+    renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance',
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xffffff, 1);
+    containerRef.value.appendChild(renderer.domElement);
 
-renderer = new THREE.WebGLRenderer({ 
-    antialias: true,
-    alpha: true,
-    powerPreference: "high-performance"
-});
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0xffffff, 1);
-container.appendChild(renderer.domElement);
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
 
-// 性能优化：使用环境光替代点光源
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-scene.add(ambientLight);
-
-raycaster = new THREE.Raycaster();
-mouse = new THREE.Vector2();
-
-createTriangleGrid();
-animate();
+    createTriangleGrid();
+    animate();
 };
 
 const createTriangleGrid = () => {
-const rows = Math.ceil(window.innerHeight / TRIANGLE_SIZE) + 2;
-const cols = Math.ceil(window.innerWidth / TRIANGLE_WIDE) + 2;
-const totalTriangles = rows * cols * 2;
+    cols = Math.ceil(window.innerWidth / TRIANGLE_WIDE) + 2;
+    rows = Math.ceil(window.innerHeight / TRIANGLE_SIZE) + 2;
+    totalTriangles = rows * cols * 2;
 
-// 创建基础三角形几何体
-const geometry = new THREE.BufferGeometry();
-const vertices = new Float32Array([
-    0, 0, 0,
-    0, TRIANGLE_SIZE, 0,
-    TRIANGLE_WIDE, TRIANGLE_SIZE/2, 0
-]);
-geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    // 基础三角形几何体（每个实例一个，等边三角形，底边在左）
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+        0, 0, 0,
+        0, TRIANGLE_SIZE, 0,
+        TRIANGLE_WIDE, TRIANGLE_SIZE / 2, 0,
+    ]), 3));
 
-// 创建实例化属性
-const instanceColors = new Float32Array(totalTriangles * 3);
-const instanceRotations = new Float32Array(totalTriangles);
-const instanceStates = new Float32Array(totalTriangles);
-const flipProgress = new Float32Array(totalTriangles);
-const instanceGroups = new Float32Array(totalTriangles);
-const animationId = new Float32Array(totalTriangles).fill(0); // 添加id属性
+    // 实例化属性
+    const instanceColors = new Float32Array(totalTriangles * 3);
+    const instanceStates = new Float32Array(totalTriangles);
+    const animationIds = new Float32Array(totalTriangles);
+    groups = new Uint8Array(totalTriangles);
 
+    const material = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        side: THREE.DoubleSide,
+        uniforms: {},
+    });
 
-// 创建实例化网格
-const material = new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
-    side: THREE.DoubleSide,
-    transparent: true,
-    uniforms: {}// color
-});
+    instancedMesh = new THREE.InstancedMesh(geometry, material, totalTriangles);
+    instancedMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
 
-instancedMesh = new THREE.InstancedMesh(geometry, material, totalTriangles);
-instancedMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    const matrix = new THREE.Matrix4();
+    const position = new THREE.Vector3();
+    const quaternion = new THREE.Quaternion();
+    const scale = new THREE.Vector3(1, 1, 1);
 
-// 初始化三角形数据
-let index = 0;
-const matrix = new THREE.Matrix4();
-const tempPosition = new THREE.Vector3();
-const tempQuaternion = new THREE.Quaternion();
-const tempScale = new THREE.Vector3(1, 1, 1);
+    // 逐三角形构建实例（index = (row * cols + col) * 2 + dir）
+    let index = 0;
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            const yOffset = col % 2 === 1 ? TRIANGLE_SIZE / 2 : 0;
+            for (let dir = 0; dir < 2; dir++) {
+                position.set(
+                    col * TRIANGLE_WIDE - window.innerWidth / 2,
+                    row * TRIANGLE_SIZE - window.innerHeight / 2 - TRIANGLE_SIZE + yOffset,
+                    0
+                );
+                quaternion.setFromAxisAngle(Z_AXIS, dir === 1 ? Math.PI / 3 : 0);
+                matrix.compose(position, quaternion, scale);
+                instancedMesh.setMatrixAt(index, matrix);
 
-
-// 预计算所有三角形的邻近关系
-triangleData.positions = new Array(totalTriangles * 3);
-triangleData.adjacentTriangles = new Array(totalTriangles);
-triangleData.groups = new Uint8Array(totalTriangles);
-triangleData.isFlipped = new Uint8Array(totalTriangles);
-
-// const targetIco = [
-//     [11,4,0],[11,4,1],[12,4,0],[12,4,1],[13,4,0],[13,4,1],[25,4,0],[25,4,1],[9,5,0],[9,5,1],[10,5,0],[10,5,1],[11,5,0],[11,5,1],[12,5,0],[12,5,1],[13,5,0],[13,5,1],[14,5,0],[14,5,1],[15,5,0],[15,5,1],[23,5,0],[23,5,1],[24,5,0],[24,5,1],[25,5,0],[25,5,1],[26,5,0],[26,5,1],[27,5,0],[27,5,1],[7,6,0],[7,6,1],[8,6,0],[8,6,1],[9,6,0],[9,6,1],[10,6,0],[10,6,1],[14,6,0],[14,6,1],[15,6,0],[15,6,1],[16,6,0],[16,6,1],[17,6,1],[21,6,0],[21,6,1],[22,6,0],[22,6,1],[23,6,0],[23,6,1],[24,6,0],[24,6,1],[26,6,0],[26,6,1],[27,6,0],[27,6,1],[28,6,0],[28,6,1],[29,6,0],[29,6,1],[6,7,0],[7,7,0],[7,7,1],[8,7,0],[8,7,1],[16,7,0],[16,7,1],[19,7,0],[19,7,1],[20,7,0],[20,7,1],[21,7,0],[21,7,1],[22,7,0],[22,7,1],[28,7,0],[28,7,1],[29,7,0],[29,7,1],[30,7,0],[30,7,1],[31,7,1],[6,8,0],[7,8,0],[7,8,1],[8,8,1],[17,8,0],[17,8,1],[18,8,0],[18,8,1],[19,8,0],[19,8,1],[20,8,0],[20,8,1],[29,8,0],[30,8,0],[30,8,1],[31,8,1],[6,9,0],[7,9,0],[7,9,1],[8,9,0],[8,9,1],[9,9,0],[9,9,1],[15,9,0],[15,9,1],[16,9,0],[16,9,1],[17,9,0],[17,9,1],[18,9,0],[18,9,1],[21,9,0],[21,9,1],[29,9,0],[29,9,1],[30,9,0],[30,9,1],[31,9,1],[8,10,0],[8,10,1],[9,10,0],[9,10,1],[10,10,0],[10,10,1],[11,10,0],[11,10,1],[13,10,0],[13,10,1],[14,10,0],[14,10,1],[15,10,0],[15,10,1],[16,10,0],[16,10,1],[20,10,0],[21,10,0],[21,10,1],[22,10,0],[22,10,1],[23,10,0],[23,10,1],[27,10,0],[27,10,1],[28,10,0],[28,10,1],[29,10,0],[29,10,1],[30,10,0],[30,10,1],[10,11,0],[10,11,1],[11,11,0],[11,11,1],[12,11,0],[12,11,1],[13,11,0],[13,11,1],[14,11,0],[14,11,1],[22,11,0],[22,11,1],[23,11,0],[23,11,1],[24,11,0],[24,11,1],[25,11,0],[25,11,1],[26,11,0],[26,11,1],[27,11,0],[27,11,1],[28,11,0],[28,11,1],[12,12,0],[12,12,1],[24,12,0],[24,12,1],[25,12,0],[25,12,1],[26,12,0],[26,12,1]
-// ];
-const targetIco = [
-    [19,2,0],[11,3,1],[17,3,0],[17,3,1],[18,3,1],[19,3,0],[20,3,0],[20,3,1],[21,3,1],[26,3,0],[27,3,0],[27,3,1],[9,4,0],[10,4,0],[10,4,1],[16,4,0],[17,4,0],[17,4,1],[18,4,1],[19,4,0],[20,4,0],[20,4,1],[21,4,1],[27,4,0],[28,4,1],[9,5,0],[10,5,1],[13,5,0],[13,5,1],[14,5,1],[16,5,0],[17,5,0],[17,5,1],[18,5,1],[19,5,0],[20,5,0],[20,5,1],[21,5,1],[22,5,0],[23,5,0],[23,5,1],[28,5,1],[12,6,0],[13,6,0],[13,6,1],[14,6,1],[16,6,0],[17,6,0],[17,6,1],[18,6,1],[19,6,0],[20,6,0],[20,6,1],[21,6,1],[22,6,0],[23,6,0],[23,6,1],[24,6,0],[24,6,1],[25,6,1],[12,7,0],[13,7,0],[13,7,1],[14,7,1],[15,7,0],[15,7,1],[16,7,0],[16,7,1],[17,7,0],[17,7,1],[18,7,1],[19,7,0],[20,7,0],[20,7,1],[21,7,1],[23,7,0],[24,7,0],[24,7,1],[25,7,1],[12,8,0],[13,8,0],[13,8,1],[14,8,0],[14,8,1],[15,8,0],[15,8,1],[16,8,0],[16,8,1],[17,8,0],[17,8,1],[18,8,1],[19,8,0],[20,8,0],[20,8,1],[21,8,1],[23,8,0],[24,8,0],[24,8,1],[25,8,1],[12,9,0],[13,9,0],[13,9,1],[14,9,0],[14,9,1],[16,9,0],[17,9,0],[17,9,1],[18,9,1],[19,9,0],[20,9,0],[20,9,1],[21,9,1],[23,9,0],[23,9,1],[24,9,0],[24,9,1],[25,9,1],[9,10,0],[12,10,0],[13,10,0],[13,10,1],[14,10,1],[16,10,0],[17,10,0],[17,10,1],[18,10,1],[19,10,0],[20,10,0],[20,10,1],[21,10,0],[21,10,1],[22,10,0],[22,10,1],[23,10,0],[23,10,1],[24,10,0],[24,10,1],[27,10,0],[28,10,1],[9,11,0],[10,11,1],[14,11,1],[16,11,0],[17,11,0],[17,11,1],[18,11,1],[19,11,0],[20,11,0],[20,11,1],[21,11,0],[21,11,1],[22,11,0],[22,11,1],[27,11,0],[27,11,1],[28,11,1],[10,12,0],[10,12,1],[11,12,1],[16,12,0],[17,12,0],[17,12,1],[18,12,1],[19,12,0],[20,12,0],[20,12,1],[26,12,0],[18,13,1]
-];
-const checkGroup = (index) =>{
-    if (targetIco.findIndex(([targetCol, targetRow, targetDir]) => targetCol === triangleData.positions[index*3] && targetRow === triangleData.positions[index*3+1] && targetDir === triangleData.positions[index*3+2]) !== -1){
-        instanceGroups[index] = 1;
-    }else{
-        instanceGroups[index] = 0;
-    }
-}
-
-for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-        for (let i = 0; i < 2; i++) {
-            const yColOffset = col % 2 === 1 ? TRIANGLE_SIZE/2 : 0;
-            const x = (col * TRIANGLE_WIDE) - window.innerWidth/2;
-            const y = (row * TRIANGLE_SIZE) - window.innerHeight/2 - TRIANGLE_SIZE + yColOffset;
-            const rotation = i % 2 === 1 ? Math.PI/3 : 0;
-            
-            // 设置位置和旋转
-            tempPosition.set(x, y, 0);
-            tempQuaternion.setFromAxisAngle(new THREE.Vector3(0, 0, 1), rotation);
-            
-            // 构建矩阵
-            matrix.compose(tempPosition, tempQuaternion, tempScale);
-            instancedMesh.setMatrixAt(index, matrix);
-            
-            // 设置颜色（基于当前主题色做微小随机变化，保持渐变质感）
-            const color = getBaseColor();
-            color.offsetHSL(
-            (Math.random() - 0.5) * 0.02,
-            (Math.random() - 0.5) * 0.03,
-            (Math.random() - 0.5) * 0.04
-            );
-            
-            // 设置实例属性
-            instanceColors[index * 3] = color.r;
-            instanceColors[index * 3 + 1] = color.g;
-            instanceColors[index * 3 + 2] = color.b;
-            instanceRotations[index] = rotation;
-            instanceStates[index] = 0;
-            flipProgress[index] = 0;
-
-            // 存储位置数据
-            triangleData.positions[index * 3] = col;
-            triangleData.positions[index * 3 + 1] = row;
-            triangleData.positions[index * 3 + 2] = i % 2;
-            // group 修改
-            checkGroup(index)
-            //instanceGroups[index] = Math.floor(Math.random() * 2);
-            //instanceGroups[index] = 0;
-
-            
-            // 存储组和状态
-            triangleData.groups[index] = instanceGroups[index];
-            triangleData.isFlipped[index] = 0;
-            
-            index++;
+                // 基于主题色做微小随机变化，保持渐变质感
+                const color = getBaseColor();
+                color.offsetHSL(
+                    (Math.random() - 0.5) * 0.02,
+                    (Math.random() - 0.5) * 0.03,
+                    (Math.random() - 0.5) * 0.04
+                );
+                instanceColors[index * 3] = color.r;
+                instanceColors[index * 3 + 1] = color.g;
+                instanceColors[index * 3 + 2] = color.b;
+                instanceStates[index] = 0;
+                groups[index] = isTarget(col, row, dir) ? 1 : 0;
+                index++;
+            }
         }
     }
-}
 
-// 计算所有三角形的邻近关系
-for (let i = 0; i < totalTriangles; i++) {
-    triangleData.adjacentTriangles[i] = findAdjacentTriangles(i);
-}
-// console.log(`检查三角形位置:`, triangleData.positions);
+    const colorAttribute = new THREE.InstancedBufferAttribute(instanceColors, 3);
+    colorAttribute.usage = THREE.DynamicDrawUsage;
+    geometry.setAttribute('instanceColor', colorAttribute);
+    geometry.setAttribute('instanceState', new THREE.InstancedBufferAttribute(instanceStates, 1));
+    geometry.setAttribute('animationId', new THREE.InstancedBufferAttribute(animationIds, 1));
 
-// 添加实例属性
-const colorAttribute = new THREE.InstancedBufferAttribute(instanceColors, 3);
-colorAttribute.usage = THREE.DynamicDrawUsage; // 允许动态更新
-geometry.setAttribute('instanceColor', colorAttribute);
-geometry.setAttribute('instanceRotation', new THREE.InstancedBufferAttribute(instanceRotations, 1));
-geometry.setAttribute('instanceState', new THREE.InstancedBufferAttribute(instanceStates, 1));
-geometry.setAttribute('flipProgress', new THREE.InstancedBufferAttribute(flipProgress, 1));
-geometry.setAttribute('instanceGroup', new THREE.InstancedBufferAttribute(instanceGroups, 1));
-geometry.setAttribute('animationId', new THREE.InstancedBufferAttribute(animationId, 1));
-
-scene.add(instancedMesh);
-
-// 更新实例化网格
-instancedMesh.instanceMatrix.needsUpdate = true;
+    scene.add(instancedMesh);
 };
 
-// 修改查找相邻三角形函数
-const findAdjacentTriangles = (triangleIndex) => {
-    // 获取当前三角形的位置
-    const currentCol = triangleData.positions[triangleIndex * 3];
-    const currentRow = triangleData.positions[triangleIndex * 3 + 1];
-
-    // 存储相邻三角形的索引
-    const adjacentTriangles = [];
-
-    // 检查所有可能的相邻三角形
-    for (let i = 0; i < triangleData.positions.length / 3; i++) {
-        if (i === triangleIndex) continue;
-        
-        const otherCol = triangleData.positions[i * 3];
-        const otherRow = triangleData.positions[i * 3 + 1];
-        
-        // 检查邻近三角形
-        if(triangleIndex % 2 === i % 2) continue;
-        if(currentCol === otherCol && currentRow === otherRow){
-        adjacentTriangles.push(i);
-        continue;
-        }
-
-        if (triangleIndex % 2 === 0){
-        if(currentCol % 2 === 0){
-            if(currentCol === otherCol -1 && currentRow === otherRow || currentCol === otherCol -1 && currentRow === otherRow +1){
-            adjacentTriangles.push(i);
-            }
-        }else{
-            if(currentCol === otherCol -1 && currentRow === otherRow || currentCol === otherCol -1 && currentRow === otherRow -1){
-            adjacentTriangles.push(i);
-            }
-        }
-        }else{
-        if(currentCol % 2 === 0){
-            if(currentCol === otherCol +1 && currentRow === otherRow || currentCol === otherCol +1 && currentRow === otherRow +1){
-            adjacentTriangles.push(i);
-            }
-        }else{
-            if(currentCol === otherCol +1 && currentRow === otherRow || currentCol === otherCol +1 && currentRow === otherRow -1){
-            adjacentTriangles.push(i);
-            }
-        }
-        }
-    }
-    return adjacentTriangles;
+// ---------- 网格工具 ----------
+// 索引 → 网格坐标（与 createTriangleGrid 的 index 公式互逆）
+const cellOf = (index) => {
+    const cell = index >> 1;
+    return { col: cell % cols, row: (cell / cols) | 0, dir: index & 1 };
 };
 
-// 在全局只保留ID生成器
-let idSeed = 0;
+// 闭式邻居：同单元对家 + 两个跨单元邻居（与原 findAdjacentTriangles 等价，已验证）
+const neighborsOf = (index) => {
+    const { col, row, dir } = cellOf(index);
+    const d = 1 - dir;
+    const outCol = dir === 0 ? col + 1 : col - 1;
+    const rowShift = col % 2 === 0 ? -1 : 1;
+    const result = [];
+    for (const [c, r] of [[col, row], [outCol, row], [outCol, row + rowShift]]) {
+        if (c >= 0 && c < cols && r >= 0 && r < rows) result.push((r * cols + c) * 2 + d);
+    }
+    return result;
+};
 
-// 扩散开始函数
+// ---------- 颜色扩散动画 ----------
+let idSeed = 0; // 动画运行号，用于让新动画优先于旧动画
+
+const generateNewTargetColor = () => {
+    const color = new THREE.Color().setHSL(
+        Math.random(),
+        0.2 + Math.random() * 0.15,
+        0.3 + Math.random() * 0.15
+    );
+    if (isChangingBg.value) settingsStore.setTargetColor(`#${color.getHexString()}`);
+    return color;
+};
+
+// 点击后从目标三角形出发，按 BFS 波次逐层对同组三角形换色
 const startFlipAnimation = (triangleIndex) => {
+    const runId = ++idSeed;
+    const visited = new Set([triangleIndex]);
+    const timeSequence = [[triangleIndex]];
 
-    // 存储每个时间段的三角形
-    const timeSequence = [];
-    const visited = new Set();
-    // 闭包管理id
-    const animationStartId = `${++idSeed}`;
-    console.log("New animationStartId: " + animationStartId)
-
-    // 初始三角形
-    timeSequence.push([triangleIndex]);
-    visited.add(triangleIndex);
-
-    // 收集每个时间段要翻折的三角形
-    const collectNextTimeSequence = () => {
-        const lastTimeTriangles = timeSequence[timeSequence.length - 1];
-        const nextTimeTriangles = new Set();
-        // 对上一个时间段的每个三角形
-        lastTimeTriangles.forEach(triIndex => {
-        // 检查其所有邻接三角形
-        const adjacent = triangleData.adjacentTriangles[triIndex];
-        if (!adjacent) return;
-        
-        adjacent.forEach(adjIndex => {
-            // 只选择同组的三角形
-            if (!visited.has(adjIndex) && 
-                triangleData.groups[adjIndex] === triangleData.groups[triIndex] ) {
-            nextTimeTriangles.add(adjIndex);
-            visited.add(adjIndex);
+    // 分层收集：每层取上一层的同组邻接三角形（未访问）
+    const collectNextWave = () => {
+        const current = timeSequence[timeSequence.length - 1];
+        const next = new Set();
+        for (const tri of current) {
+            for (const adj of neighborsOf(tri)) {
+                if (!visited.has(adj) && groups[adj] === groups[tri]) {
+                    next.add(adj);
+                    visited.add(adj);
+                }
             }
-        });
-        });
-
-        // 如果找到了新的要翻折的三角形，添加到序列中并继续寻找下一时间段
-        if (nextTimeTriangles.size > 0) {
-        timeSequence.push(Array.from(nextTimeTriangles));
-        collectNextTimeSequence();
         }
-
-        //console.log(`时间段 ${timeSequence.length} 的三角形:`, lastTimeTriangles);
+        if (next.size) {
+            timeSequence.push([...next]);
+            collectNextWave();
+        }
     };
+    collectNextWave();
 
-    // 开始收集所有时间段的三角形
-    collectNextTimeSequence();
+    const targetColor = generateNewTargetColor();
 
-    // 生成新的目标颜色
-    const generateNewTargetColor = () => {
-        // 使用HSL颜色空间生成随机颜色
-        const hue = Math.random(); // 0-1 对应 0-360度
-        const saturation = 0.2 + Math.random() * 0.15; // 0.2-0.35 饱和度
-        const lightness = 0.3 + Math.random() * 0.15; // 0.3-0.45 亮度
-        console.log("饱和度："+saturation +"亮度："+ lightness)
-        
-        const color = new THREE.Color();
-        color.setHSL(hue, saturation, lightness);
-        const hexColor = `#${color.getHexString()}`;
-        if(isChangingBg.value == true){
-            settingsStore.setTargetColor(hexColor);
-        }
-        return color;
-    };
-
-    // 为当前整个翻折动画生成新的目标颜色
-    const newTargetColor = generateNewTargetColor();
-
-
-
-    // 执行动画序列
-    const animateTimeSequence = async (timeIndex = 0) => {
-        if (timeIndex >= timeSequence.length) {
-        return;
-        }
-
-        const currentTimeTriangles = timeSequence[timeIndex];
+    // 逐层执行换色动画（同一层并行，层间串行）
+    const animateWaves = async (waveIndex = 0) => {
+        if (waveIndex >= timeSequence.length) return;
+        const triangles = timeSequence[waveIndex];
         const geometry = instancedMesh.geometry;
-        const instanceStates = geometry.getAttribute('instanceState');
         const instanceColors = geometry.getAttribute('instanceColor');
-        const animationId = geometry.getAttribute('animationId');
-        
-        // 创建当前时间段所有三角形的动画
-        const animations = currentTimeTriangles.map(triIndex => {
-        return new Promise(resolve => {
-            //检查时间戳，如果已经被更新的动画影响过，则跳过
-            if (animationId.array[triIndex] > +animationStartId) {
-            // console.log("记录：" + animationId.array[triIndex] + " ID:" + triIndex);
-            // console.log("当前：" + animationStartId + " 跳过！！！");
-            resolve();
-            return;
-            }
-            
-            // 设置状态和时间戳
-            instanceStates.setX(triIndex, 1);
+        const instanceStates = geometry.getAttribute('instanceState');
+        const animationIds = geometry.getAttribute('animationId');
+
+        await Promise.all(triangles.map((tri) => new Promise((resolve) => {
+            // 若已被更新的动画处理过则跳过
+            if (animationIds.array[tri] > runId) return resolve();
+
+            instanceStates.setX(tri, 1);
             instanceStates.needsUpdate = true;
-            animationId.setX(triIndex, animationStartId);
-            animationId.needsUpdate = true;
+            animationIds.setX(tri, runId);
+            animationIds.needsUpdate = true;
 
-            
-            // 为每个三角形生成独特的颜色变化
-            const variantColor = newTargetColor.clone();
-            const hueVariation = (Math.random() - 0.5) * 0.02;
-            const saturationVariation = (Math.random() - 0.5) * 0.03;
-            const lightnessVariation = (Math.random() - 0.5) * 0.04;
-            variantColor.offsetHSL(hueVariation, saturationVariation, lightnessVariation);
+            // 目标色微变体，保持渐变质感
+            const variantColor = targetColor.clone();
+            variantColor.offsetHSL(
+                (Math.random() - 0.5) * 0.02,
+                (Math.random() - 0.5) * 0.03,
+                (Math.random() - 0.5) * 0.04
+            );
+            instanceColors.array[tri * 3] = variantColor.r;
+            instanceColors.array[tri * 3 + 1] = variantColor.g;
+            instanceColors.array[tri * 3 + 2] = variantColor.b;
+            instanceColors.needsUpdate = true;
 
-            
-            
-            // 创建动画时间线
-            const timeline = gsap.timeline({
-            onStart: () => {
-                instanceColors.array[triIndex * 3] = variantColor.r;
-                instanceColors.array[triIndex * 3 + 1] = variantColor.g;
-                instanceColors.array[triIndex * 3 + 2] = variantColor.b;
-                instanceColors.needsUpdate = true;
-            },
-            onComplete: () => {
-                resolve();
-            }
+            gsap.to({}, {
+                duration: 0.5 / (waveIndex + 1),
+                ease: 'power1.inOut',
+                onComplete: resolve,
             });
-            
-            timeline.to({}, {
-            duration: 0.5/(timeIndex+1),
-            ease: "power1.inOut",
-            onUpdate: () => {
-                geometry.attributes.instanceColor.needsUpdate = true;
-            }
-            });
-            
-            // // 翻折动画
-            // timeline.to(flipProgress.array, {
-            //   [triIndex]: 1,
-            //   duration: 0.4,
-            //   ease: "power1.inOut",
-            //   onUpdate: () => {
-            //     flipProgress.needsUpdate = true;
-            //   }
-            // }, "-=0.3");
-        });
-        });
+        })));
 
-        // 等待当前时间段所有动画完成
-        await Promise.all(animations);
-        
-        // 延迟一小段时间后开始下一个时间段
-        setTimeout(() => {
-        animateTimeSequence(timeIndex + 1);
-        }, 10);
+        // 波次间短暂间隔，形成扩散节奏
+        setTimeout(() => animateWaves(waveIndex + 1), 10);
     };
-
-    // 开始第一个时间段的动画
-    animateTimeSequence();
+    animateWaves();
 };
 
-// edit mode ------------------------------------
-// 添加响应式变量
-const activeGroup = ref(1); // 当前激活的分组
+// ---------- 编辑模式 ----------
+const activeGroup = ref(1);
 
-// 切换编辑模式
 const toggleEditMode = () => {
     settingsStore.toggleAddGroupMode();
-    
-    // 更新三角形描边效果
     updateGroupOutlines();
 };
 
-// 设置激活的分组
 const setActiveGroup = (group) => {
     activeGroup.value = group;
     updateGroupOutlines();
-    // 打印当前group的所有三角形位置信息
     printGroupTriangles(group);
 };
 
-// 更新分组描边效果
+// 编辑模式下为激活分组的三角形添加白边
 const updateGroupOutlines = () => {
     if (!instancedMesh) return;
-    
-    const geometry = instancedMesh.geometry;
-    const instanceStates = geometry.getAttribute('instanceState');
-    
-    for (let i = 0; i < triangleData.groups.length; i++) {
-        // 在编辑模式下，为当前激活分组的三角形添加描边效果
-        if (settingsStore.settings.isAddingGroup && triangleData.groups[i] === activeGroup.value) {
-            instanceStates.setX(i, 2); // 使用状态2表示描边
-        } else if (instanceStates.getX(i) === 2) {
-            // 恢复非激活分组的状态
-            instanceStates.setX(i, triangleData.isFlipped[i] ? 1 : 0);
+    const states = instancedMesh.geometry.getAttribute('instanceState');
+    const show = settingsStore.settings.isAddingGroup;
+    for (let i = 0; i < groups.length; i++) {
+        states.setX(i, show && groups[i] === activeGroup.value ? 2 : 0);
+    }
+    states.needsUpdate = true;
+};
+
+// 打印指定分组的三角形网格坐标（用于导出/编辑 TARGET_ICON）
+const printGroupTriangles = (group) => {
+    const cells = [];
+    for (let i = 0; i < groups.length; i++) {
+        if (groups[i] === group) {
+            const { col, row, dir } = cellOf(i);
+            cells.push([col, row, dir]);
         }
     }
-    
-    instanceStates.needsUpdate = true;
+    console.log(`Group ${group} 的三角形位置数组:`);
+    console.log(JSON.stringify(cells));
 };
 
-// 新增函数：打印指定group的所有三角形位置
-const printGroupTriangles = (group) => {
-  const groupTriangles = [];
-  
-  for (let i = 0; i < triangleData.groups.length; i++) {
-    if (triangleData.groups[i] === group) {
-      const col = triangleData.positions[i * 3];
-      const row = triangleData.positions[i * 3 + 1];
-      const dir = triangleData.positions[i * 3 + 2];
-      groupTriangles.push([col, row, dir]);
-    }
-  }
-  
-//   console.log(`Group ${group} 的所有三角形位置:`);
-//   console.log(groupTriangles);
-  
-  // 格式化的输出
-  console.log(`Group ${group} 的三角形位置数组:`);
-  console.log(JSON.stringify(groupTriangles));
-};
-
-// 修改点击处理函数
+// ---------- 交互 ----------
 const handleMouseClick = (event) => {
     event.preventDefault();
 
@@ -586,25 +355,22 @@ const handleMouseClick = (event) => {
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObject(instancedMesh);
+    const hits = raycaster.intersectObject(instancedMesh);
+    if (!hits.length) return;
+    const id = hits[0].instanceId;
+    const { col, row, dir } = cellOf(id);
+    console.log('点击了三角形:', id, '位置:', [col, row, dir]);
 
-    if (intersects.length > 0) {
-        const instanceId = intersects[0].instanceId;
-        console.log('点击了三角形:', instanceId);
-        console.log("Position: ["+ triangleData.positions[instanceId*3] + ","+triangleData.positions[instanceId*3+1] + ","+triangleData.positions[instanceId*3+2] + "]")
-        if(triangleData.groups[instanceId] == 0){
-            isChangingBg.value = true;
-        }else{
-            isChangingBg.value = false;
-        }
-        if(settingsStore.settings.isAddingGroup){
-            triangleData.groups[instanceId] = triangleData.groups[instanceId]!=activeGroup.value?activeGroup.value:0;
-            updateGroupOutlines(); // 更新描边效果
-        }else{
-            startFlipAnimation(instanceId);
-        }
-        
+    if (settingsStore.settings.isAddingGroup) {
+        // 编辑模式：切换分组
+        groups[id] = groups[id] !== activeGroup.value ? activeGroup.value : 0;
+        updateGroupOutlines();
+        return;
     }
+
+    // 展示模式：group 0 联动页面主题色，随后扩散换色
+    isChangingBg.value = groups[id] === 0;
+    startFlipAnimation(id);
 };
 
 const animate = () => {
@@ -613,19 +379,15 @@ const animate = () => {
 };
 
 const handleResize = () => {
-if (camera && renderer) {
+    if (!camera || !renderer) return;
     camera.left = window.innerWidth / -2;
     camera.right = window.innerWidth / 2;
     camera.top = window.innerHeight / 2;
     camera.bottom = window.innerHeight / -2;
     camera.updateProjectionMatrix();
-    
     renderer.setSize(window.innerWidth, window.innerHeight);
-    
-    // 重新创建三角形网格
     scene.remove(instancedMesh);
     createTriangleGrid();
-}
 };
 
 onMounted(() => {
@@ -637,14 +399,12 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('click', handleMouseClick);
     window.removeEventListener('resize', handleResize);
-    if (renderer) {
-        renderer.dispose();
-    }
+    renderer?.dispose();
 });
 
-watch(useRoute(), () => {
-  updateGroupOutlines()
-})
+watch(route, () => {
+    updateGroupOutlines();
+});
 </script>
 
 <style scoped>
